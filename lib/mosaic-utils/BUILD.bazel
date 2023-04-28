@@ -1,0 +1,35 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]) + [
+        "//lib/mosaic-utils/cli:srcs",
+        "//lib/mosaic-utils/gson:srcs",
+        "//lib/mosaic-utils/objects:srcs",
+        "//lib/mosaic-utils/scheduling:srcs",
+    ],
+)
+
+java_library(
+    name = "mosaic-utils",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:commons_cli_commons_cli",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_leadpony_justify_justify",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:com_github_stephenc_findbugs_findbugs_annotations",
+        "@maven//:org_apache_commons_commons_configuration2",
+        "@maven//:javax_json_javax_json_api",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-geomath",
+
+    ],
+)

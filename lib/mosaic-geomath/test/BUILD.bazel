@@ -1,0 +1,425 @@
+package(default_visibility = ["//visibility:public"])
+
+# geo unit test
+
+java_test(
+    name = "geo_calculation_test",
+    srcs = [
+        "geo/GeoCalculationTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.geo.GeoCalculationTest",
+)
+
+java_test(
+    name = "geo_circle_test",
+    srcs = [
+        "geo/GeoCircleTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.geo.GeoCircleTest",
+)
+
+java_test(
+    name = "geo_point_test",
+    srcs = [
+        "geo/GeoPointTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.geo.GeoPointTest",
+)
+
+java_test(
+    name = "geo_utils_test",
+    srcs = [
+        "geo/GeoUtilsTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.geo.GeoUtilsTest",
+)
+
+java_test(
+    name = "polygon_test",
+    srcs = [
+        "geo/PolygonTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.geo.PolygonTest",
+)
+
+java_test(
+    name = "rectangle_test",
+    srcs = [
+        "geo/RectangleTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.geo.RectangleTest",
+)
+
+
+# gson unit test
+
+java_test(
+    name = "cartesian_point_adapter_test",
+    srcs = [
+        "gson/CartesianPointAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+        "@maven//:com_google_code_gson_gson",
+    ],
+    test_class = "org.eclipse.mosaic.lib.gson.CartesianPointAdapterTest",
+)
+
+java_test(
+    name = "geo_area_adapter_test",
+    srcs = [
+        "gson/GeoAreaAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+        "@maven//:com_google_code_gson_gson",
+    ],
+    test_class = "org.eclipse.mosaic.lib.gson.GeoAreaAdapterTest",
+)
+
+java_test(
+    name = "geo_point_adapter_test",
+    srcs = [
+        "gson/GeoPointAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+        "@maven//:com_google_code_gson_gson",
+    ],
+    test_class = "org.eclipse.mosaic.lib.gson.GeoPointAdapterTest",
+)
+
+java_test(
+    name = "utm_zone_adapter_test",
+    srcs = [
+        "gson/UtmZoneAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+        "@maven//:com_google_code_gson_gson",
+    ],
+    test_class = "org.eclipse.mosaic.lib.gson.UtmZoneAdapterTest",
+)
+
+
+# math unit test
+
+java_test(
+    name = "default_random_number_generator_test",
+    srcs = [
+        "math/DefaultRandomNumberGeneratorTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.math.DefaultRandomNumberGeneratorTest",
+)
+
+java_test(
+    name = "kiss_random_number_generator_test",
+    srcs = [
+        "math/KissRandomNumberGeneratorTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.math.KissRandomNumberGeneratorTest",
+)
+
+java_test(
+    name = "math_utils_test",
+    srcs = [
+        "math/MathUtilsTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.math.MathUtilsTest",
+)
+
+java_test(
+    name = "matrix_3d_test",
+    srcs = [
+        "math/Matrix3dTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.math.Matrix3dTest",
+)
+
+java_test(
+    name = "matrix_4d_test",
+    srcs = [
+        "math/Matrix4dTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.math.Matrix4dTest",
+)
+
+java_test(
+    name = "vector_3d_test",
+    srcs = [
+        "math/Vector3dTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.math.Vector3dTest",
+)
+
+
+# spatial unit test
+
+java_test(
+    name = "bounding_box_test",
+    srcs = [
+        "spatial/BoundingBoxTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.BoundingBoxTest",
+)
+
+java_test(
+    name = "edge_test",
+    srcs = [
+        "spatial/EdgeTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.EdgeTest",
+)
+
+java_test(
+    name = "kd_tree_test",
+    srcs = [
+        "spatial/KdTreeTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.KdTreeTest",
+)
+
+java_test(
+    name = "line_string_test",
+    srcs = [
+        "spatial/LineStringTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.LineStringTest",
+)
+
+java_test(
+    name = "plane_test",
+    srcs = [
+        "spatial/PlaneTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.PlaneTest",
+)
+
+java_test(
+    name = "quad_tree_test",
+    srcs = [
+        "spatial/QuadTreeTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core"
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.QuadTreeTest",
+)
+
+java_test(
+    name = "ray_test",
+    srcs = [
+        "spatial/RayTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.RayTest",
+)
+
+java_test(
+    name = "rotation_matrix_test",
+    srcs = [
+        "spatial/RotationMatrixTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.RotationMatrixTest",
+)
+
+java_test(
+    name = "transformation_matrix_test",
+    srcs = [
+        "spatial/TransformationMatrixTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.spatial.TransformationMatrixTest",
+)
+
+
+# transform unit test
+
+java_test(
+    name = "utm_zone_test",
+    srcs = [
+        "transform/UtmZoneTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.transform.UtmZoneTest",
+)
+
+java_test(
+    name = "wgs84_projection_test",
+    srcs = [
+        "transform/Wgs84ProjectionTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.transform.Wgs84ProjectionTest",
+)

@@ -1,0 +1,18 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]),
+)
+
+java_library(
+    name = "junit",
+    srcs = [
+        ":srcs",
+    ],
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:commons_io_commons_io",
+        "@maven//:junit_junit",
+    ],
+)

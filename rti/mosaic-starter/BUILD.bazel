@@ -1,0 +1,28 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]) + [
+        "//rti/mosaic-starter/cli:srcs",
+        "//rti/mosaic-starter/config:srcs",
+    ]
+)
+
+java_library(
+    name = "mosaic-starter",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:com_fasterxml_jackson_dataformat_jackson_dataformat_xml",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:ch_qos_logback_logback_classic",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:org_slf4j_slf4j_api",
+
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+    ],
+)

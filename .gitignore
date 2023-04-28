@@ -66,3 +66,36 @@ tmp/
 *.log
 credentials.cached
 *.lcs
+
+# Bazel
+bazel-*
+*.egg-info
+
+# Temporary files
+*.pyc
+*.swp
+*.swo
+
+# Generated files
+*.result
+py_proto
+
+# VS Code files
+.vscode
+
+# Logs
+nohup.out
+*.bak
+*.stderr
+*.stdout
+
+# python proto
+*_pb2.py
+*_pb2_grpc.py
+
+# cache
+__pycache__
+.cache/
+.errors.log
+build
+dist

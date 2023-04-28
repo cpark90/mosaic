@@ -1,0 +1,22 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]),
+)
+
+java_library(
+    name = "junit",
+    srcs = [
+        ":srcs",
+    ],
+    deps = [
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:junit_junit",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils/test/junit",
+        
+    ],
+)

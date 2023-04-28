@@ -1,0 +1,21 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["geo/*.java"]) +
+        glob(["gson/*.java"]) +
+        glob(["math/*.java"]) +
+        glob(["misc/*.java"]) +
+        glob(["spatial/*.java"]) +
+        glob(["transform/*.java"])
+)
+
+java_library(
+    name = "mosaic-geomath",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:com_google_code_gson_gson",
+    ],
+)

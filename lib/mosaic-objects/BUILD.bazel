@@ -1,0 +1,41 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["enums/*.java"]) +
+        glob(["objects/*.java"]) +
+        glob(["objects/addressing/*.java"]) +
+        glob(["objects/communication/*.java"]) +
+        glob(["objects/electricity/*.java"]) +
+        glob(["objects/environment/*.java"]) +
+        glob(["objects/mapping/*.java"]) +
+        glob(["objects/road/*.java"]) +
+        glob(["objects/traffic/*.java"]) +
+        glob(["objects/trafficlight/*.java"]) +
+        glob(["objects/trafficsign/*.java"]) +
+        glob(["objects/v2x/*.java"]) +
+        glob(["objects/v2x/etsi/*.java"]) +
+        glob(["objects/v2x/etsi/cam/*.java"]) +
+        glob(["objects/v2x/etsi/ivim/*.java"]) +
+        glob(["objects/vehicle/*.java"]) +
+        glob(["objects/vehicle/sensor/*.java"])
+)
+
+java_library(
+    name = "mosaic-objects",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:commons_io_commons_io",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:com_google_code_gson_gson",
+
+        "//lib/mosaic-geomath",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-utils",
+    ],
+)

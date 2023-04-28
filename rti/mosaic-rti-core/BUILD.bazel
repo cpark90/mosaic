@@ -1,0 +1,31 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]) +
+        glob(["federation/*.java"]) + 
+        glob(["interaction/*.java"]) + 
+        glob(["monitor/*.java"]) + 
+        glob(["time/*.java"])
+)
+
+java_library(
+    name = "mosaic-rti-core",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:com_jcraft_jsch",
+        "@maven//:ch_qos_logback_logback_classic",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:commons_io_commons_io",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-geomath",
+    ],
+)

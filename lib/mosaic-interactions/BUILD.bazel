@@ -1,0 +1,25 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = [
+        "//lib/mosaic-geomath/geo:srcs",
+        "//lib/mosaic-geomath/gson:srcs",
+        "//lib/mosaic-geomath/junit:srcs",
+        "//lib/mosaic-geomath/math:srcs",
+        "//lib/mosaic-geomath/misc:srcs",
+        "//lib/mosaic-geomath/spatial:srcs",
+        "//lib/mosaic-geomath/transform:srcs",
+    ],
+)
+
+java_library(
+    name = "mosaic-geomath",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_code_gson_gson",
+    ],
+)

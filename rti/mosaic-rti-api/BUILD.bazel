@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]) +
+        glob(["config/*.java"]) +
+        glob(["api/*.java"]) +
+        glob(["api/federatestarter/*.java"]) +
+        glob(["api/parameters/*.java"]) +
+        glob(["api/time/*.java"])
+)
+
+java_library(
+    name = "mosaic-rti-api",
+    srcs = [
+        ":srcs",
+        ],
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
+
+        "//lib/mosaic-docker",
+        "//lib/mosaic-geomath",
+    ],
+)

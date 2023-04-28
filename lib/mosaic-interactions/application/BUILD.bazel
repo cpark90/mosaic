@@ -1,0 +1,22 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]),
+)
+
+java_library(
+    name = "application",
+    srcs = [
+        "ApplicationInteraction.java",
+        "ItefLogging.java",
+        "SumoTraciRequest.java",
+        "SumoTraciResponse.java",
+    ],
+    deps = [
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_commons_commons_lang3",
+        "",
+
+    ]
+)

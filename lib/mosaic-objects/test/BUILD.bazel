@@ -1,0 +1,268 @@
+package(default_visibility = ["//visibility:public"])
+
+# enums unit test
+
+java_test(
+    name = "vehicle_class_test",
+    srcs = [
+        "enums/VehicleClassTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.enums.VehicleClassTest",
+)
+
+# objects unit test
+
+java_test(
+    name = "unit_name_comparator_test",
+    srcs = [
+        "objects/UnitNameComparatorTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.UnitNameComparatorTest",
+)
+
+java_test(
+    name = "destination_address_container_test",
+    srcs = [
+        "objects/addressing/DestinationAddressContainerTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.addressing.DestinationAddressContainerTest",
+)
+
+java_test(
+    name = "ip_resolver_test",
+    srcs = [
+        "objects/addressing/IpResolverTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.addressing.IpResolverTest",
+)
+
+java_test(
+    name = "network_address_test",
+    srcs = [
+        "objects/addressing/NetworkAddressTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.addressing.NetworkAddressTest",
+)
+
+java_test(
+    name = "ad_hoc_configuration_test",
+    srcs = [
+        "objects/communication/AdHocConfigurationTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.communication.AdHocConfigurationTest",
+)
+
+java_test(
+    name = "traffic_light_group_test",
+    srcs = [
+        "objects/trafficlight/TrafficLightGroupTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.trafficlight.TrafficLightGroupTest",
+)
+
+java_test(
+    name = "traffic_light_program_phase_test",
+    srcs = [
+        "objects/trafficlight/TrafficLightProgramPhaseTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.trafficlight.TrafficLightProgramPhaseTest",
+)
+
+java_test(
+    name = "traffic_light_program_test",
+    srcs = [
+        "objects/trafficlight/TrafficLightProgramTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.trafficlight.TrafficLightProgramTest",
+)
+
+java_test(
+    name = "traffic_light_state_test",
+    srcs = [
+        "objects/trafficlight/TrafficLightStateTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.trafficlight.TrafficLightStateTest",
+)
+
+java_test(
+    name = "traffic_light_test",
+    srcs = [
+        "objects/trafficlight/TrafficLightTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.trafficlight.TrafficLightTest",
+)
+
+java_test(
+    name = "cam_content_test",
+    srcs = [
+        "objects/v2x/etsi/CamContentTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.v2x.etsi.CamContentTest",
+)
+
+java_test(
+    name = "denm_content_test",
+    srcs = [
+        "objects/v2x/etsi/DenmContentTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.v2x.etsi.DenmContentTest",
+)
+
+java_test(
+    name = "ivim_content_test",
+    srcs = [
+        "objects/v2x/etsi/IvimContentTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.v2x.etsi.IvimContentTest",
+)
+
+java_test(
+    name = "ad_hoc_message_routing_builder_test",
+    srcs = [
+        "objects/v2x/AdHocMessageRoutingBuilderTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.v2x.AdHocMessageRoutingBuilderTest",
+)
+
+java_test(
+    name = "cell_message_routing_builder_test",
+    srcs = [
+        "objects/v2x/CellMessageRoutingBuilderTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/test/junit",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.v2x.CellMessageRoutingBuilderTest",
+)
+
+java_test(
+    name = "sensor_value_test",
+    srcs = [
+        "objects/vehicle/sensor/SensorValueTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.objects.vehicle.sensor.SensorValueTest",
+)
