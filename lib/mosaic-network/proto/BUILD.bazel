@@ -1,0 +1,7 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "client_server_channel_messages_proto",
+    srcs = ["ClientServerChannelMessages.proto"],
+)

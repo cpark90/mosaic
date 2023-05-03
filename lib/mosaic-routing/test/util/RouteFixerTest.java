@@ -50,7 +50,7 @@ public class RouteFixerTest {
     public void setUp() throws IOException {
         final File dbFileCopy = folder.newFile("Girona.db");
 
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/Girona.db"), dbFileCopy);
+        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/lib/mosaic-routing/test/resources/Girona.db"), dbFileCopy);
 
         database = Database.loadFromFile(dbFileCopy);
     }

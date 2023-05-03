@@ -1,0 +1,246 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "gh_list_helper",
+    srcs = [
+        "graphhopper/util/GHListHelper.java",
+    ],
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_carrotsearch_hppc",
+
+        "//lib/mosaic-routing",
+    ],
+)
+
+# database unit test
+
+java_test(
+    name = "database_routing_test",
+    srcs = [
+        "database/DatabaseRoutingTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:commons_io_commons_io",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-database",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.database.DatabaseRoutingTest",
+)
+
+java_test(
+    name = "lazy_loading_road_position_test",
+    srcs = [
+        "database/LazyLoadingRoadPositionTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:commons_io_commons_io",
+        
+        "//lib/mosaic-routing",
+        "//lib/mosaic-database",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.database.LazyLoadingRoadPositionTest",
+)
+
+java_test(
+    name = "route_manager_test",
+    srcs = [
+        "database/RouteManagerTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:commons_io_commons_io",
+        
+        "//lib/mosaic-routing",
+        "//lib/mosaic-database",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.database.RouteManagerTest",
+)
+
+# graphhopper unit test
+
+java_test(
+    name = "bellman_ford_routing_test",
+    srcs = [
+        "graphhopper/algorithm/BellmanFordRoutingTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+
+        ":gh_list_helper",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.algorithm.BellmanFordRoutingTest",
+)
+
+java_test(
+    name = "camvit_choice_routing_test",
+    srcs = [
+        "graphhopper/algorithm/BellmanFordRoutingTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+
+        ":gh_list_helper",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.algorithm.BellmanFordRoutingTest",
+)
+
+java_test(
+    name = "turn_weighting_impl_test",
+    srcs = [
+        "graphhopper/algorithm/TurnWeightingImplTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.algorithm.TurnWeightingImplTest",
+)
+
+java_test(
+    name = "database_graph_loader_test",
+    srcs = [
+        "graphhopper/util/DatabaseGraphLoaderTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+        "@maven//:commons_io_commons_io",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+        "//lib/mosaic-database",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.util.DatabaseGraphLoaderTest",
+)
+
+java_test(
+    name = "graphhopper_to_databse_mapper_test",
+    srcs = [
+        "graphhopper/util/GraphhopperToDatabaseMapperTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-database",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.util.GraphhopperToDatabaseMapperTest",
+)
+
+java_test(
+    name = "turn_cost_analyzer_test",
+    srcs = [
+        "graphhopper/util/TurnCostAnalyzerTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.util.TurnCostAnalyzerTest",
+)
+
+java_test(
+    name = "graphhopper_mosaic_test",
+    srcs = [
+        "graphhopper/GraphHopperMosaicTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+        
+        ":gh_list_helper",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.GraphHopperMosaicTest",
+)
+
+java_test(
+    name = "graphhopper_routing_test",
+    srcs = [
+        "graphhopper/GraphHopperRoutingTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_graphhopper_graphhopper_core",
+        "@maven//:com_graphhopper_graphhopper_api",
+        "@maven//:commons_io_commons_io",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-routing/test/graphhopper/junit",
+        "//lib/mosaic-database",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/test/junit",
+        
+        ":gh_list_helper",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.graphhopper.GraphHopperRoutingTest",
+)
+
+# util unit test
+
+java_test(
+    name = "route_fixer_test",
+    srcs = [
+        "util/RouteFixerTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:commons_io_commons_io",
+        "@maven//:com_google_guava_guava",
+
+        "//lib/mosaic-routing",
+        "//lib/mosaic-database",
+        
+        ":gh_list_helper",
+    ],
+    test_class = "org.eclipse.mosaic.lib.routing.util.RouteFixerTest",
+)

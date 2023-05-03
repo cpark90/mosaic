@@ -187,7 +187,7 @@ public class MosaicSimulationTest {
                 .setExternalWatchdogPort(1337)
                 .setWatchdogInterval(20)
                 .setLogLevelOverride("DEBUG")
-                .setLogbackConfigurationFile(Paths.get("logback-test.xml"))
+                .setLogbackConfigurationFile(Paths.get("rti/mosaic-starter/test/resources/logback-test.xml"))
                 .setComponentProviderFactory(((simulationParams) -> componentProviderMock));
     }
 

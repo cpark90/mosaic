@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
-    name = "srcs",
-    srcs = glob(["*.java"]),
+    name = "etc",
+    srcs = glob(["*"]) +
+        glob(["xsd/*"])
 )

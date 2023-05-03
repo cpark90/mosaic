@@ -65,7 +65,7 @@ public class DatabaseGraphLoaderTest {
     public void correctImport() throws Exception {
         //setup
         File testDb = folder.newFile();
-        try (InputStream input = this.getClass().getResourceAsStream("/basicTest.db");
+        try (InputStream input = this.getClass().getResourceAsStream("/lib/mosaic-routing/test/resources/basicTest.db");
              OutputStream output = new FileOutputStream(testDb)) {
             IOUtils.copy(input, output);
         }

@@ -73,7 +73,7 @@ public class SQLiteReader {
         this.skipVersionCheck = skipVersionCheck;
 
         // determine stable version to check against
-        try (InputStream propertiesStream = this.getClass().getResourceAsStream("/database.properties")) {
+        try (InputStream propertiesStream = this.getClass().getResourceAsStream("/lib/mosaic-database/resources/database.properties")) {
             Properties properties = new Properties();
             properties.load(propertiesStream);
             stable = MosaicVersion.createFromString(properties.getProperty("database.version.stable"));

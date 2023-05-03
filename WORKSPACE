@@ -7,6 +7,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//bazel_scripts:mosaic_rules.bzl", "mosaic_rules")
 mosaic_rules()
 
+# protocol buffer
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
+
+rules_proto_dependencies()
+
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
 
 # rules_docker is not strictly necessary, but interesting if you want to create
 # and/or push docker containers for the examples. The docker executable is

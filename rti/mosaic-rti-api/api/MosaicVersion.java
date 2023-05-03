@@ -54,7 +54,7 @@ public class MosaicVersion implements Comparable<MosaicVersion> {
     public static MosaicVersion get() {
         if (mosaicVersion == null) {
             Properties properties = new Properties();
-            try (InputStream inputStream = MosaicVersion.class.getResourceAsStream("/application.properties")) {
+            try (InputStream inputStream = MosaicVersion.class.getResourceAsStream("/rti/mosaic-rti-api/resources/application.properties")) {
                 properties.load(inputStream);
                 mosaicVersion = properties.getProperty("mosaic.version", null);
             } catch (IOException e) {

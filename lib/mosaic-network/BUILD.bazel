@@ -1,0 +1,35 @@
+load("@rules_java//java:defs.bzl", "java_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"])
+)
+
+java_proto_library(
+    name = "client_server_channel_messages_java_proto",
+    deps = ["//lib/mosaic-network/proto:client_server_channel_messages_proto"],
+)
+
+java_library(
+    name = "mosaic-network",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_findbugs_annotations",
+        
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+
+        ":client_server_channel_messages_java_proto",
+    ],
+)

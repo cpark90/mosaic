@@ -47,7 +47,7 @@ public class LazyLoadingRoadPositionTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    private final static String dbFile = "/tiergarten.db";
+    private final static String dbFile = "/lib/mosaic-routing/test/resources/tiergarten.db";
 
     private Database database;
 

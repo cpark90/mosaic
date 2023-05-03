@@ -36,8 +36,8 @@ public class SQLiteReaderTest {
 
     @Rule
     public TestFileRule testFileRule = new TestFileRule()
-            .with("/butzbach.db")
-            .with("/kaiserdammPristine.db");
+            .with("/lib/mosaic-database/test/resources/butzbach.db")
+            .with("/lib/mosaic-database/test/resources/kaiserdammPristine.db");
 
     @Test
     public void testLoadFromFile() throws OutdatedDatabaseException {

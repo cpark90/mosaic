@@ -67,7 +67,7 @@ public class DelayTypeAdapterFactoryTest {
     public void loadTestJson() throws IOException {
         StringBuilder jsonStringBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(getClass().getResourceAsStream("/TestDelay.json"), StandardCharsets.UTF_8))
+                new InputStreamReader(getClass().getResourceAsStream("/lib/mosaic-communication/test/resources/TestDelay.json"), StandardCharsets.UTF_8))
         ) {
             reader.lines().forEach(jsonStringBuilder::append);
         }
@@ -109,7 +109,7 @@ public class DelayTypeAdapterFactoryTest {
 
         StringBuilder jsonStringBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(getClass().getResourceAsStream("/TestDelay_2.json"), StandardCharsets.UTF_8))
+                new InputStreamReader(getClass().getResourceAsStream("/lib/mosaic-communication/test/resources/TestDelay_2.json"), StandardCharsets.UTF_8))
         ) {
             reader.lines().forEach(jsonStringBuilder::append);
         }

@@ -1,0 +1,187 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "test_parameters",
+    srcs = [
+        "cli/TestParameters.java",
+    ],
+    deps = [
+        "//lib/mosaic-utils",
+    ],
+)
+
+java_library(
+    name = "test_config",
+    srcs = [
+        "objects/TestConfig.java",
+    ],
+    deps = [
+        "//lib/mosaic-utils",
+    ],
+)
+
+# cli unit test
+
+java_test(
+    name = "command_line_parser_test",
+    srcs = [
+        "cli/CommandLineParserTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:commons_cli_commons_cli",
+
+        "//lib/mosaic-utils",
+
+        ":test_parameters"
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.cli.CommandLineParserTest",
+)
+
+# gson unit test
+
+java_test(
+    name = "data_field_adapter_test",
+    srcs = [
+        "gson/DataFieldAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_code_gson_gson",
+
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.gson.DataFieldAdapterTest",
+)
+
+java_test(
+    name = "time_field_adapter_test",
+    srcs = [
+        "gson/TimeFieldAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_code_gson_gson",
+
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.gson.TimeFieldAdapterTest",
+)
+
+java_test(
+    name = "unit_field_adapter_test",
+    srcs = [
+        "gson/UnitFieldAdapterTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_code_gson_gson",
+
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.gson.UnitFieldAdapterTest",
+)
+
+# objects unit test
+
+java_test(
+    name = "object_instantiation_test",
+    srcs = [
+        "objects/ObjectInstantiationTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-utils",
+
+        ":test_config",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.objects.ObjectInstantiationTest",
+)
+
+java_test(
+    name = "time_cache_test",
+    srcs = [
+        "objects/TimeCacheTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.objects.TimeCacheTest",
+)
+
+# scheduling unit test
+
+java_test(
+    name = "event_scheduler_test",
+    srcs = [
+        "scheduling/EventSchedulerTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.scheduling.EventSchedulerTest",
+)
+
+java_test(
+    name = "event_test",
+    srcs = [
+        "scheduling/EventTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.scheduling.EventTest",
+)
+
+# utils unit test
+
+java_test(
+    name = "ring_buffer_test",
+    srcs = [
+        "RingBufferTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.RingBufferTest",
+)
+
+java_test(
+    name = "xml_utils_test",
+    srcs = [
+        "XmlUtilsTest.java",
+    ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_apache_commons_commons_configuration2",
+
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/test/junit",
+    ],
+    test_class = "org.eclipse.mosaic.lib.util.XmlUtilsTest",
+)

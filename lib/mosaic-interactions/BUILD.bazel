@@ -2,24 +2,34 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = [
-        "//lib/mosaic-geomath/geo:srcs",
-        "//lib/mosaic-geomath/gson:srcs",
-        "//lib/mosaic-geomath/junit:srcs",
-        "//lib/mosaic-geomath/math:srcs",
-        "//lib/mosaic-geomath/misc:srcs",
-        "//lib/mosaic-geomath/spatial:srcs",
-        "//lib/mosaic-geomath/transform:srcs",
-    ],
+    srcs = glob(["application/*.java"]) +
+        glob(["communication/*.java"]) +
+        glob(["electricity/*.java"]) +
+        glob(["environment/*.java"]) +
+        glob(["mapping/*.java"]) +
+        glob(["mapping/advanced/*.java"]) +
+        glob(["traffic/*.java"]) +
+        glob(["trafficsigns/*.java"]) +
+        glob(["vehicle/*.java"])
 )
 
 java_library(
-    name = "mosaic-geomath",
+    name = "mosaic-interactions",
     srcs = [
         ":srcs",
         ],
+    resources = glob(["resources/**/*"]),
     deps = [
-        "@maven//:junit_junit",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
         "@maven//:com_google_code_gson_gson",
+
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-utils",
+
     ],
 )

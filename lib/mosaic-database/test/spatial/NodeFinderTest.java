@@ -31,7 +31,7 @@ public class NodeFinderTest {
 
     @Rule
     public TestFileRule rule = new TestFileRule()
-            .with("tiergarten.db", "/tiergarten.db");
+            .with("tiergarten.db", "/lib/mosaic-database/test/resources/tiergarten.db");
 
     @Rule
     public GeoProjectionRule projectionRule = new GeoProjectionRule(GeoPoint.latLon(52, 13));

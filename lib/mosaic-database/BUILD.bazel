@@ -1,0 +1,32 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["*.java"]) +
+        glob(["building/*.java"]) +
+        glob(["persistence/*.java"]) +
+        glob(["road/*.java"]) +
+        glob(["route/*.java"]) +
+        glob(["services/*.java"]) +
+        glob(["spatial/*.java"])
+)
+
+java_library(
+    name = "mosaic-database",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:org_xerial_sqlite_jdbc",
+        "@maven//:javax_activation_activation",
+
+        "//lib/mosaic-geomath",
+        "//rti/mosaic-rti-api",
+    ],
+)

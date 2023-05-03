@@ -2,12 +2,11 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"]) + [
-        "//lib/mosaic-utils/cli:srcs",
-        "//lib/mosaic-utils/gson:srcs",
-        "//lib/mosaic-utils/objects:srcs",
-        "//lib/mosaic-utils/scheduling:srcs",
-    ],
+    srcs = glob(["*.java"]) +
+        glob(["cli/*.java"]) +
+        glob(["gson/*.java"]) +
+        glob(["objects/*.java"]) +
+        glob(["scheduling/*.java"])
 )
 
 java_library(
@@ -15,6 +14,7 @@ java_library(
     srcs = [
         ":srcs",
         ],
+    resources = glob(["resources/**/*"]),
     deps = [
         "@maven//:org_apache_commons_commons_lang3",
         "@maven//:commons_cli_commons_cli",
@@ -27,9 +27,9 @@ java_library(
         "@maven//:com_github_stephenc_findbugs_findbugs_annotations",
         "@maven//:org_apache_commons_commons_configuration2",
         "@maven//:javax_json_javax_json_api",
+        "@maven//:commons_jxpath_commons_jxpath",
 
         "//rti/mosaic-rti-api",
         "//lib/mosaic-geomath",
-
     ],
 )

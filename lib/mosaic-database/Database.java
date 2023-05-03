@@ -445,9 +445,10 @@ public class Database {
          */
         public static Builder loadFromFile(File file) {
             SQLiteReader reader;
+            SQLiteTypeDetector detector = new SQLiteTypeDetector();
             try {
-                String contentType = Files.probeContentType(file.toPath());
-                if (SQLiteTypeDetector.MIME_TYPE.equals(contentType)) {
+                String contentType = detector.probeContentType(file.toPath());
+                if (detector.MIME_TYPE.equals(contentType)) {
                     reader = new SQLiteReader();
                     log.debug("recognized database format is SQLite");
                 } else {

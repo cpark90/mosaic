@@ -29,7 +29,7 @@ import java.io.IOException;
 public class XmlUtilsTest {
 
     @Rule
-    public TestFileRule testFileRule = new TestFileRule().with("/test.xml");
+    public TestFileRule testFileRule = new TestFileRule().with("/lib/mosaic-utils/test/resources/test.xml");
 
     @Test
     public void xpathTest() throws IOException {

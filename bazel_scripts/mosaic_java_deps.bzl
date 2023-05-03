@@ -14,7 +14,7 @@ def mosaic_java_deps():
             'junit:junit:4.12',
 
             # mockito-core
-            'org.mockito:mockito-core:5.3.1',
+            'org.mockito:mockito-core:3.12.4',
 
             # janino
             'org.codehaus.janino:janino:3.1.9',
@@ -30,7 +30,7 @@ def mosaic_java_deps():
             'com.google.code.findbugs:annotations:3.0.0', # edu.umd.cs.findbugs.annotations
 
             # gson
-            'com.google.code.gson:gson:2.9.1',
+            'com.google.code.gson:gson:2.8.6',
 
             # guava
             'com.google.guava:guava:27.0-jre', # com.google.common.collect
@@ -50,13 +50,15 @@ def mosaic_java_deps():
 
             # javax
             'javax.json:javax.json-api:1.1.4',
+            'javax.activation:activation:1.1.1',
 
             # protobuf-java
             'com.google.protobuf:protobuf-java:3.9.2',
 
             # graphhopper
-            'com.graphhopper:graphhopper-api:3.2',
-            'com.graphhopper:graphhopper-core:7.0',
+            # 'com.graphhopper:graphhopper:0.7.0',
+            'com.graphhopper:graphhopper-api:0.13.0',
+            'com.graphhopper:graphhopper-core:0.13.0',
 
             # jts-core
             'org.locationtech.jts:jts-core:1.19.0',
@@ -96,7 +98,7 @@ def mosaic_java_deps():
             'org.codehaus.woodstox:woodstox-core-asl:4.4.1',
 
             # hppc
-            'com.carrotsearch:hppc:0.9.1',
+            'com.carrotsearch:hppc:0.8.1',
 
             # java-websocket
             'org.java-websocket:Java-WebSocket:1.5.3',

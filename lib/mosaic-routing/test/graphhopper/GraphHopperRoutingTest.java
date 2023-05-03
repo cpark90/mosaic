@@ -44,7 +44,7 @@ public class GraphHopperRoutingTest {
     @Rule
     public GeoProjectionRule transformationRule = new GeoProjectionRule(GeoPoint.latLon(52, 13));
 
-    private final static String dbFile = "/tiergarten.db";
+    private final static String dbFile = "/lib/mosaic-routing/test/resources/tiergarten.db";
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();

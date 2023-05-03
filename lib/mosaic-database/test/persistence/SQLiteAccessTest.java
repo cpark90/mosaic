@@ -37,7 +37,7 @@ public class SQLiteAccessTest {
     private SQLiteAccess testDb;
 
     @Rule
-    public TestFileRule testFileRule = new TestFileRule().with("/butzbach_outdated.db");
+    public TestFileRule testFileRule = new TestFileRule().with("/lib/mosaic-database/test/resources/butzbach_outdated.db");
 
     @Before
     public void setUp() throws Exception {

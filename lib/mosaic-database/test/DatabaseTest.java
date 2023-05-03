@@ -69,12 +69,12 @@ public class DatabaseTest {
     @Before
     public void setUp() throws Exception {
         outdatedVersion = folder.newFile("outdatedVersion.db");
-        try (InputStream in = this.getClass().getResourceAsStream("/butzbach_outdated.db")) {
+        try (InputStream in = this.getClass().getResourceAsStream("/lib/mosaic-database/test/resources/butzbach_outdated.db")) {
             Files.copy(in, outdatedVersion.toPath(), REPLACE_EXISTING);
         }
 
         basicDatabase = folder.newFile("basicTest.db");
-        try (InputStream in = this.getClass().getResourceAsStream("/basicTest.db")) {
+        try (InputStream in = this.getClass().getResourceAsStream("/lib/mosaic-database/test/resources/basicTest.db")) {
             Files.copy(in, basicDatabase.toPath(), REPLACE_EXISTING);
         }
     }
