@@ -2,23 +2,23 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["enums/*.java"]) +
-        glob(["objects/*.java"]) +
-        glob(["objects/addressing/*.java"]) +
-        glob(["objects/communication/*.java"]) +
-        glob(["objects/electricity/*.java"]) +
-        glob(["objects/environment/*.java"]) +
-        glob(["objects/mapping/*.java"]) +
-        glob(["objects/road/*.java"]) +
-        glob(["objects/traffic/*.java"]) +
-        glob(["objects/trafficlight/*.java"]) +
-        glob(["objects/trafficsign/*.java"]) +
-        glob(["objects/v2x/*.java"]) +
-        glob(["objects/v2x/etsi/*.java"]) +
-        glob(["objects/v2x/etsi/cam/*.java"]) +
-        glob(["objects/v2x/etsi/ivim/*.java"]) +
-        glob(["objects/vehicle/*.java"]) +
-        glob(["objects/vehicle/sensor/*.java"])
+    srcs = glob(["src/main/java/**/lib/enums/*.java"]) +
+        glob(["src/main/java/**/lib/objects/*.java"]) +
+        glob(["src/main/java/**/lib/objects/addressing/*.java"]) +
+        glob(["src/main/java/**/lib/objects/communication/*.java"]) +
+        glob(["src/main/java/**/lib/objects/electricity/*.java"]) +
+        glob(["src/main/java/**/lib/objects/environment/*.java"]) +
+        glob(["src/main/java/**/lib/objects/mapping/*.java"]) +
+        glob(["src/main/java/**/lib/objects/road/*.java"]) +
+        glob(["src/main/java/**/lib/objects/traffic/*.java"]) +
+        glob(["src/main/java/**/lib/objects/trafficlight/*.java"]) +
+        glob(["src/main/java/**/lib/objects/trafficsign/*.java"]) +
+        glob(["src/main/java/**/lib/objects/v2x/*.java"]) +
+        glob(["src/main/java/**/lib/objects/v2x/etsi/*.java"]) +
+        glob(["src/main/java/**/lib/objects/v2x/etsi/cam/*.java"]) +
+        glob(["src/main/java/**/lib/objects/v2x/etsi/ivim/*.java"]) +
+        glob(["src/main/java/**/lib/objects/vehicle/*.java"]) +
+        glob(["src/main/java/**/lib/objects/vehicle/sensor/*.java"])
 )
 
 java_library(

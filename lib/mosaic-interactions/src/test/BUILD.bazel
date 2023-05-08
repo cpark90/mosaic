@@ -1,0 +1,15 @@
+package(default_visibility = ["//visibility:public"])
+
+# interaction unit test
+
+java_test(
+    name = "application_interaction_test",
+    srcs = glob(["java/**/interactions/application/ApplicationInteractionTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-interactions",
+    ],
+    test_class = "org.eclipse.mosaic.interactions.application.ApplicationInteractionTest",
+)

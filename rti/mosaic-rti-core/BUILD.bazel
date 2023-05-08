@@ -2,11 +2,11 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"]) +
-        glob(["federation/*.java"]) + 
-        glob(["interaction/*.java"]) + 
-        glob(["monitor/*.java"]) + 
-        glob(["time/*.java"])
+    srcs = glob(["src/main/**/rti/*.java"]) +
+        glob(["src/main/**/rti/federation/*.java"]) + 
+        glob(["src/main/**/rti/interaction/*.java"]) + 
+        glob(["src/main/**/rti/monitor/*.java"]) + 
+        glob(["src/main/**/rti/time/*.java"])
 )
 
 java_library(

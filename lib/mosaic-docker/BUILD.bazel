@@ -2,7 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"])
+    srcs = glob(["src/main/java/**/docker/*.java"])
 )
 
 java_library(
@@ -10,6 +10,7 @@ java_library(
     srcs = [
         ":srcs"
         ],
+    resources = glob(["src/main/resources/**/*"]),
     deps = [
         '@maven//:commons_io_commons_io',
         '@maven//:org_apache_commons_commons_lang3',

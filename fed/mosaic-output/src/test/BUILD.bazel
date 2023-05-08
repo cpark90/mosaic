@@ -1,0 +1,95 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "test_output_generator_loader",
+    srcs = glob(["java/**/output/ambassador/TestOutputGeneratorLoader.java"]),
+    deps = [
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-output",
+    ]
+)
+
+# ambassador unit test
+
+java_test(
+    name = "abstract_output_generator",
+    srcs = glob(["java/**/output/ambassador/AbstractOutputGeneratorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-output",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.output.ambassador.AbstractOutputGeneratorTest",
+)
+
+java_test(
+    name = "visualization_ambassador_test",
+    srcs = glob(["java/**/output/ambassador/VisualizationAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:ch_qos_logback_logback_classic",
+        "@maven//:ch_qos_logback_logback_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_slf4j_slf4j_api",
+
+        "//fed/mosaic-output",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+
+        ":test_output_generator_loader",
+    ],
+    test_class = "org.eclipse.mosaic.fed.output.ambassador.VisualizationAmbassadorTest",
+)
+
+# generator unit test
+
+java_test(
+    name = "interaction_formatter_test",
+    srcs = glob(["java/**/output/generator/file/format/InteractionFormatterTest.java"]) +
+        glob(["java/**/output/generator/file/format/MyInteraction.java"]) ,
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-output",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.output.generator.file.format.InteractionFormatterTest",
+)
+
+java_test(
+    name = "websocket_visualizer_server_test",
+    srcs = glob(["java/**/output/generator/websocket/WebsocketVisualizerServerTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_johnzon_johnzon_core",
+        "@maven//:org_java_websocket_Java_WebSocket",
+
+        "//fed/mosaic-output",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.fed.output.generator.websocket.WebsocketVisualizerServerTest",
+)

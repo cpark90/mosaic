@@ -1,0 +1,129 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "junit",
+    srcs = glob(["java/**/rti/junit/*.java"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:commons_io_commons_io",
+        "@maven//:com_google_guava_guava",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-utils",
+        
+    ],
+)
+
+# federation unit test
+
+java_test(
+    name = "distributed_federation_management_test",
+    srcs = glob(["java/**/rti/federation/DistributedFederationManagementTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:commons_io_commons_io",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-utils",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.federation.DistributedFederationManagementTest",
+)
+
+java_test(
+    name = "local_federation_management_test",
+    srcs = glob(["java/**/rti/federation/LocalFederationManagementTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:commons_io_commons_io",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-utils",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.federation.LocalFederationManagementTest",
+)
+
+# interaction unit test
+
+java_test(
+    name = "interaction_management_test",
+    srcs = glob(["java/**/rti/interaction/InteractionManagementTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.interaction.InteractionManagementTest",
+)
+
+java_test(
+    name = "interaction_priority_test",
+    srcs = glob(["java/**/rti/interaction/InteractionPriorityTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_apache_commons_commons_lang3",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.interaction.InteractionPriorityTest",
+)
+
+# time unit test
+
+java_test(
+    name = "multi_threaded_time_management_test",
+    srcs = glob(["java/**/rti/time/MultiThreadedTimeManagementTest.java"]) + 
+        glob(["java/**/rti/time/SequentialTimeManagementTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:org_slf4j_slf4j_api",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.time.MultiThreadedTimeManagementTest",
+)
+
+java_test(
+    name = "sequential_time_management_test",
+    srcs = glob(["java/**/rti/time/SequentialTimeManagementTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:org_slf4j_slf4j_api",
+
+        "//rti/mosaic-rti-core",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.time.SequentialTimeManagementTest",
+)

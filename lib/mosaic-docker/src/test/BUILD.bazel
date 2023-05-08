@@ -1,0 +1,16 @@
+load("@io_bazel_rules_docker//java:image.bzl", "java_image")
+load("@io_bazel_rules_docker//lang:image.bzl", container_image = "app_layer")
+
+package(default_visibility = ["//visibility:public"])
+
+java_test(
+    name = "docker_client_test",
+    srcs = glob(["java/**/docker/DockerClientTest.java"]),
+    deps = [
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-docker",
+    ],
+    test_class = "org.eclipse.mosaic.lib.docker.DockerClientTest",
+)

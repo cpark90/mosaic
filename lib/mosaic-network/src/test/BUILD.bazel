@@ -1,0 +1,48 @@
+package(default_visibility = ["//visibility:public"])
+
+# network unit test
+
+java_test(
+    name = "abstract_network_ambassador_test",
+    srcs = glob(["java/**/coupling/AbstractNetworkAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_slf4j_slf4j_api",
+
+        "//lib/mosaic-network",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.lib.coupling.AbstractNetworkAmbassadorTest",
+)
+
+java_test(
+    name = "cabstract_network_ambassador_test",
+    srcs = glob(["java/**/coupling/CAbstractNetworkAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-network",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.lib.coupling.CAbstractNetworkAmbassadorTest",
+)
+
+java_test(
+    name = "network_entity_id_transformer_test",
+    srcs = glob(["java/**/coupling/NetworkEntityIdTransformerTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//lib/mosaic-network",
+    ],
+    test_class = "org.eclipse.mosaic.lib.coupling.NetworkEntityIdTransformerTest",
+)

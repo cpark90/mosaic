@@ -7,9 +7,6 @@
         },
         "trafficLightIndex": {
             "type": "TrafficLightTree"
-        },
-        "wallIndex": {
-            "type": "WallTree"
         }
     }
 }

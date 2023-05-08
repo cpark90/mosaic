@@ -1,0 +1,63 @@
+package(default_visibility = ["//visibility:public"])
+
+# ambassador unit test
+
+java_test(
+    name = "sns_ambassador_test",
+    srcs = glob(["java/**/sns/ambassador/SnsAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-sns",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sns.ambassador.SnsAmbassadorTest",
+)
+
+# config unit test
+
+java_test(
+    name = "c_sns_test",
+    srcs = glob(["java/**/sns/config/CSnsTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_johnzon_johnzon_core",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-sns",
+        "//lib/mosaic-communication",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sns.config.CSnsTest",
+)
+
+# model unit test
+
+java_test(
+    name = "adhoc_transmission_model_test",
+    srcs = glob(["java/**/sns/model/AdhocTransmissionModelTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-sns",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//lib/mosaic-communication",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sns.model.AdhocTransmissionModelTest",
+)

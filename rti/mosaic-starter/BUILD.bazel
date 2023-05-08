@@ -1,10 +1,15 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@io_bazel_rules_docker//java:image.bzl", "java_image")
+load("@io_bazel_rules_docker//lang:image.bzl", container_image = "app_layer")
+
+
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"]) +
-        glob(["cli/*.java"]) +
-        glob(["config/*.java"])
+    srcs = glob(["src/main/java/**/starter/MosaicClassLoader.java"]) +
+        glob(["src/main/java/**/starter/MosaicSimulation.java"]) +
+        glob(["src/main/java/**/starter/cli/*.java"]) +
+        glob(["src/main/java/**/starter/config/*.java"])
 )
 
 java_library(
@@ -12,8 +17,8 @@ java_library(
     srcs = [
         ":srcs",
         ],
-    resources = glob(["resources/**/*"]) + [
-        "//etc",
+    resources = glob(["src/main/resources/**/*"]) + [
+        "//bundle:resources",
     ],
     deps = [
         "@maven//:com_fasterxml_jackson_dataformat_jackson_dataformat_xml",
@@ -32,4 +37,23 @@ java_library(
         "//lib/mosaic-objects",
         "//lib/mosaic-interactions",
     ],
+)
+
+java_image(
+    name = "mosaic",
+    srcs = glob(["src/main/java/**/starter/MosaicStarter.java"]),
+    layers = [
+        ":mosaic-starter",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+        "//rti/mosaic-rti-core",
+    ],
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:ch_qos_logback_logback_classic",
+        "@maven//:ch_qos_logback_logback_core",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:commons_cli_commons_cli",
+    ],
+    main_class = "org.eclipse.mosaic.starter.MosaicStarter",
 )

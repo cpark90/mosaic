@@ -1,0 +1,49 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "test_federate",
+    srcs = glob(["java/**/starter/TestFederate.java"]),
+    deps = [
+        "@maven//:com_google_code_findbugs_jsr305",
+        
+        "//rti/mosaic-starter",
+        "//rti/mosaic-rti-api",
+    ],
+)
+
+# starter unit test
+
+java_test(
+    name = "c_runtime_test",
+    srcs = glob(["java/**/starter/CRuntimeTest.java"]),
+    resources = glob(["resources/**/*"]) + [
+        "//bundle:resources",
+    ],
+    deps = [
+        "@maven//:junit_junit",
+
+        "//rti/mosaic-starter",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.starter.CRuntimeTest",
+)
+
+java_test(
+    name = "mosaic_simulation_test",
+    srcs = glob(["java/**/starter/MosaicSimulationTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//rti/mosaic-starter",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+
+        ":test_federate",
+    ],
+    test_class = "org.eclipse.mosaic.starter.MosaicSimulationTest",
+)

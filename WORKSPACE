@@ -40,5 +40,7 @@ load(
 
 _java_image_repos()
 
+# maven
+
 load("//bazel_scripts:mosaic_java_deps.bzl", "mosaic_java_deps")
 mosaic_java_deps()

@@ -1,0 +1,646 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "junit",
+    srcs = glob(["java/**/sumo/junit/*.java"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:org_apache_commons_commons_lang3",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+)
+
+java_library(
+    name = "abstract_traci_command_test",
+    srcs = glob(["java/**/sumo/bridge/traci/AbstractTraciCommandTest.java"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ]
+)
+
+# ambassador unit test
+
+java_test(
+    name = "sumo_ambassador_test",
+    srcs = glob(["java/**/sumo/ambassador/SumoAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.ambassador.SumoAmbassadorTest",
+)
+
+java_test(
+    name = "sumo_ambassador_time_step_adjustment_test",
+    srcs = glob(["java/**/sumo/ambassador/SumoAmbassadorTimeStepAdjustmentTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.ambassador.SumoAmbassadorTimeStepAdjustmentTest",
+)
+
+# bridge api unit test
+
+java_test(
+    name = "sumo_lane_change_mode_test",
+    srcs = glob(["java/**/sumo/bridge/api/complex/SumoLaneChangeModeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-objects",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.api.complex.SumoLaneChangeModeTest",
+)
+
+java_test(
+    name = "sumo_speed_mode_test",
+    srcs = glob(["java/**/sumo/bridge/api/complex/SumoSpeedModeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-objects",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.api.complex.SumoSpeedModeTest",
+)
+
+# bridge traci unit test
+
+java_test(
+    name = "induction_loop_subscribe_test",
+    srcs = glob(["java/**/sumo/bridge/traci/InductionLoopSubscribeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.InductionLoopSubscribeTest",
+)
+
+java_test(
+    name = "junction_get_position_test",
+    srcs = glob(["java/**/sumo/bridge/traci/JunctionGetPositionTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-utils",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.JunctionGetPositionTest",
+)
+
+java_test(
+    name = "lane_area_subscribe_test",
+    srcs = glob(["java/**/sumo/bridge/traci/LaneAreaSubscribeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.LaneAreaSubscribeTest",
+)
+
+java_test(
+    name = "lane_get_length_test",
+    srcs = glob(["java/**/sumo/bridge/traci/LaneGetLengthTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.LaneGetLengthTest",
+)
+
+java_test(
+    name = "lane_get_shape_test",
+    srcs = glob(["java/**/sumo/bridge/traci/LaneGetShapeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-utils",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.LaneGetShapeTest",
+)
+
+java_test(
+    name = "poi_test",
+    srcs = glob(["java/**/sumo/bridge/traci/PoiTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-geomath",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.PoiTest",
+)
+
+java_test(
+    name = "route_add_test",
+    srcs = glob(["java/**/sumo/bridge/traci/RouteAddTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.RouteAddTest",
+)
+
+java_test(
+    name = "route_get_edges_test",
+    srcs = glob(["java/**/sumo/bridge/traci/RouteGetEdgesTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_apache_commons_commons_lang3",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.RouteGetEdgesTest",
+)
+
+java_test(
+    name = "route_get_ids_test",
+    srcs = glob(["java/**/sumo/bridge/traci/RouteGetIdsTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_apache_commons_commons_lang3",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.RouteGetIdsTest",
+)
+
+java_test(
+    name = "simulation_get_departed_vehicle_ids_test",
+    srcs = glob(["java/**/sumo/bridge/traci/SimulationGetDepartedVehicleIdsTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.SimulationGetDepartedVehicleIdsTest",
+)
+
+java_test(
+    name = "simulation_get_traffic_light_ids_test",
+    srcs = glob(["java/**/sumo/bridge/traci/SimulationGetTrafficLightIdsTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.SimulationGetTrafficLightIdsTest",
+)
+
+java_test(
+    name = "simulation_get_version_test",
+    srcs = glob(["java/**/sumo/bridge/traci/SimulationGetVersionTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.SimulationGetVersionTest",
+)
+
+java_test(
+    name = "traffic_light_add_program_test",
+    srcs = glob(["java/**/sumo/bridge/traci/TrafficLightAddProgramTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.TrafficLightAddProgramTest",
+)
+
+java_test(
+    name = "traffic_light_get_controller_links_test",
+    srcs = glob(["java/**/sumo/bridge/traci/TrafficLightGetControllerLinksTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.TrafficLightGetControllerLinksTest",
+)
+
+java_test(
+    name = "traffic_light_get_programs_test",
+    srcs = glob(["java/**/sumo/bridge/traci/TrafficLightGetProgramsTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.TrafficLightGetProgramsTest",
+)
+
+java_test(
+    name = "traffic_light_set_remaining_phase_duration_test",
+    srcs = glob(["java/**/sumo/bridge/traci/TrafficLightSetRemainingPhaseDurationTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.TrafficLightSetRemainingPhaseDurationTest",
+)
+
+java_test(
+    name = "traffic_light_subscribe_test",
+    srcs = glob(["java/**/sumo/bridge/traci/TrafficLightSubscribeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.TrafficLightSubscribeTest",
+)
+
+java_test(
+    name = "vehicle_add_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleAddTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleAddTest",
+)
+
+java_test(
+    name = "vehicle_get_parameter_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleGetParameterTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_apache_commons_commons_lang3",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleGetParameterTest",
+)
+
+java_test(
+    name = "vehicle_get_route_id_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleGetRouteIdTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleGetRouteIdTest",
+)
+
+java_test(
+    name = "vehicle_set_color_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSetColorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSetColorTest",
+)
+
+java_test(
+    name = "vehicle_set_highlight_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSetHighlightTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSetHighlightTest",
+)
+
+java_test(
+    name = "vehicle_set_imperfection_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSetImperfectionTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSetImperfectionTest",
+)
+
+java_test(
+    name = "vehicle_set_lane_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSetLaneTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSetLaneTest",
+)
+
+java_test(
+    name = "vehicle_set_move_to_xy_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSetMoveToXyTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-geomath",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSetMoveToXyTest",
+)
+
+java_test(
+    name = "vehicle_set_parameter_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSetParameterTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSetParameterTest",
+)
+
+java_test(
+    name = "vehicle_subscribe_test",
+    srcs = glob(["java/**/sumo/bridge/traci/VehicleSubscribeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+        ":abstract_traci_command_test",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.traci.VehicleSubscribeTest",
+)
+
+# bridge unit test
+
+java_test(
+    name = "flow_density_test",
+    srcs = glob(["java/**/sumo/bridge/FlowDensityTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.FlowDensityTest",
+)
+
+java_test(
+    name = "traci_test",
+    srcs = glob(["java/**/sumo/bridge/TraciTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//rti/mosaic-rti-api",
+
+        ":junit",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.bridge.TraciTest",
+)
+
+# config unit test
+
+java_test(
+    name = "c_sumo_test",
+    srcs = glob(["java/**/sumo/config/CSumoTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.config.CSumoTest",
+)
+
+# util unit test
+
+java_test(
+    name = "induction_loop_test",
+    srcs = glob(["java/**/sumo/util/InductionLoopTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.util.InductionLoopTest",
+)
+
+java_test(
+    name = "sumo_vehicle_types_writer_test",
+    srcs = glob(["java/**/sumo/util/SumoVehicleTypesWriterTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.util.SumoVehicleTypesWriterTest",
+)
+
+java_test(
+    name = "traffic_sign_manager_test",
+    srcs = glob(["java/**/sumo/util/TrafficSignManagerTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-sumo",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.sumo.util.TrafficSignManagerTest",
+)

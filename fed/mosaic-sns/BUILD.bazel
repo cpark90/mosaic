@@ -1,0 +1,30 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/sns/ambassador/*.java"]) +
+        glob(["src/main/java/**/sns/config/*.java"]) +
+        glob(["src/main/java/**/sns/model/*.java"]) +
+        glob(["src/main/java/**/sns/util/*.java"])
+)
+
+java_library(
+    name = "mosaic-sns",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_johnzon_johnzon_core",
+
+        "//lib/mosaic-communication",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+    ],
+)

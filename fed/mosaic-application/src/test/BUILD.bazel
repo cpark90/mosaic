@@ -1,0 +1,351 @@
+package(default_visibility = ["//visibility:public"])
+
+java_import(
+    name = "application_from_jar",
+    jars = glob(["resources/application-from-jar.jar"]),
+)
+
+java_library(
+    name = "simulation_kernel_rule",
+    srcs = glob(["java/**/application/ambassador/SimulationKernelRule.java"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ]
+)
+
+java_library(
+    name = "interaction_test_helper",
+    srcs = glob(["java/**/application/ambassador/InteractionTestHelper.java"]),
+    deps = [
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+
+        ":test_application",
+    ]
+)
+
+java_library(
+    name = "noop_app",
+    srcs = glob(["java/**/application/app/empty/*NoopApp.java"]),
+    deps = [
+        "@maven//:com_google_code_findbugs_jsr305",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+    ]
+)
+
+java_library(
+    name = "test_application",
+    srcs = glob(["java/**/application/app/Test*.java"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_code_findbugs_jsr305",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+
+        ":noop_app"
+    ]
+)
+
+# ambassador navigation unit test
+
+java_test(
+    name = "central_navigation_component_test",
+    srcs = glob(["java/**/application/ambassador/navigation/CentralNavigationComponentTest*.java"]) +
+        glob(["java/**/application/ambassador/navigation/MyTestRouting.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-database",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-routing",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.navigation.CentralNavigationComponentTest",
+)
+
+java_test(
+    name = "navigation_module_test",
+    srcs = glob(["java/**/application/ambassador/navigation/NavigationModuleTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+        "//lib/mosaic-routing",
+        "//lib/mosaic-utils",
+
+        ":simulation_kernel_rule",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.navigation.NavigationModuleTest",
+)
+
+java_test(
+    name = "road_position_factory_test",
+    srcs = glob(["java/**/application/ambassador/navigation/RoadPositionFactoryTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-application",
+        "//lib/mosaic-objects",
+
+        ":simulation_kernel_rule",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.navigation.RoadPositionFactoryTest",
+)
+
+# ambassador simulation unit test
+
+java_test(
+    name = "perception_modifier_test",
+    srcs = glob(["java/**/application/ambassador/simulation/perception/PerceptionModifierTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:org_slf4j_slf4j_api",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+
+        ":simulation_kernel_rule",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.simulation.perception.PerceptionModifierTest",
+)
+
+java_test(
+    name = "simple_perception_module_test",
+    srcs = glob(["java/**/application/ambassador/simulation/perception/SimplePerceptionModuleTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:org_slf4j_slf4j_api",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+
+        ":simulation_kernel_rule",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.simulation.perception.SimplePerceptionModuleTest",
+)
+
+java_test(
+    name = "abstract_simulation_unit_test",
+    srcs = glob(["java/**/application/ambassador/simulation/AbstractSimulationUnitTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+        "//lib/mosaic-utils",
+
+        ":simulation_kernel_rule",
+        ":test_application",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.simulation.AbstractSimulationUnitTest",
+)
+
+java_test(
+    name = "vehicle_behavior_test",
+    srcs = glob(["java/**/application/ambassador/simulation/VehicleBehaviorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.simulation.VehicleBehaviorTest",
+)
+
+java_test(
+    name = "vehicle_test",
+    srcs = glob(["java/**/application/ambassador/simulation/VehicleTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:org_slf4j_slf4j_api",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-geomath/src/test:junit",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+
+        ":simulation_kernel_rule",
+        ":test_application",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.simulation.VehicleTest",
+)
+
+# ambassador util unit test
+
+java_test(
+    name = "class_name_parser_test",
+    srcs = glob(["java/**/application/ambassador/util/ClassNameParserTest*.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:org_apache_commons_commons_lang3",
+        
+        "//fed/mosaic-application",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.util.ClassNameParserTest",
+)
+
+java_test(
+    name = "class_subset_iterator_test",
+    srcs = glob(["java/**/application/ambassador/util/ClassSubsetIteratorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_apache_commons_commons_lang3",
+        
+        "//fed/mosaic-application",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.util.ClassSubsetIteratorTest",
+)
+
+# ambassador unit test
+
+java_test(
+    name = "application_ambassador_test",
+    srcs = glob(["java/**/application/ambassador/ApplicationAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:commons_io_commons_io",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-objects/src/test:junit",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+
+        ":simulation_kernel_rule",
+        ":interaction_test_helper",
+        ":test_application",
+        ":application_from_jar",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.ApplicationAmbassadorTest",
+)
+
+java_test(
+    name = "unit_simulator_test",
+    srcs = glob(["java/**/application/ambassador/UnitSimulatorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects/src/test:junit",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+
+        ":simulation_kernel_rule",
+        ":test_application",
+        ":interaction_test_helper",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.ambassador.UnitSimulatorTest",
+)
+
+# app etsi unit test
+
+java_test(
+    name = "etsi_application_test",
+    srcs = glob(["java/**/application/app/etsi/EtsiApplicationTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+
+        ":simulation_kernel_rule",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.app.etsi.EtsiApplicationTest",
+)
+
+# config unit test
+
+java_test(
+    name = "c_application_ambassador_test",
+    srcs = glob(["java/**/application/config/CApplicationAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:commons_io_commons_io",
+        
+        "//fed/mosaic-application",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.application.config.CApplicationAmbassadorTest",
+)

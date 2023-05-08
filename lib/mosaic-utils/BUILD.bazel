@@ -2,11 +2,11 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"]) +
-        glob(["cli/*.java"]) +
-        glob(["gson/*.java"]) +
-        glob(["objects/*.java"]) +
-        glob(["scheduling/*.java"])
+    srcs = glob(["src/main/java/**/util/*.java"]) +
+        glob(["src/main/java/**/util/cli/*.java"]) +
+        glob(["src/main/java/**/util/gson/*.java"]) +
+        glob(["src/main/java/**/util/objects/*.java"]) +
+        glob(["src/main/java/**/util/scheduling/*.java"])
 )
 
 java_library(

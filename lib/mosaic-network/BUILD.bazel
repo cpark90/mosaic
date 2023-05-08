@@ -1,15 +1,22 @@
+package(default_visibility = ["//visibility:public"])
+load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_java//java:defs.bzl", "java_proto_library")
 
-package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "srcs",
-    srcs = glob(["*.java"])
+proto_library(
+    name = "client_server_channel_messages_proto",
+    srcs = glob(["src/main/resources/proto/ClientServerChannelMessages.proto"]),
 )
 
 java_proto_library(
     name = "client_server_channel_messages_java_proto",
-    deps = ["//lib/mosaic-network/proto:client_server_channel_messages_proto"],
+    deps = [":client_server_channel_messages_proto"],
+)
+
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/coupling/*.java"])
 )
 
 java_library(
@@ -17,7 +24,7 @@ java_library(
     srcs = [
         ":srcs",
         ],
-    resources = glob(["resources/**/*"]),
+    resources = glob(["src/main/resources/**/*"]),
     deps = [
         "@maven//:com_google_guava_guava",
         "@maven//:org_apache_commons_commons_lang3",

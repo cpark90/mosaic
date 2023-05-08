@@ -1,0 +1,51 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/application/ambassador/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/eventresources/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/navigation/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/communication/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/perception/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/perception/errormodels/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/perception/index/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/perception/index/objects/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/perception/index/providers/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/perception/util/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/simulation/tmc/*.java"]) +
+        glob(["src/main/java/**/application/ambassador/util/*.java"]) +
+        glob(["src/main/java/**/application/app/*.java"]) +
+        glob(["src/main/java/**/application/app/api/*.java"]) +
+        glob(["src/main/java/**/application/app/api/communication/*.java"]) +
+        glob(["src/main/java/**/application/app/api/os/*.java"]) +
+        glob(["src/main/java/**/application/app/api/perception/*.java"]) +
+        glob(["src/main/java/**/application/app/etsi/*.java"]) +
+        glob(["src/main/java/**/application/config/*.java"])
+)
+
+java_library(
+    name = "mosaic-application",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_johnzon_johnzon_core",
+
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-routing",
+        "//lib/mosaic-database",
+        "//rti/mosaic-rti-api",
+
+    ],
+)

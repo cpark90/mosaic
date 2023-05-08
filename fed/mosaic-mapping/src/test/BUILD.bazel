@@ -1,0 +1,302 @@
+package(default_visibility = ["//visibility:public"])
+
+# ambassador spawning unit test
+
+java_test(
+    name = "exponential_spawning_mode_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/flow/ExponentialSpawningModeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.flow.ExponentialSpawningModeTest",
+)
+
+java_test(
+    name = "grow_and_shrink_spawning_mode_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/flow/GrowAndShrinkSpawningModeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-geomath",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.flow.GrowAndShrinkSpawningModeTest",
+)
+
+java_test(
+    name = "linear_spawning_mode_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/flow/LinearSpawningModeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.flow.LinearSpawningModeTest",
+)
+
+java_test(
+    name = "poisson_spawning_mode_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/flow/PoissonSpawningModeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-geomath",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.flow.PoissonSpawningModeTest",
+)
+
+java_test(
+    name = "highway_specific_lane_index_selector_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/lane/HighwaySpecificLaneIndexSelectorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.lane.HighwaySpecificLaneIndexSelectorTest",
+)
+
+java_test(
+    name = "round_robin_lane_index_selector_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/lane/RoundRobinLaneIndexSelectorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-objects",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.lane.RoundRobinLaneIndexSelectorTest",
+)
+
+java_test(
+    name = "vehicle_type_spawner_test",
+    srcs = glob(["java/**/mapping/ambassador/spawning/VehicleTypeSpawnerTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.spawning.VehicleTypeSpawnerTest",
+)
+
+# ambassador weighting unit test
+
+java_test(
+    name = "deterministic_selector_test",
+    srcs = glob(["java/**/mapping/ambassador/weighting/DeterministicSelectorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.weighting.DeterministicSelectorTest",
+)
+
+java_test(
+    name = "stochastic_selector_test",
+    srcs = glob(["java/**/mapping/ambassador/weighting/StochasticSelectorTest.java"]) +
+        glob(["java/**/mapping/ambassador/weighting/DeterministicSelectorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-geomath",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.weighting.StochasticSelectorTest",
+)
+
+# ambassador unit test
+
+java_test(
+    name = "mapping_ambassador_test",
+    srcs = glob(["java/**/mapping/ambassador/MappingAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.MappingAmbassadorTest",
+)
+
+java_test(
+    name = "spawning_framework_test",
+    srcs = glob(["java/**/mapping/ambassador/SpawningFrameworkTest.java"]) +
+        glob(["java/**/mapping/ambassador/MappingAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:commons_io_commons_io",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.SpawningFrameworkTest",
+)
+
+java_test(
+    name = "spawning_framework_traffic_light_test",
+    srcs = glob(["java/**/mapping/ambassador/SpawningFrameworkTrafficLightTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.ambassador.SpawningFrameworkTrafficLightTest",
+)
+
+# config unit test
+
+java_test(
+    name = "barnim_mapping_test",
+    srcs = glob(["java/**/mapping/config/BarnimMappingTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.BarnimMappingTest",
+)
+
+java_test(
+    name = "depart_speed_test",
+    srcs = glob(["java/**/mapping/config/DepartSpeedTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.DepartSpeedTest",
+)
+
+java_test(
+    name = "invalid_charging_station_test",
+    srcs = glob(["java/**/mapping/config/InvalidChargingStationTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.InvalidChargingStationTest",
+)
+
+java_test(
+    name = "invalid_c_prototype_test",
+    srcs = glob(["java/**/mapping/config/InvalidCPrototypeTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.InvalidCPrototypeTest",
+)
+
+java_test(
+    name = "invalid_matrix_mapper_test",
+    srcs = glob(["java/**/mapping/config/InvalidMatrixMapperTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.InvalidMatrixMapperTest",
+)
+
+java_test(
+    name = "invalid_rsu_test",
+    srcs = glob(["java/**/mapping/config/InvalidRsuTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.InvalidRsuTest",
+)
+
+java_test(
+    name = "invalid_vehicle_test",
+    srcs = glob(["java/**/mapping/config/InvalidVehicleTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.InvalidVehicleTest",
+)
+
+java_test(
+    name = "tiergarten_mapping_test",
+    srcs = glob(["java/**/mapping/config/TiergartenMappingTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+
+        "//fed/mosaic-mapping",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.mapping.config.TiergartenMappingTest",
+)

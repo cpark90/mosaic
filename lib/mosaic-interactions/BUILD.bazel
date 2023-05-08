@@ -2,15 +2,15 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["application/*.java"]) +
-        glob(["communication/*.java"]) +
-        glob(["electricity/*.java"]) +
-        glob(["environment/*.java"]) +
-        glob(["mapping/*.java"]) +
-        glob(["mapping/advanced/*.java"]) +
-        glob(["traffic/*.java"]) +
-        glob(["trafficsigns/*.java"]) +
-        glob(["vehicle/*.java"])
+    srcs = glob(["src/main/java/**/interactions/application/*.java"]) +
+        glob(["src/main/java/**/interactions/communication/*.java"]) +
+        glob(["src/main/java/**/interactions/electricity/*.java"]) +
+        glob(["src/main/java/**/interactions/environment/*.java"]) +
+        glob(["src/main/java/**/interactions/mapping/*.java"]) +
+        glob(["src/main/java/**/interactions/mapping/advanced/*.java"]) +
+        glob(["src/main/java/**/interactions/traffic/*.java"]) +
+        glob(["src/main/java/**/interactions/trafficsigns/*.java"]) +
+        glob(["src/main/java/**/interactions/vehicle/*.java"])
 )
 
 java_library(
@@ -18,7 +18,7 @@ java_library(
     srcs = [
         ":srcs",
         ],
-    resources = glob(["resources/**/*"]),
+    resources = glob(["src/main/resources/**/*"]),
     deps = [
         "@maven//:org_apache_commons_commons_lang3",
         "@maven//:com_google_code_findbugs_annotations",
@@ -30,6 +30,5 @@ java_library(
         "//lib/mosaic-objects",
         "//lib/mosaic-geomath",
         "//lib/mosaic-utils",
-
     ],
 )

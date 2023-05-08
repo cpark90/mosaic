@@ -2,12 +2,12 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["geo/*.java"]) +
-        glob(["gson/*.java"]) +
-        glob(["math/*.java"]) +
-        glob(["misc/*.java"]) +
-        glob(["spatial/*.java"]) +
-        glob(["transform/*.java"])
+    srcs = glob(["src/main/java/**/lib/geo/*.java"]) +
+        glob(["src/main/java/**/lib/gson/*.java"]) +
+        glob(["src/main/java/**/lib/math/*.java"]) +
+        glob(["src/main/java/**/lib/misc/*.java"]) +
+        glob(["src/main/java/**/lib/spatial/*.java"]) +
+        glob(["src/main/java/**/lib/transform/*.java"])
 )
 
 java_library(
@@ -15,6 +15,7 @@ java_library(
     srcs = [
         ":srcs",
         ],
+    resources = glob(["src/main/resources/**/*"]),
     deps = [
         "@maven//:com_google_code_gson_gson",
     ],

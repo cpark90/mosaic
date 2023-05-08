@@ -2,15 +2,15 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"]) +
-        glob(["config/*.java"]) +
-        glob(["database/*.java"]) +
-        glob(["graphhopper/*.java"]) +
-        glob(["graphhopper/algorithm/*.java"]) +
-        glob(["graphhopper/extended/*.java"]) +
-        glob(["graphhopper/util/*.java"]) +
-        glob(["norouting/*.java"]) +
-        glob(["util/*.java"])
+    srcs = glob(["src/main/java/**/routing/*.java"]) +
+        glob(["src/main/java/**/routing/config/*.java"]) +
+        glob(["src/main/java/**/routing/database/*.java"]) +
+        glob(["src/main/java/**/routing/graphhopper/*.java"]) +
+        glob(["src/main/java/**/routing/graphhopper/algorithm/*.java"]) +
+        glob(["src/main/java/**/routing/graphhopper/extended/*.java"]) +
+        glob(["src/main/java/**/routing/graphhopper/util/*.java"]) +
+        glob(["src/main/java/**/routing/norouting/*.java"]) +
+        glob(["src/main/java/**/routing/util/*.java"])
 )
 
 java_library(
@@ -18,7 +18,7 @@ java_library(
     srcs = [
         ":srcs",
         ],
-    resources = glob(["resources/**/*"]),
+    resources = glob(["src/main/resources/**/*"]),
     deps = [
         "@maven//:com_google_guava_guava",
         "@maven//:org_slf4j_slf4j_api",

@@ -1,0 +1,56 @@
+package(default_visibility = ["//visibility:public"])
+
+# rti unit test
+
+java_test(
+    name = "time_test",
+    srcs = glob(["java/**/rti/TIMETest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//rti/mosaic-rti-api",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.TIMETest",
+)
+
+# api unit test
+
+java_test(
+    name = "interaction_test",
+    srcs = glob(["java/**/rti/api/InteractionTest.java"]) +
+        glob(["java/**/rti/api/TestInteraction.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//rti/mosaic-rti-api",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.api.InteractionTest",
+)
+
+java_test(
+    name = "mosaic_version_test",
+    srcs = glob(["java/**/rti/api/MosaicVersionTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//rti/mosaic-rti-api",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.api.MosaicVersionTest",
+)
+
+# parameters unit test
+
+java_test(
+    name = "federate_priority_test",
+    srcs = glob(["java/**/rti/api/parameters/FederatePriorityTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "//rti/mosaic-rti-api",
+        
+        "@maven//:junit_junit",
+    ],
+    test_class = "org.eclipse.mosaic.rti.api.parameters.FederatePriorityTest",
+)

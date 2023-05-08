@@ -2,13 +2,13 @@ package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "srcs",
-    srcs = glob(["*.java"]) +
-        glob(["building/*.java"]) +
-        glob(["persistence/*.java"]) +
-        glob(["road/*.java"]) +
-        glob(["route/*.java"]) +
-        glob(["services/*.java"]) +
-        glob(["spatial/*.java"])
+    srcs = glob(["src/main/java/**/database/*.java"]) +
+        glob(["src/main/java/**/database/building/*.java"]) +
+        glob(["src/main/java/**/database/persistence/*.java"]) +
+        glob(["src/main/java/**/database/road/*.java"]) +
+        glob(["src/main/java/**/database/route/*.java"]) +
+        glob(["src/main/java/**/database/services/*.java"]) +
+        glob(["src/main/java/**/database/spatial/*.java"])
 )
 
 java_library(
@@ -16,7 +16,7 @@ java_library(
     srcs = [
         ":srcs",
         ],
-    resources = glob(["resources/**/*"]),
+    resources = glob(["src/main/resources/**/*"]),
     deps = [
         "@maven//:org_apache_commons_commons_lang3",
         "@maven//:com_google_code_findbugs_jsr305",

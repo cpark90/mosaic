@@ -1,0 +1,35 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/mapping/ambassador/*.java"]) +
+        glob(["src/main/java/**/mapping/ambassador/spawning/*.java"]) +
+        glob(["src/main/java/**/mapping/ambassador/spawning/flow/*.java"]) +
+        glob(["src/main/java/**/mapping/ambassador/spawning/lane/*.java"]) +
+        glob(["src/main/java/**/mapping/ambassador/weighting/*.java"]) +
+        glob(["src/main/java/**/mapping/config/*.java"]) +
+        glob(["src/main/java/**/mapping/config/units/*.java"])
+)
+
+java_library(
+    name = "mosaic-mapping",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_apache_johnzon_johnzon_core",
+
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-objects",
+        "//rti/mosaic-rti-api",
+        "//lib/mosaic-utils",
+
+    ],
+)
