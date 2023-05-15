@@ -31,12 +31,12 @@ public interface FederateExecutor {
     /**
      * Starts the federate locally in the given working dir.
      *
-     * @param workingDir the working directory
+     * @param fedDir the working directory
      *
      * @return the local process of the federate
      * @throws FederateStarterException if something went wrong during starting the federate
      */
-    Process startLocalFederate(File workingDir) throws FederateStarterException;
+    Process startLocalFederate(File fedDir) throws FederateStarterException;
 
     /**
      * Stops the previously locally started federate.

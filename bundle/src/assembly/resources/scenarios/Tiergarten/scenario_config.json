@@ -29,7 +29,7 @@
         "environment": true,
         "sns": true,
         "ns3": false,
-        "omnetpp": false,
+        "omnetpp": true,
         "output": true,
         "sumo": true
     }

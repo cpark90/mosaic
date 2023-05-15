@@ -61,7 +61,7 @@ public class Ns3Ambassador extends AbstractNetworkAmbassador {
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String imageName, OperatingSystem os) {
+    public DockerFederateExecutor createDockerFederateExecutor(String imageName, int port, OperatingSystem os) {
         this.dockerFederateExecutor = new DockerFederateExecutor(
                 imageName,
                 "ns3/scratch",

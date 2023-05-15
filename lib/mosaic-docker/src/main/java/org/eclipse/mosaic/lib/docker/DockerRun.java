@@ -35,10 +35,14 @@ public class DockerRun {
     private final DockerClient client;
     private final String image;
     private String name;
+    private String workingDir;
+    private String fedId;
     private List<Pair<String, Object>> parameters = new Vector<>();
     private List<Pair<Integer, Integer>> portBindings = new Vector<>();
     private String user;
-    private List<Pair<File, String>> volumeBindings = new Vector<>();
+    private List<String> args;
+    private List<Pair<File, String>> hostVolumeBindings = new Vector<>();
+    private List<Pair<String, String>> dockerVolumeBindings = new Vector<>();
     private boolean removeAfterRun = false;
     private boolean removeBeforeRun;
 
@@ -98,6 +102,16 @@ public class DockerRun {
     }
 
     /**
+     * Sets the args.
+     *
+     * @param args the args.
+     */
+    public DockerRun args(List<String> args) {
+        this.args = args;
+        return this;
+    }
+
+    /**
      * Sets user to current user/group.
      */
     public DockerRun currentUser() {
@@ -128,8 +142,13 @@ public class DockerRun {
      * @param localDir   the local directory which should be bound with the container
      * @param volumePath the path within the container to be bound with
      */
-    public DockerRun volumeBinding(File localDir, String volumePath) {
-        this.volumeBindings.add(Pair.of(localDir, volumePath));
+    public DockerRun volumeBinding(File hostDir, String volumePath) {
+        this.hostVolumeBindings.add(Pair.of(hostDir, volumePath));
+        return this;
+    }
+
+    public DockerRun volumeBinding(String volumeName, String volumePath) {
+        this.dockerVolumeBindings.add(Pair.of(volumeName, volumePath));
         return this;
     }
 
@@ -159,9 +178,14 @@ public class DockerRun {
             options.add(user);
         }
 
-        for (Pair<File, String> binding : volumeBindings) {
+        for (Pair<File, String> binding : hostVolumeBindings) {
             options.add("-v");
             options.add(binding.getKey().getAbsolutePath().replace('\\', '/').replace(" ", "\\ ") + ":" + binding.getValue());
+        }
+
+        for (Pair<String, String> binding : dockerVolumeBindings) {
+            options.add("-v");
+            options.add(binding.getKey() + ":" + binding.getValue());
         }
 
         for (Pair<Integer, Integer> binding : portBindings) {
@@ -171,10 +195,10 @@ public class DockerRun {
 
         for (Pair<String, Object> param : parameters) {
             options.add("-e");
-            options.add(param.getKey() + "=\"" + param.getValue().toString() + "\"");
+            options.add(param.getKey() + "=" + param.getValue().toString());
         }
 
-        return this.client.runImage(image, name, options, removeBeforeRun);
+        return this.client.runImage(image, name, options, args, removeBeforeRun);
     }
 
 

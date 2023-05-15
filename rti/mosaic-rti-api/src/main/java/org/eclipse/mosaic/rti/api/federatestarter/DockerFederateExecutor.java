@@ -25,12 +25,16 @@ import org.eclipse.mosaic.rti.config.CLocalHost;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import javax.annotation.Nullable;
 
 /**
@@ -41,6 +45,8 @@ public class DockerFederateExecutor implements FederateExecutor {
     private final String image;
     private final String sharedDirectoryPath;
     private final String imageVolume;
+    private final List<String> args;
+    private List<Pair<Integer, Integer>> portBindings = new Vector<>();
     private String containerName;
 
     private final Map<String, Object> parameters = new HashMap<>();
@@ -54,11 +60,17 @@ public class DockerFederateExecutor implements FederateExecutor {
      * @param sharedDirectoryPath the local sub directory to share with container, relative to the working directory
      * @param imageVolume         the path to the image volume which is bound with the sharedDirectoryPath
      */
-    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume) {
+
+    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume, String... args) {
+        this(image, sharedDirectoryPath, imageVolume, Arrays.asList(args));
+    }
+
+    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume, List<String> args) {
         this.image = image;
         this.containerName = StringUtils.substringBefore(image, ":");
         this.sharedDirectoryPath = sharedDirectoryPath;
         this.imageVolume = imageVolume;
+        this.args = args;
     }
 
     /**
@@ -69,24 +81,50 @@ public class DockerFederateExecutor implements FederateExecutor {
         return this;
     }
 
+    public DockerFederateExecutor addPortBinding(int portHost, int portContainer) {
+        this.portBindings.add(Pair.of(portHost, portContainer));
+        return this;
+    }
+
     public DockerFederateExecutor setContainerName(String name) {
         containerName = name;
         return this;
     }
 
-    @Override
-    public Process startLocalFederate(File workingDir) {
-        this.dockerClient = new DockerClient();
+    public Process getContainerLogsProcess() {
+        return dockerClient.readLogs(containerName);
+    }
 
-        final DockerRun run = this.dockerClient
-                .run(image)
-                .name(containerName)
-                .removeAfterRun()
-                .currentUser()
-                .volumeBinding(new File(workingDir, sharedDirectoryPath), imageVolume);
+    @Override
+    public Process startLocalFederate(File fedDir) {
+        this.dockerClient = new DockerClient();
+        final DockerRun run;
+
+        if (sharedDirectoryPath.startsWith("docker-volume:")) {
+            run = this.dockerClient
+                    .run(image)
+                    .name(containerName)
+                    .removeAfterRun()
+                    .currentUser()
+                    .args(args)
+                    .volumeBinding(sharedDirectoryPath.replaceFirst("^docker-volume:", ""), imageVolume)
+                    .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");
+        } else {
+            run = this.dockerClient
+                    .run(image)
+                    .name(containerName)
+                    .removeAfterRun()
+                    .currentUser()
+                    .args(args)
+                    .volumeBinding(new File(fedDir.getParent()), imageVolume);
+        }
 
         for (Map.Entry<String, Object> param : parameters.entrySet()) {
             run.parameter(param.getKey(), param.getValue());
+        }
+
+        for (Pair<Integer, Integer> binding : portBindings) {
+            run.portBinding(binding.getKey(), binding.getValue());
         }
 
         this.container = run.execute();

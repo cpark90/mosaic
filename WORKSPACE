@@ -33,6 +33,15 @@ load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
 
+load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
+container_pull(
+    name = "docker-base-image",
+    registry = "docker.io",
+    repository = "cpark90/openjdk11",
+    tag = "jre-11.0.19_7-ubuntu-docker",
+)
+
+
 load(
     "@io_bazel_rules_docker//java:image.bzl",
     _java_image_repos = "repositories",

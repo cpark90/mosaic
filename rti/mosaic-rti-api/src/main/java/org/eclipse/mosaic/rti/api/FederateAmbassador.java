@@ -52,7 +52,7 @@ public interface FederateAmbassador extends Comparable<FederateAmbassador> {
      * @return the {@link DockerFederateExecutor} which starts the federate
      * @throws UnsupportedOperationException if the ambassador does not support running the federate in a docker container.
      */
-    DockerFederateExecutor createDockerFederateExecutor(String dockerImage, OperatingSystem os) throws UnsupportedOperationException;
+    DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, OperatingSystem os) throws UnsupportedOperationException;
 
     /**
      * This method is called by the federation management service after it has started the corresponding federate or simulator.

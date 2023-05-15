@@ -44,7 +44,7 @@ public class TestFederate implements FederateAmbassador {
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
+    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 

@@ -126,14 +126,14 @@ public class LocalFederationManagement implements FederationManagement {
 
     @Override
     public void stopFederation() throws Exception {
-        for (FederateDescriptor handle : this.federateDescriptors.values()) {
+        for (FederateDescriptor descriptor : this.federateDescriptors.values()) {
 
-            if (handle.isToStartAndStop()) {
-                this.stopFederate(handle, true);
+            if (descriptor.isToStartAndStop()) {
+                this.stopFederate(descriptor, true);
             }
 
-            if (handle.isToDeployAndUndeploy() && handle.getHost() != null) {
-                this.undeployFederate(handle);
+            if (descriptor.isToDeployAndUndeploy() && descriptor.getHost() != null) {
+                this.undeployFederate(descriptor);
             }
         }
         this.federateDescriptors.clear();
@@ -228,22 +228,22 @@ public class LocalFederationManagement implements FederationManagement {
     }
 
     /**
-     * Starts a federate represented by its handle on the local machine.
+     * Starts a federate represented by its descriptor on the local machine.
      *
-     * @param handle federate handle consisting all necessary data to start a
+     * @param descriptor federate descriptor consisting all necessary data to start a
      *               federate
      * @throws Exception if the federate could not be started
      */
-    protected void startFederate(FederateDescriptor handle) throws Exception {
+    protected void startFederate(FederateDescriptor descriptor) throws Exception {
 
-        File dir = new File(handle.getHost().workingDirectory, handle.getId());
+        File fedDir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
 
-        final FederateExecutor federateExecutor = handle.getFederateExecutor();
+        final FederateExecutor federateExecutor = descriptor.getFederateExecutor();
 
-        this.log.info("Starting federate '{}' locally in {}", handle.getId(), dir);
+        this.log.info("Starting federate '{}' locally in {}", descriptor.getId(), fedDir);
         this.log.debug(" - Federate executor: {}", federateExecutor.toString());
 
-        final Process p = federateExecutor.startLocalFederate(dir);
+        final Process p = federateExecutor.startLocalFederate(fedDir);
         if (p == null) {
             return;
         }
@@ -254,65 +254,65 @@ public class LocalFederationManagement implements FederationManagement {
         }
 
         // determine the federate's name by its class
-        String federateName = StringUtils.capitalize(handle.getId());
+        String federateName = StringUtils.capitalize(descriptor.getId());
 
         // read error output of process in an extra thread
         ProcessLoggingThread errorLoggingThread = new ProcessLoggingThread(
                 federateName, p.getErrorStream(), LoggerFactory.getLogger(federateName + "Error")::error
         );
         errorLoggingThread.start();
-        loggingThreads.put(handle.getId(), errorLoggingThread);
+        loggingThreads.put(descriptor.getId(), errorLoggingThread);
 
         // call connectToFederateMethod of the current federate an extract
         // possible output from the federates' output stream (e.g. port number...)
         // note: error- and input streams were read in this class now due to conflicting stream access
-        handle.getAmbassador().connectToFederate(LOCALHOST, p.getInputStream(), p.getErrorStream());
+        descriptor.getAmbassador().connectToFederate(LOCALHOST, p.getInputStream(), p.getErrorStream());
 
         // read the federates stdout in an extra thread and add this to our logging instance
         ProcessLoggingThread outputLoggingThread = new ProcessLoggingThread(
                 federateName, p.getInputStream(), LoggerFactory.getLogger(federateName + "Output")::info
         );
         outputLoggingThread.start();
-        loggingThreads.put(handle.getId(), outputLoggingThread);
+        loggingThreads.put(descriptor.getId(), outputLoggingThread);
     }
 
     /**
-     * Stops a federate represented by its handle on the local machine.
+     * Stops a federate represented by its descriptor on the local machine.
      *
-     * @param handle federate handle consisting all necessary data to stop a federate
+     * @param descriptor federate descriptor consisting all necessary data to stop a federate
      * @throws Exception if the federate could not be stopped
      */
-    protected void stopFederate(FederateDescriptor handle, boolean forceStop) throws Exception {
-        if (handle.getFederateExecutor() != null) {
-            handle.getFederateExecutor().stopLocalFederate();
+    protected void stopFederate(FederateDescriptor descriptor, boolean forceStop) throws Exception {
+        if (descriptor.getFederateExecutor() != null) {
+            descriptor.getFederateExecutor().stopLocalFederate();
 
-            loggingThreads.get(handle.getId()).forEach(ProcessLoggingThread::close);
+            loggingThreads.get(descriptor.getId()).forEach(ProcessLoggingThread::close);
         }
     }
 
     /**
-     * Undeploys a federate represented by its handle on the local machine.
+     * Undeploys a federate represented by its descriptor on the local machine.
      *
-     * @param handle federate handle consisting all necessary data to undeploy a
+     * @param descriptor federate descriptor consisting all necessary data to undeploy a
      *               federate
      * @throws Exception if the federate could not be undeployed
      */
-    protected void undeployFederate(FederateDescriptor handle) throws Exception {
-        final File execDir = new File(handle.getHost().workingDirectory, handle.getId());
+    protected void undeployFederate(FederateDescriptor descriptor) throws Exception {
+        final File execDir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
 
-        this.copyFromFederateLogDir(handle, execDir);
+        this.copyFromFederateLogDir(descriptor, execDir);
         this.removeDirectory(execDir);
     }
 
     /**
      * Copies files from the federate execution dir to the actual logging-directory (e.g. SUMO output files)
      */
-    private void copyFromFederateLogDir(FederateDescriptor handle, File executionDir) throws IOException {
+    private void copyFromFederateLogDir(FederateDescriptor descriptor, File executionDir) throws IOException {
         final File federateLoggingDir = new File(executionDir, "log");
         if (executionDir.exists() && federateLoggingDir.exists()) {
             final Path sourcePath = federateLoggingDir.toPath();
             final File targetDir = new File(
-                    ((LoggerContext) LoggerFactory.getILoggerFactory()).getProperty("logDirectory"), handle.getId()
+                    ((LoggerContext) LoggerFactory.getILoggerFactory()).getProperty("logDirectory"), descriptor.getId()
             );
             if (sourcePath.toFile().exists() && targetDir.mkdirs()) {
                 copyWithAttributes(sourcePath, targetDir.toPath());

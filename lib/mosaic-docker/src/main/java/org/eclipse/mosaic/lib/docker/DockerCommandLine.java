@@ -84,8 +84,8 @@ public class DockerCommandLine {
      * @param options additional options for the image
      * @return the exit code of the executed process
      */
-    public String runAndDetach(String image, List<String> options) {
-        final String[] cmd = new String[options.size() + 3];
+    public String runAndDetach(String image, List<String> options, List<String> args) {
+        final String[] cmd = new String[options.size() + args.size() + 3];
         int i = 0;
         cmd[i++] = "run";
         for (String option : options) {
@@ -93,6 +93,9 @@ public class DockerCommandLine {
         }
         cmd[i++] = "-d";
         cmd[i] = image;
+        for (String arg : args) {
+            cmd[++i] = arg;
+        }
         return execCommandAndRead(cmd);
     }
 
@@ -105,14 +108,17 @@ public class DockerCommandLine {
      *
      * @return the process running the docker container
      */
-    public Process run(String image, List<String> options) {
-        final String[] cmd = new String[options.size() + 2];
+    public Process run(String image, List<String> options, List<String> args) {
+        final String[] cmd = new String[options.size() + args.size() + 2];
         int i = 0;
         cmd[i++] = "run";
         for (String option : options) {
             cmd[i++] = option;
         }
         cmd[i] = image;
+        for (String arg : args) {
+            cmd[++i] = arg;
+        }
         return execCommand(cmd);
     }
 
@@ -139,9 +145,21 @@ public class DockerCommandLine {
         return execCommandAndRead("port", containerName);
     }
 
+    public Process logs(String containerName) {
+        return execCommand("logs", containerName);
+    }
+
     private String readFromProcess(InputStream stream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         IOUtils.copy(stream, baos);
         return new String(baos.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    public String createVolume(String dockerVolumeName) {
+        return execCommandAndRead("volume", "create", dockerVolumeName);
+    }
+
+    public String removeVolume(String dockerVolumeName) {
+        return execCommandAndRead("volume", "rm", dockerVolumeName);
     }
 }

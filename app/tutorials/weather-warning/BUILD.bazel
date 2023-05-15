@@ -1,0 +1,25 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/app/tutorial/*.java"])
+)
+
+java_library(
+    name = "weather-warning",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:com_google_code_findbugs_jsr305",
+
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-routing",
+        "//lib/mosaic-interactions",
+        "//rti/mosaic-rti-api",
+        "//fed/mosaic-application",
+    ],
+)

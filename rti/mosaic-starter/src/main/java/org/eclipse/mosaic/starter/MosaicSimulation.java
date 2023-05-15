@@ -83,7 +83,7 @@ public class MosaicSimulation {
 
     private static final Path LOG_DIRECTORY = Paths.get("logs");
 
-    private static final Path FEDERATE_DIRECTORY = Paths.get("bin", "fed");
+    private static final Path FEDERATE_BIN_DIRECTORY = Paths.get("bin", "fed");
 
     private ComponentProviderFactory componentProviderFactory = MosaicComponentProvider::new;
     private CRuntime runtimeConfiguration;
@@ -356,7 +356,7 @@ public class MosaicSimulation {
 
         descriptor.setDeployAndUndeploy(federate.deploy);
         if (descriptor.isToDeployAndUndeploy()) {
-            descriptor.setBinariesDir(FEDERATE_DIRECTORY.resolve(federate.id).toFile());
+            descriptor.setBinariesDir(FEDERATE_BIN_DIRECTORY.resolve(federate.id).toFile());
             descriptor.setConfigDir(configurationDirectory.toFile());
 
             if (federate.configurationDeployPath != null) {
@@ -383,7 +383,7 @@ public class MosaicSimulation {
             if (StringUtils.isNotEmpty(federate.dockerImage)) {
                 final String container = federate.id + '-' + simulationId;
                 descriptor.setFederateExecutor(
-                        descriptor.getAmbassador().createDockerFederateExecutor(federate.dockerImage, host.operatingSystem).setContainerName(container)
+                        descriptor.getAmbassador().createDockerFederateExecutor(federate.dockerImage, federate.port, host.operatingSystem).setContainerName(container)
                 );
             } else {
                 int port = federate.port;
@@ -519,7 +519,7 @@ public class MosaicSimulation {
         // and finally read possibly overwritten directory from a FileAppender
         // -> first try to find the FileAppender for MosaicLog (out base logging file)
         ch.qos.logback.classic.Logger rootLogger = loggerContext.getLogger("ROOT");
-        Appender<ILoggingEvent> mosaicAppender = rootLogger.getAppender("MosaicLog");
+        Appender<ILoggingEvent> mosaicAppender = rootLogger.getAppender("MappingLog");
         if (mosaicAppender != null) {
             // now try to find out if the logging directory was changed in the logback.xml by
             // removing the saved logDirectory and checking for an expected file separator!

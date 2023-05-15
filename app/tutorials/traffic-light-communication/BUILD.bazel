@@ -1,0 +1,26 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/tutorial/*.java"]) +
+        glob(["src/main/java/**/tutorial/message/*.java"])
+)
+
+java_library(
+    name = "traffic-light-communication",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:org_apache_commons_commons_lang3",
+
+        "//lib/mosaic-objects",
+        "//lib/mosaic-geomath",
+        "//lib/mosaic-utils",
+        "//fed/mosaic-application",
+        "//lib/mosaic-interactions",
+        "//rti/mosaic-rti-api",
+    ],
+)

@@ -1,0 +1,23 @@
+package(default_visibility = ["//visibility:public"])
+
+java_test(
+    name = "weather_warning_app_test",
+    srcs = glob(["java/**/WeatherWarningAppTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+        "@maven//:com_google_guava_guava",
+        
+        "//app/tutorials/weather-warning",
+        
+        "//lib/mosaic-utils",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-routing",
+
+        "//rti/mosaic-rti-api",
+
+        "//fed/mosaic-application",
+    ],
+    test_class = "WeatherWarningAppTest",
+)

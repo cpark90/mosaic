@@ -68,13 +68,14 @@ public class DockerClientTest {
         //SETUP
         String imageName = "test-image";
         String containerName = "test-image-container";
+        List<String> args = Arrays.asList("");
 
         //RUN
-        DockerContainer container = dockerClient.run(imageName).name(containerName).execute();
+        DockerContainer container = dockerClient.run(imageName).name(containerName).args(args).execute();
 
         //VERIFY
         assertNotNull(container);
-        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("-P", "--name", "test-image-container")));
+        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("-P", "--name", "test-image-container")), argThat(containsInOrder("")));
         verify(commandLine, never()).kill(anyString());
         verify(commandLine, never()).rm(anyString());
         verify(commandLine, times(3)).status(eq(containerName));
@@ -89,13 +90,14 @@ public class DockerClientTest {
         //SETUP
         String imageName = "test-image";
         String containerName = "test-image-container";
+        List<String> args = Arrays.asList("");
 
         //RUN
-        DockerContainer container = dockerClient.run(imageName).portBinding(1337, 7331).name(containerName).execute();
+        DockerContainer container = dockerClient.run(imageName).portBinding(1337, 7331).name(containerName).args(args).execute();
 
         //VERIFY
         assertNotNull(container);
-        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("-p", "1337:7331", "--name", "test-image-container")));
+        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("-p", "1337:7331", "--name", "test-image-container")), argThat(containsInOrder("")));
         verify(commandLine, never()).kill(anyString());
         verify(commandLine, never()).rm(anyString());
         verify(commandLine, times(3)).status(eq(containerName));
@@ -108,17 +110,19 @@ public class DockerClientTest {
         //SETUP
         String imageName = "test-image";
         String containerName = "test-image-container";
+        List<String> args = Arrays.asList("");
         File tmpFile = tempFolder.newFile();
 
         //RUN
-        DockerContainer container = dockerClient.run(imageName).volumeBinding(tmpFile, "/home/test").name(containerName).execute();
+        DockerContainer container = dockerClient.run(imageName).volumeBinding(tmpFile, "/home/test").name(containerName).args(args).execute();
 
         //VERIFY
         assertNotNull(container);
         String tmpFilePath = tmpFile.getAbsolutePath().replace("\\", "/").replace(" ", "\\ ");
         verify(commandLine).runAndDetach(
                 eq(imageName),
-                argThat(containsInOrder("-v", tmpFilePath + ":/home/test", "-P", "--name", "test-image-container"))
+                argThat(containsInOrder("-v", tmpFilePath + ":/home/test", "-P", "--name", "test-image-container")),
+                argThat(containsInOrder(""))
         );
         verify(commandLine, never()).kill(anyString());
         verify(commandLine, never()).rm(anyString());
@@ -129,13 +133,14 @@ public class DockerClientTest {
     public void run_removeBeforeRun() {
         //SETUP
         String imageName = "test-image";
+        List<String> args = Arrays.asList("");
 
         //RUN
-        DockerContainer container = dockerClient.run(imageName).removeBeforeRun().execute();
+        DockerContainer container = dockerClient.run(imageName).removeBeforeRun().args(args).execute();
 
         //VERIFY
         assertNotNull(container);
-        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("-P", "--name", imageName)));
+        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("-P", "--name", imageName)), argThat(containsInOrder("")));
         verify(commandLine).kill(eq(imageName));
         verify(commandLine).rm(eq(imageName));
     }
@@ -144,13 +149,14 @@ public class DockerClientTest {
     public void run_removeAfterRun() {
         //SETUP
         String imageName = "test-image";
+        List<String> args = Arrays.asList("");
 
         //RUN
-        DockerContainer container = dockerClient.run(imageName).removeAfterRun().execute();
+        DockerContainer container = dockerClient.run(imageName).removeAfterRun().args(args).execute();
 
         //VERIFY
         assertNotNull(container);
-        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("--rm", "-P", "--name", imageName)));
+        verify(commandLine).runAndDetach(eq(imageName), argThat(containsInOrder("--rm", "-P", "--name", imageName)), argThat(containsInOrder("")));
         verify(commandLine, never()).kill(anyString());
         verify(commandLine, never()).rm(anyString());
     }
@@ -224,13 +230,14 @@ public class DockerClientTest {
     public void user_explicit() {
         String user = "Odo";
         String image = "test-image";
+        List<String> args = Arrays.asList("");
 
         //RUN
-        DockerContainer container = dockerClient.run(image).user(user).execute();
+        DockerContainer container = dockerClient.run(image).user(user).args(args).execute();
 
         //VERIFY
         assertNotNull(container);
-        verify(commandLine).runAndDetach(anyString(), argThat(containsInOrder("--user", user, "-P", "--name", image)));
+        verify(commandLine).runAndDetach(anyString(), argThat(containsInOrder("--user", user, "-P", "--name", image)), argThat(containsInOrder("")));
     }
 
     @Test

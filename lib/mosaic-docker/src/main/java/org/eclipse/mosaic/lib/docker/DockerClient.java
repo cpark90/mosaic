@@ -66,7 +66,7 @@ public class DockerClient {
         }
     }
 
-    DockerContainer runImage(String image, String containerName, List<String> options, boolean removeBeforeRun) {
+    DockerContainer runImage(String image, String containerName, List<String> options, List<String> args, boolean removeBeforeRun) {
         // if no specific ports are published, publish all ports of container
         if (!options.contains("-p")) {
             options.add("-P");
@@ -86,9 +86,9 @@ public class DockerClient {
         final Process p;
         if ("true".equals(System.getProperty("mosaic.docker.no-detach", SystemUtils.IS_OS_WINDOWS ? "true" : "false"))) {
             logger.info("Starting container without detaching.");
-            p = docker.run(image, options);
+            p = docker.run(image, options, args);
         } else {
-            String exitMessage = docker.runAndDetach(image, options);
+            String exitMessage = docker.runAndDetach(image, options, args);
             logger.info("Container was started with message {}", exitMessage);
             p = docker.attach(containerName);
         }
@@ -159,5 +159,15 @@ public class DockerClient {
         }
 
         return bindings;
+    }
+
+    /**
+     * Reads logs of the given container.
+     *
+     * @param containerName the name of the container
+     * @return a Logs Process of the given container
+     */
+    public Process readLogs(String containerName) {
+        return docker.logs(containerName);
     }
 }

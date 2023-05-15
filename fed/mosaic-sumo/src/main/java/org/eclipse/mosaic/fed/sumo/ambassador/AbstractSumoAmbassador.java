@@ -93,6 +93,7 @@ import org.eclipse.mosaic.rti.api.FederateExecutor;
 import org.eclipse.mosaic.rti.api.IllegalValueException;
 import org.eclipse.mosaic.rti.api.Interaction;
 import org.eclipse.mosaic.rti.api.InternalFederateException;
+import org.eclipse.mosaic.rti.api.federatestarter.DockerFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.ExecutableFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.NopFederateExecutor;
 import org.eclipse.mosaic.rti.api.parameters.AmbassadorParameter;
@@ -183,6 +184,8 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
      */
     FederateExecutor federateExecutor = null;
 
+    DockerFederateExecutor dockerFederateExecutor = null;
+
     /**
      * Last time of a call to advance time.
      */
@@ -258,6 +261,23 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
         return new NopFederateExecutor();
     }
 
+    @Override
+    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) {
+        List<String> args = getProgramArguments(port);
+        args.add(0, "sumo");
+
+        // TODO: deploy target path 
+        this.dockerFederateExecutor = new DockerFederateExecutor(
+                dockerImage,
+                "docker-volume:mosaic",
+                "/home/mosaic/shared",
+                args
+        );
+        this.dockerFederateExecutor.addPortBinding(port, port);
+        this.federateExecutor = this.dockerFederateExecutor;
+        return this.dockerFederateExecutor;
+    }
+
     static String getFromSumoHome(String executable) {
         String sumoHome = System.getenv("SUMO_HOME");
         if (StringUtils.isNotBlank(sumoHome)) {
@@ -279,61 +299,72 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
     @Override
     public void connectToFederate(String host, InputStream in, InputStream err) throws InternalFederateException {
         int port = -1;
-        try {
-            log.debug("connectToFederate(String host, InputStream in, InputStream err)");
-            final String portTag = "port";
-            final String success = "Starting server on port";
-            final String error = "Error";
+        Process p;
+        boolean errorFlag = false;
 
-            BufferedReader sumoInputReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String line;
-            // hold the thread for a second to allow sumo to print possible error message to the error stream
-            Thread.sleep(1000);
-            while (((line = sumoInputReader.readLine()) != null)) {
-                if (line.length() > 0) {
-                    if (log.isDebugEnabled()) {
-                        log.debug(line);
-                    }
-                    // SUMO is started, and the port is extracted from its
-                    // output
-                    if (line.contains(success)) {
-                        String[] split = StringUtils.split(line, ' ');
-                        for (int i = 0; i < split.length; i++) {
-                            if (split[i].equals(portTag)) {
-                                port = Integer.parseInt(split[i + 1]);
-                                connectToFederate(host, port);
-                            }
-                        }
-                        break;
-                    }
-                    // an error occurred while starting SUMO
-                    if (line.contains(error)) {
-                        log.error(line);
-                        break;
-                    }
-                }
-            }
+        while (((p = dockerFederateExecutor.getContainerLogsProcess()) != null)) {
+            in = p.getInputStream();
+            err = p.getErrorStream();
 
-            // Print errors, if socket was not created
-            if (socket == null) {
-                String myError = "Could not connect to socket: host: " + host + " port: " + port;
-                log.error(myError);
-                BufferedReader sumoErrorReader = new BufferedReader(new InputStreamReader(err, StandardCharsets.UTF_8));
-                while (((line = sumoErrorReader.readLine()) != null)) {
+            try {
+                log.debug("connectToFederate(String host, InputStream in, InputStream err)");
+                final String portTag = "port";
+                final String success = "Starting server on port";
+                final String error = "Error";
+
+                BufferedReader sumoInputReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                String line;
+                // hold the thread for a second to allow sumo to print possible error message to the error stream
+                Thread.sleep(1000);
+                while (((line = sumoInputReader.readLine()) != null)) {
                     if (line.length() > 0) {
-                        log.error(line);
+                        if (log.isDebugEnabled()) {
+                            log.debug(line);
+                        }
+                        // SUMO is started, and the port is extracted from its
+                        // output
+                        if (line.contains(success)) {
+                            String[] split = StringUtils.split(line, ' ');
+                            for (int i = 0; i < split.length; i++) {
+                                if (split[i].equals(portTag)) {
+                                    port = Integer.parseInt(split[i + 1]);
+                                    connectToFederate(host, port);
+                                }
+                            }
+                            break;
+                        }
+                        // an error occurred while starting SUMO
+                        if (line.contains(error)) {
+                            log.error(line);
+                            errorFlag = true;
+                            break;
+                        }
                     }
                 }
 
-                // specialized error message for missing port
-                if (port == -1) {
-                    throw new InternalFederateException("Could not read port from SUMO. SUMO seems to be crashed.");
-                }
+                // Print errors, if socket was not created
+                if (socket != null) {
+                    return;
+                } else if (errorFlag) {
+                    String myError = "Could not connect to socket: host: " + host + " port: " + port;
+                    log.error(myError);
+                    BufferedReader sumoErrorReader = new BufferedReader(new InputStreamReader(err, StandardCharsets.UTF_8));
+                    while (((line = sumoErrorReader.readLine()) != null)) {
+                        if (line.length() > 0) {
+                            log.error(line);
+                        }
+                    }
 
-                throw new InternalFederateException(myError);
+                    // specialized error message for missing port
+                    if (port == -1) {
+                        throw new InternalFederateException("Could not read port from SUMO. SUMO seems to be crashed.");
+                    }
+
+                    throw new InternalFederateException(myError);
+                }
+            } catch (InterruptedException | IOException | RuntimeException e) {
+                throw new InternalFederateException(e);
             }
-        } catch (InterruptedException | IOException | RuntimeException e) {
-            throw new InternalFederateException(e);
         }
     }
 
@@ -1162,13 +1193,14 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
             return;
         }
 
-        File dir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
+        File fedDir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
 
         log.info("Start Federate local");
-        log.info("Directory: " + dir);
+        log.info("Directory: " + fedDir);
 
         try {
-            Process p = federateExecutor.startLocalFederate(dir);
+            federateExecutor.stopLocalFederate();
+            Process p = federateExecutor.startLocalFederate(fedDir);
 
             connectToFederate("localhost", p.getInputStream(), p.getErrorStream());
             // read error output of process in an extra thread
@@ -1419,9 +1451,9 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
     List<String> getProgramArguments(int port) {
         double stepSize = (double) sumoConfig.updateInterval / 1000.0;
         log.info("Simulation step size is {} sec.", stepSize);
-
+        
         List<String> args = Lists.newArrayList(
-                "-c", sumoConfig.sumoConfigurationFile,
+                "-c", "/home/mosaic/shared/" + descriptor.getId() + "/" + descriptor.getConfigTargetPath().toString() + "/" + sumoConfig.sumoConfigurationFile,
                 "-v",
                 "--remote-port", Integer.toString(port),
                 "--step-length", String.format(Locale.ENGLISH, "%.2f", stepSize)

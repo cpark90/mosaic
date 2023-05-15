@@ -47,7 +47,7 @@ public class JavaFederateExecutor implements FederateExecutor {
     }
 
     @Override
-    public Process startLocalFederate(File workingDir) throws FederateStarterException {
+    public Process startLocalFederate(File fedDir) throws FederateStarterException {
         if (delegateExecFederateStarter != null) {
             throw new FederateStarterException("Federate has been already started");
         }
@@ -55,7 +55,7 @@ public class JavaFederateExecutor implements FederateExecutor {
         final String fileSeparator = File.separator;
         final String pathSeparator = File.pathSeparator;
 
-        final String classPath = createClasspath(workingDir, fileSeparator, pathSeparator);
+        final String classPath = createClasspath(fedDir, fileSeparator, pathSeparator);
 
         String currentJrePath = SystemUtils.getJavaHome().getPath();
         StringBuilder cmdBuilder = new StringBuilder();
@@ -80,7 +80,7 @@ public class JavaFederateExecutor implements FederateExecutor {
 
         delegateExecFederateStarter = new ExecutableFederateExecutor(this.handle, cmdBuilder.toString(), args);
         try {
-            return delegateExecFederateStarter.startLocalFederate(workingDir);
+            return delegateExecFederateStarter.startLocalFederate(fedDir);
         } catch (FederateStarterException e) {
             delegateExecFederateStarter = null;
             throw e;
@@ -101,11 +101,11 @@ public class JavaFederateExecutor implements FederateExecutor {
             throw new FederateStarterException("Federate has been already started");
         }
 
-        final File workingDir = handle.getBinariesDir();
+        final File fedBinDir = handle.getBinariesDir();
         final String sep = File.separator;
         final String fileSep = host.operatingSystem == CLocalHost.OperatingSystem.WINDOWS ? ";" : ":";
 
-        List<String> args = Lists.newArrayList("-cp", createClasspath(workingDir, sep, fileSep), mainClass);
+        List<String> args = Lists.newArrayList("-cp", createClasspath(fedBinDir, sep, fileSep), mainClass);
         args.addAll(Arrays.asList(programArguments.split(" ")));
 
         delegateExecFederateStarter = new ExecutableFederateExecutor(this.handle, "java", args);

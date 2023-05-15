@@ -194,7 +194,7 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
      * @return the {@link FederateExecutor} which starts the federate in a docker container
      */
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String imageName, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
+    public DockerFederateExecutor createDockerFederateExecutor(String imageName, int port, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("This ambassador does not support federates inside of a docker container");
     }
 

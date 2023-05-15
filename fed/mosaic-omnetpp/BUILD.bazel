@@ -1,0 +1,21 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/omnetpp/ambassador/*.java"])
+)
+
+java_library(
+    name = "mosaic-omnetpp",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_code_findbugs_jsr305",
+
+        "//lib/mosaic-network",
+        "//rti/mosaic-rti-api",
+    ],
+)

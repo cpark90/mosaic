@@ -36,8 +36,8 @@ def mosaic_java_deps():
             'com.google.guava:guava:27.0-jre', # com.google.common.collect
 
             # logback
-            'ch.qos.logback:logback-classic:1.4.7',
-            'ch.qos.logback:logback-core:1.4.7',
+            'ch.qos.logback:logback-classic:1.2.3',
+            'ch.qos.logback:logback-core:1.2.3',
 
             # jsch
             'com.jcraft:jsch:0.1.55',

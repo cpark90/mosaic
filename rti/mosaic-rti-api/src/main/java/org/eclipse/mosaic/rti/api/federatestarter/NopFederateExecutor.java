@@ -32,7 +32,7 @@ import java.io.PrintStream;
 public class NopFederateExecutor implements FederateExecutor {
 
     @Override
-    public Process startLocalFederate(File workingDir) {
+    public Process startLocalFederate(File fedDir) {
         //nop
         return null;
     }

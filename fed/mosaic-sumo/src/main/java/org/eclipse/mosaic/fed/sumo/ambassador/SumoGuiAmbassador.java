@@ -18,9 +18,12 @@ package org.eclipse.mosaic.fed.sumo.ambassador;
 import org.eclipse.mosaic.rti.api.FederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.ExecutableFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.NopFederateExecutor;
+import org.eclipse.mosaic.rti.api.federatestarter.DockerFederateExecutor;
 import org.eclipse.mosaic.rti.api.parameters.AmbassadorParameter;
 import org.eclipse.mosaic.rti.config.CLocalHost.OperatingSystem;
+import org.eclipse.mosaic.rti.config.CLocalHost;
 
+import java.util.List;
 import java.io.InputStream;
 import javax.annotation.Nonnull;
 
@@ -61,6 +64,26 @@ public class SumoGuiAmbassador extends SumoAmbassador {
         this.startCmdPort = port;
         return new NopFederateExecutor();
     }
+
+    @Override
+    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) {
+        List<String> args = getProgramArguments(port);
+        args.add(0, "sumo-gui");
+
+        // TODO: deploy target path 
+        this.dockerFederateExecutor = new DockerFederateExecutor(
+                dockerImage,
+                "docker-volume:mosaic",
+                "/home/mosaic/shared",
+                args
+        );
+        this.startCmdPort = port;
+        this.dockerFederateExecutor.addPortBinding(port, port);
+        this.dockerFederateExecutor.addParameter("DISPLAY", ":1");
+        this.federateExecutor = this.dockerFederateExecutor;
+        return this.dockerFederateExecutor;
+    }
+
 
     @Override
     public void finishSimulation() {

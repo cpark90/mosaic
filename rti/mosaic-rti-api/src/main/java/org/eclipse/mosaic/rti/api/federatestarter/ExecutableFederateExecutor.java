@@ -60,12 +60,12 @@ public class ExecutableFederateExecutor implements FederateExecutor {
     }
 
     @Override
-    public Process startLocalFederate(File workingDir) throws FederateStarterException {
+    public Process startLocalFederate(File fedDir) throws FederateStarterException {
         log.debug("start: (command={} {})", command, StringUtils.join(args, " "));
         try {
             List<String> commandWithArgs = Lists.newArrayList(command);
             commandWithArgs.addAll(args);
-            currentLocalProcess = new ProcessBuilder(commandWithArgs).directory(workingDir).start();
+            currentLocalProcess = new ProcessBuilder(commandWithArgs).directory(fedDir).start();
             return currentLocalProcess;
         } catch (IOException e) {
             throw new FederateStarterException(e);

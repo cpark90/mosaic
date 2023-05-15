@@ -489,7 +489,7 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
      * @param typesInit Interaction contains predefined vehicle types.
      */
     private void writeTypesFromRti(VehicleTypesInitialization typesInit) {
-        File dir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
+        File dir = new File(descriptor.getHost().workingDirectory, descriptor.getId() + "/" + descriptor.getConfigTargetPath().toString());
         String subDir = new File(sumoConfig.sumoConfigurationFile).getParent();
         if (StringUtils.isNotBlank(subDir)) {
             dir = new File(dir, subDir);
