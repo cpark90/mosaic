@@ -104,6 +104,7 @@ public class DockerFederateExecutor implements FederateExecutor {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
+                    .gpusAll()
                     .removeAfterRun()
                     .currentUser()
                     .args(args)

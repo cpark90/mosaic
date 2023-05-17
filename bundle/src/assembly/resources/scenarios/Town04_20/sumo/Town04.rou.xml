@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="vehicle.toyota.prius" maxSpeed="7.5"/>
+    <vType id="vehicle.bmw.grandtourer" maxSpeed="20"/>
+    <vType id="vehicle.lincoln.mkz2017" maxSpeed="15"/>
+    <vType id="vehicle.mercedes-benz.coupe" maxSpeed="17"/>
+    <route id="r_0" edges="-8 -9 17 27 26 -2 -3 -4 -5 -37 -38 -39 33 47"/>
+    <route id="r_1" edges="40 39 38 37 36 35 42 -23"/>
+    <route id="r_2" edges="51 -16 -17 -18 -19 -5 -37 -38 -39 -40"/>
+    <route id="r_3" edges="-41 -46 -47 -48 -7 -8 -9 -10 -29 -30 -1"/>
+    <route id="r_4" edges="52 16 15 -43 14 -25 -26 -27"/>
+    <vehicle id="v_0" depart="0.00" route="r_0" type="vehicle.toyota.prius"/>
+    <vehicle id="v_1" depart="0.00" route="r_1" type="vehicle.bmw.grandtourer"/>
+    <vehicle id="v_2" depart="0.00" route="r_2" type="vehicle.lincoln.mkz2017"/>
+    <vehicle id="v_3" depart="0.00" route="r_3" type="vehicle.mercedes-benz.coupe"/>
+    <vehicle id="v_4" depart="0.00" route="r_4" type="vehicle.toyota.prius"/>
+    <vehicle id="v_5" depart="10.00" route="r_1" type="vehicle.bmw.grandtourer"/>
+    <vehicle id="v_6" depart="30.00" route="r_2" type="vehicle.lincoln.mkz2017"/>
+    <vehicle id="v_7" depart="30.00" route="r_4" type="vehicle.mercedes-benz.coupe"/>
+    <vehicle id="v_8" depart="30.00" route="r_1" type="vehicle.toyota.prius"/>
+    <vehicle id="v_9" depart="30.00" route="r_3" type="vehicle.bmw.grandtourer"/>
+    <vehicle id="v_10" depart="60.00" route="r_0" type="vehicle.lincoln.mkz2017"/>
+    <vehicle id="v_11" depart="60.00" route="r_4" type="vehicle.mercedes-benz.coupe"/>
+    <vehicle id="v_12" depart="60.00" route="r_1" type="vehicle.toyota.prius"/>
+    <vehicle id="v_13" depart="90.00" route="r_0" type="vehicle.bmw.grandtourer"/>
+    <vehicle id="v_14" depart="95.00" route="r_2" type="vehicle.lincoln.mkz2017"/>
+    <vehicle id="v_15" depart="120.00" route="r_2" type="vehicle.mercedes-benz.coupe"/>
+    <vehicle id="v_16" depart="120.00" route="r_3" type="vehicle.toyota.prius"/>
+    <vehicle id="v_17" depart="120.00" route="r_1" type="vehicle.bmw.grandtourer"/>
+    <vehicle id="v_18" depart="150.00" route="r_1" type="vehicle.lincoln.mkz2017"/>
+    <vehicle id="v_19" depart="150.00" route="r_0" type="vehicle.mercedes-benz.coupe"/>
+</routes>

@@ -43,6 +43,7 @@ public class DockerRun {
     private List<String> args;
     private List<Pair<File, String>> hostVolumeBindings = new Vector<>();
     private List<Pair<String, String>> dockerVolumeBindings = new Vector<>();
+    private boolean gpusAll = false;
     private boolean removeAfterRun = false;
     private boolean removeBeforeRun;
 
@@ -58,6 +59,14 @@ public class DockerRun {
      */
     public DockerRun name(String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * Marks the docker container to use gpus.
+     */
+    public DockerRun gpusAll() {
+        this.gpusAll = true;
         return this;
     }
 
@@ -168,6 +177,11 @@ public class DockerRun {
      */
     public DockerContainer execute() {
         List<String> options = new Vector<>();
+
+        if (gpusAll) {
+            options.add("--gpus");
+            options.add("all");
+        }
 
         if (removeAfterRun) {
             options.add("--rm");
