@@ -69,7 +69,7 @@ public class TrafficManagementCenterSpawner extends ServerSpawner {
         TmcRegistration interaction = new TmcRegistration(0, name, group, getApplications(), getInductionLoopList(), getLaneAreaList());
         try {
             LOG.info("Creating TMC: {}", this);
-            spawningFramework.getRti().triggerInteraction(interaction);
+            spawningFramework.getRtiAmbassador().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
             LOG.error("Exception while sending Interaction in TrafficManagementCenterSpawner.init()");
             throw new InternalFederateException("Exception while sending Interaction in TrafficManagementCenterSpawner.init()", e);

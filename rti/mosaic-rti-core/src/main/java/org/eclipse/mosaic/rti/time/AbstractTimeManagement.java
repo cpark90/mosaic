@@ -72,11 +72,11 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
      * TODO: the ordering of this queue has to be revisited:
      * <ul>
      *     <li/> {@link org.eclipse.mosaic.rti.api.parameters.FederatePriority} is used as reference values
-     *     <li/> {@link FederateEvent#compareTo} orders events reversed as described FederatePriority
+     *     <li/> {@link FederateEvent#compareTo} orders federateEvents reversed as described FederatePriority
      *     <li/> maybe it's enough to just reverse the compareTo logic
      * </ul>
      */
-    protected final Queue<FederateEvent> events;
+    protected final Queue<FederateEvent> federateEvents;
 
     protected final ComponentProvider federation;
 
@@ -96,7 +96,7 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
     protected AbstractTimeManagement(ComponentProvider federation, MosaicComponentParameters componentParameters) {
         this.progressLogger = LoggerFactory.getLogger("SimulationProgress");
         this.logger = LoggerFactory.getLogger(getClass());
-        this.events = new EfficientPriorityQueue<>();
+        this.federateEvents = new EfficientPriorityQueue<>();
         this.federation = federation;
         this.endTime = componentParameters.getEndTime();
     }
@@ -119,10 +119,10 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
                     federateId, time, this.time
             ));
         }
-        synchronized (this.events) {
+        synchronized (this.federateEvents) {
             FederateEvent e = new FederateEvent(federateId, time, lookahead, priority);
-            if (!this.events.contains(e)) {
-                this.events.add(e);
+            if (!this.federateEvents.contains(e)) {
+                this.federateEvents.add(e);
             }
         }
     }
@@ -143,7 +143,7 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
         // advance to start time
         this.time = 0;
 
-        // schedule start event for each federate
+        // schedule start federateEvent for each federate
         Collection<FederateAmbassador> ambassadors = federation.getFederationManagement().getAmbassadors();
         for (FederateAmbassador fed : ambassadors) {
             fed.initialize(0, getEndTime());
@@ -160,8 +160,8 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
 
         try {
             this.stopWatchDog();
-            for (FederateAmbassador fed : federation.getFederationManagement().getAmbassadors()) {
-                fed.finishSimulation();
+            for (FederateAmbassador federateAmbassador : federation.getFederationManagement().getAmbassadors()) {
+                federateAmbassador.finishSimulation();
             }
         } finally {
             PerformanceMonitor.getInstance().logSummary(logger);
@@ -202,10 +202,10 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
 
     @Override
     public long getNextEventTimestamp() throws IllegalValueException {
-        if (events.peek() != null) {
-            return events.peek().getRequestedTime();
+        if (federateEvents.peek() != null) {
+            return federateEvents.peek().getRequestedTime();
         } else {
-            throw new IllegalValueException("No next event in queue.");
+            throw new IllegalValueException("No next federateEvent in queue.");
         }
     }
 

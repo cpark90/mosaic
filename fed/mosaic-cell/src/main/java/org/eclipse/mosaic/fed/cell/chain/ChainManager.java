@@ -58,8 +58,8 @@ public class ChainManager implements EventManager {
     private static final Logger log = LoggerFactory.getLogger(ChainManager.class);
     private long lastAdvanceTime = 0;
 
-    public RtiAmbassador getRti() {
-        return rti;
+    public RtiAmbassador getRtiAmbassador() {
+        return rtiAmbassador;
     }
 
     private final AmbassadorParameter ambassadorParameter;
@@ -82,7 +82,7 @@ public class ChainManager implements EventManager {
     /**
      * Handle to interact with MOSAIC.
      */
-    private final RtiAmbassador rti;
+    private final RtiAmbassador rtiAmbassador;
 
     private final RandomNumberGenerator rng;
 
@@ -90,12 +90,12 @@ public class ChainManager implements EventManager {
      * Initialize the ChainManager, which is the EventManager for the communication dependent events
      * and at the same time the only module in the cell to perform interactions towards MOSAIC.
      *
-     * @param rti the reference towards MOSAIC (for requesting timeAdvances and sending interactions).
+     * @param rtiAmbassador the reference towards MOSAIC (for requesting timeAdvances and sending interactions).
      * @param rng the RandomGeneratorObject object that is needed by the Geocaster
      */
-    public ChainManager(RtiAmbassador rti, RandomNumberGenerator rng, AmbassadorParameter ambassadorParameter) {
+    public ChainManager(RtiAmbassador rtiAmbassador, RandomNumberGenerator rng, AmbassadorParameter ambassadorParameter) {
         log.info("Initialize ChainManager");
-        this.rti = rti;
+        this.rtiAmbassador = rtiAmbassador;
         this.rng = rng;
         this.ambassadorParameter = ambassadorParameter;
         initializeModuleRegistry();
@@ -198,7 +198,7 @@ public class ChainManager implements EventManager {
             log.trace(" and requestAdvanceTime({})", TIME.format(event.getTime()));
         }
         try {
-            rti.requestAdvanceTime(event.getTime());
+            rtiAmbassador.requestAdvanceTime(event.getTime());
         } catch (IllegalValueException ex) {
             throw new RuntimeException("Could not request advanceTime from RTI.", ex);
         }
@@ -216,7 +216,7 @@ public class ChainManager implements EventManager {
                 TIME.format(lastAdvanceTime),
                 interaction.getTypeId(), TIME.format(interaction.getTime()));
         try {
-            rti.triggerInteraction(interaction);
+            rtiAmbassador.triggerInteraction(interaction);
         } catch (IllegalValueException | InternalFederateException ex) {
             throw new RuntimeException("Could not send interaction to RTI.", ex);
         }

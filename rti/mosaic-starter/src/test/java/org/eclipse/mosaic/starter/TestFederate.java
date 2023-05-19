@@ -44,7 +44,7 @@ public class TestFederate implements FederateAmbassador {
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
+    public DockerFederateExecutor createDockerFederateExecutor(String federateDockerImage, int port, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
@@ -59,7 +59,7 @@ public class TestFederate implements FederateAmbassador {
     }
 
     @Override
-    public void setRtiAmbassador(@Nonnull RtiAmbassador rti) {
+    public void setRtiAmbassador(@Nonnull RtiAmbassador rtiAmbassador) {
         // nop
     }
 

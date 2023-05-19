@@ -74,7 +74,7 @@ public class ServerSpawner extends UnitSpawner implements Spawner {
         ServerRegistration interaction = new ServerRegistration(0, name, group, getApplications());
         try {
             LOG.info("Creating Server: {}", this);
-            spawningFramework.getRti().triggerInteraction(interaction);
+            spawningFramework.getRtiAmbassador().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
             LOG.error("Exception while sending Interaction in ServerSpawner.init()");
             throw new InternalFederateException("Exception while sending Interaction in ServerSpawner.init()", e);

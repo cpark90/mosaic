@@ -88,7 +88,7 @@ public class DownstreamModuleTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule().strictness(Strictness.LENIENT);
 
     @Mock
-    public RtiAmbassador rti;
+    public RtiAmbassador rtiAmbassador;
 
     private AmbassadorParameter ambassadorParameter;
 
@@ -125,7 +125,7 @@ public class DownstreamModuleTest {
     public void setup() throws IllegalValueException, InternalFederateException {
         File ambassadorConfiguration = new File("cell_config.json");
         ambassadorParameter = new AmbassadorParameter(null, ambassadorConfiguration);
-        ChainManager chainManager = new ChainManager(rti, rng, ambassadorParameter) {
+        ChainManager chainManager = new ChainManager(rtiAmbassador, rng, ambassadorParameter) {
             @Override
             public void finishEvent(CellModuleMessage cellModuleMessage) {
                 cellModuleMessages.add(cellModuleMessage);
@@ -143,7 +143,7 @@ public class DownstreamModuleTest {
                     }
                     return null;
                 }
-        ).when(rti).triggerInteraction(ArgumentMatchers.isA(Interaction.class));
+        ).when(rtiAmbassador).triggerInteraction(ArgumentMatchers.isA(Interaction.class));
 
         downstreamModule = new DownstreamModule(chainManager);
 

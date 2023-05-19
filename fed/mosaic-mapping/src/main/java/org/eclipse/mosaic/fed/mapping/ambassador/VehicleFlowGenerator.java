@@ -365,7 +365,7 @@ public class VehicleFlowGenerator {
         if (nextSpawnTime == -1) { // init some variables before the first time advance
             nextSpawnTime = spawningMode.getNextSpawningTime(framework.getTime());
             try {
-                framework.getRti().requestAdvanceTime(nextSpawnTime);
+                framework.getRtiAmbassador().requestAdvanceTime(nextSpawnTime);
             } catch (IllegalValueException e) {
                 LOG.error("Exception while requesting time advance in VehicleStreamGenerator.timeAdvance()", e);
                 throw new InternalFederateException("Exception while requesting time advance in VehicleStreamGenerator.timeAdvance()", e);
@@ -378,7 +378,7 @@ public class VehicleFlowGenerator {
 
         nextSpawnTime = spawningMode.getNextSpawningTime(framework.getTime());
         try {
-            framework.getRti().requestAdvanceTime(nextSpawnTime);
+            framework.getRtiAmbassador().requestAdvanceTime(nextSpawnTime);
         } catch (IllegalValueException e) {
             LOG.error("Exception in VehicleStreamGenerator.timeAdvance()", e);
             throw new InternalFederateException("Exception in VehicleStreamGenerator.timeAdvance()", e);
@@ -438,7 +438,7 @@ public class VehicleFlowGenerator {
             LOG.info("Creating Vehicle: time={},name={},route={},laneSelectionMode={},lane={},departConnectionIndex={},pos={},type={},departSpeed={},applications={}",
                     framework.getTime(), name, route, laneSelectionMode, lane,
                     departConnectionIndex, pos, type.getPrototypeName(), departSpeed, type.getApplications());
-            framework.getRti().triggerInteraction(interaction);
+            framework.getRtiAmbassador().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
             LOG.error("Couldn't send an {} interaction in VehicleStreamGenerator.timeAdvance()", interaction.getTypeId(), e);
             throw new InternalFederateException("Exception in VehicleStreamGenerator.timeAdvance()", e);

@@ -238,7 +238,7 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
                 // propagate new route
                 final VehicleRouteRegistration vehicleRouteRegistration = new VehicleRouteRegistration(super.nextTimeStep, route);
                 try {
-                    rti.triggerInteraction(vehicleRouteRegistration);
+                    rtiAmbassador.triggerInteraction(vehicleRouteRegistration);
                 } catch (IllegalValueException e) {
                     throw new InternalFederateException(e);
                 }
@@ -291,7 +291,7 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
             vehicleTypeId = bridge.getVehicleControl().getVehicleTypeId(vehicleId);
             vehicleType = bridge.getVehicleControl().getVehicleType(vehicleTypeId);
             try {
-                rti.triggerInteraction(new ScenarioVehicleRegistration(this.nextTimeStep, vehicleId, vehicleType));
+                rtiAmbassador.triggerInteraction(new ScenarioVehicleRegistration(this.nextTimeStep, vehicleId, vehicleType));
             } catch (IllegalValueException e) {
                 throw new InternalFederateException(e);
             }

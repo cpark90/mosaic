@@ -81,25 +81,25 @@ public class ActivityLoggingMonitor implements Monitor {
     }
 
     @Override
-    public void onBeginActivity(FederateEvent event) {
+    public void onBeginActivity(FederateEvent federateEvent) {
         statLog.info(
                 "EVT;{};{};id={}",
-                event.getRequestedTime(),
-                event.getFederateId(),
-                event.getId());
+                federateEvent.getRequestedTime(),
+                federateEvent.getFederateId(),
+                federateEvent.getId());
     }
 
     @Override
-    public void onEndActivity(FederateEvent event, long duration) {
-        String fedId = event.getFederateId();
+    public void onEndActivity(FederateEvent federateEvent, long duration) {
+        String fedId = federateEvent.getFederateId();
 
-        eventList.push(new FederateEventDetails(event.getRequestedTime(), fedId, duration));
+        eventList.push(new FederateEventDetails(federateEvent.getRequestedTime(), fedId, duration));
         statLog.info(
                 "EVT;{};{};D:{};id={}",
-                event.getRequestedTime(),
-                event.getFederateId(),
+                federateEvent.getRequestedTime(),
+                federateEvent.getFederateId(),
                 duration,
-                event.getId()
+                federateEvent.getId()
         );
     }
 
@@ -141,19 +141,19 @@ public class ActivityLoggingMonitor implements Monitor {
     }
 
     @Override
-    public void onScheduling(int id, FederateEvent event) {
+    public void onScheduling(int id, FederateEvent federateEvent) {
         statLog.info(
                 "PRL;{};{};{};{};{}",
                 id,
-                event.getId(),
-                event.getFederateId(),
-                event.getRequestedTime(),
-                event.getLookahead());
+                federateEvent.getId(),
+                federateEvent.getFederateId(),
+                federateEvent.getRequestedTime(),
+                federateEvent.getLookahead());
     }
 
     private void printStatisticsInfo() {
         statLog.info("Simulation ended. Statistics:");
-        // Calculate average event values
+        // Calculate average federateEvent values
         long minDistance = Integer.MAX_VALUE;
         long maxDistance = Integer.MIN_VALUE;
         double avgDistance = 0;
@@ -170,7 +170,7 @@ public class ActivityLoggingMonitor implements Monitor {
 
             long currentDuration = currentEvent.duration;
 
-            // Save each event duration per federate
+            // Save each federateEvent duration per federate
             String currentFederate = currentEvent.federate;
             List<Long> durationList = federateEventDurations.computeIfAbsent(currentFederate, k -> new ArrayList<>());
 
@@ -193,9 +193,9 @@ public class ActivityLoggingMonitor implements Monitor {
             statLog.info("{};{};{}", entry.getKey(), average, durationSize);
         }
 
-        statLog.info("Minimum event distance: {}", minDistance);
-        statLog.info("Maximum event distance: {}", maxDistance);
-        statLog.info("Average event distance: {}", avgDistance);
+        statLog.info("Minimum federateEvent distance: {}", minDistance);
+        statLog.info("Maximum federateEvent distance: {}", maxDistance);
+        statLog.info("Average federateEvent distance: {}", avgDistance);
 
         // //////////////////////////////////////// Message passing information
         statLog.info("Message Counts (sent):");

@@ -90,7 +90,7 @@ public class SnsAmbassador extends AbstractFederateAmbassador {
         this.log.info("Init simulation with startTime={}, endTime={}", startTime, endTime);
 
         if (log.isTraceEnabled()) {
-            log.trace("subscribedMessages: {}", Arrays.toString(this.rti.getSubscribedInteractions().toArray()));
+            log.trace("subscribedMessages: {}", Arrays.toString(this.rtiAmbassador.getSubscribedInteractions().toArray()));
         }
 
         try {
@@ -99,7 +99,7 @@ public class SnsAmbassador extends AbstractFederateAmbassador {
                 log.info("Detected GammaSpeedDelay for. The SNS is currently ignoring speed of entities in its evaluation of delay values");
             }
             this.singlehopRadius = configuration.singlehopRadius;
-            final RandomNumberGenerator rng = rti.createRandomNumberGenerator();
+            final RandomNumberGenerator rng = rtiAmbassador.createRandomNumberGenerator();
             transmissionSimulator = new TransmissionSimulator(rng, configuration);
         } catch (InstantiationException e) {
             log.error("Could not read configuration. Reason: {}", e.getMessage());
@@ -214,7 +214,7 @@ public class SnsAmbassador extends AbstractFederateAmbassador {
         }
         // Calculate transmission
         Map<String, TransmissionResult> transmissionResults = transmissionSimulator.preProcessInteraction(interaction);
-        // send transmission results to rti
+        // send transmission results to rtiAmbassador
         prepareV2xMessageReceptions(transmissionResults, interaction);
     }
 
@@ -293,7 +293,7 @@ public class SnsAmbassador extends AbstractFederateAmbassador {
                         new V2xReceiverInformation(receiveTime).sendTime(v2xMessageTransmission.getTime())
                 );
                 try {
-                    rti.triggerInteraction(v2xMessageReception);
+                    rtiAmbassador.triggerInteraction(v2xMessageReception);
                 } catch (IllegalValueException | InternalFederateException e) {
                     throw new InternalFederateException(e);
                 }

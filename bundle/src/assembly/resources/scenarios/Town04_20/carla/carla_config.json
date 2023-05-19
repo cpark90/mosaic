@@ -1,6 +1,7 @@
 {
     "updateInterval": 100,
     "carlaUE4Path": "/opt/carla/",
-    "bridgePath": "./scenarios/Town04_20/carla; bridge.sh",
-    "carlaConnectionPort": 8913
+    "carlaConnectionPort": 8913,
+	"additionalCarlaParameters": " --time-to-teleport 180  --seed 100000",
+    "additionalMediatorParameters": " --time-to-teleport 180  --seed 100000"
 }

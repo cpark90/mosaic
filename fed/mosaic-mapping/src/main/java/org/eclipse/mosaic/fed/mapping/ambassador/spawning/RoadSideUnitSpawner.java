@@ -64,7 +64,7 @@ public class RoadSideUnitSpawner extends UnitSpawner implements Spawner {
         RsuRegistration interaction = new RsuRegistration(0, name, group, getApplications(), this.position);
         try {
             LOG.info("Creating RSU: {}", this);
-            spawningFramework.getRti().triggerInteraction(interaction);
+            spawningFramework.getRtiAmbassador().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
             LOG.error("Exception while sending Interaction in RoadSideUnitSpawner.init()");
             throw new InternalFederateException("Exception while sending Interaction in RoadSideUnitSpawner.init()", e);

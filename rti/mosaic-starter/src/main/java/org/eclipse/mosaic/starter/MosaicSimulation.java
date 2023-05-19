@@ -380,13 +380,13 @@ public class MosaicSimulation {
 
         if (descriptor.isToStartAndStop()) {
 
-            if (StringUtils.isNotEmpty(federate.dockerImage)) {
+            if (StringUtils.isNotEmpty(federate.federateDockerImage)) {
                 final String container = federate.id + '-' + simulationId;
                 descriptor.setFederateExecutor(
-                        descriptor.getAmbassador().createDockerFederateExecutor(federate.dockerImage, federate.port, host.operatingSystem).setContainerName(container)
+                        descriptor.getAmbassador().createDockerFederateExecutor(federate.federateDockerImage, federate.federatePort, host.operatingSystem).setContainerName(container)
                 );
             } else {
-                int port = federate.port;
+                int port = federate.federatePort;
                 if (port == 0) {
                     port = SocketUtils.findFreePort();
                     log.info("Federate {}: No port given. Using free port: {}", descriptor.getId(), port);
@@ -395,10 +395,29 @@ public class MosaicSimulation {
                 descriptor.setFederateExecutor(descriptor.getAmbassador().createFederateExecutor(host.address, port, host.operatingSystem));
             }
 
+            if (StringUtils.isNotEmpty(federate.mediatorDockerImage)) {
+                final String container = federate.id + '-' + simulationId + '_mediator';
+                descriptor.setMediatorExecutor(
+                        descriptor.getAmbassador().createDockerMediatorExecutor(federate.mediatorDockerImage, federate.mediatorPort, host.operatingSystem).setContainerName(container)
+                );
+            } else {
+                int port = federate.mediatorPort;
+                if (port == 0) {
+                    port = SocketUtils.findFreePort();
+                    log.info("Federate {}: No port given. Using free port: {}", descriptor.getId(), port);
+                }
+
+                descriptor.setMediatorExecutor(descriptor.getAmbassador().createMediatorExecutor(host.address, port, host.operatingSystem));
+            }
+
         } else {
             // connect only, if address and port are given
-            if (federate.port > 0) {
-                ambassador.connectToFederate(host.address, federate.port);
+            if (federate.federatePort > 0) {
+                ambassador.connectToFederate(host.address, federate.federatePort);
+            }
+
+            if (federate.mediatorPort > 0) {
+                ambassador.connectToMediator(host.address, federate.mediatorPort);
             }
         }
     }
@@ -432,32 +451,32 @@ public class MosaicSimulation {
      * @throws Exception if something went wrong during initalization of any federate
      */
     private ComponentProvider createFederation(final MosaicComponentParameters simulationParams, final List<FederateDescriptor> federates) throws Exception {
-        final ComponentProvider componentProvider = componentProviderFactory.createComponentProvider(simulationParams);
+        final ComponentProvider federation = componentProviderFactory.createComponentProvider(simulationParams);
 
-        FederationManagement federation = componentProvider.getFederationManagement();
-        federation.createFederation();
+        FederationManagement federationMgnt = federation.getFederationManagement();
+        federationMgnt.createFederation();
 
-        TimeManagement time = componentProvider.getTimeManagement();
+        TimeManagement timeMgnt = federation.getTimeManagement();
 
         if (watchdogInterval > 0) {
-            final WatchDog watchDogThread = time.startWatchDog(federationId, watchdogInterval);
-            federation.setWatchdog(watchDogThread);
+            final WatchDog watchDogThread = timeMgnt.startWatchDog(federationId, watchdogInterval);
+            federationMgnt.setWatchdog(watchDogThread);
         }
 
         if (externalWatchdogPort > 0) {
             log.debug("External watchdog port: " + externalWatchdogPort);
-            time.startExternalWatchDog(federationId, externalWatchdogPort);
+            timeMgnt.startExternalWatchDog(federationId, externalWatchdogPort);
         }
 
-        final InteractionManagement inter = componentProvider.getInteractionManagement();
+        final InteractionManagement interMgnt = federation.getInteractionManagement();
 
         // add federates
         for (FederateDescriptor descriptor : federates) {
-            federation.addFederate(descriptor);
-            inter.subscribeInteractions(descriptor.getId(), descriptor.getInteractions());
-            time.updateWatchDog();
+            federationMgnt.addFederate(descriptor);
+            interMgnt.subscribeInteractions(descriptor.getId(), descriptor.getInteractions());
+            timeMgnt.updateWatchDog();
         }
-        return componentProvider;
+        return federation;
     }
 
     private void stopFederation(ComponentProvider federation) {

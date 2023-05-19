@@ -68,7 +68,7 @@ public class ChainManagerTest {
     private V2xMessage v2XMessage;
 
     @Mock
-    public RtiAmbassador rti;
+    public RtiAmbassador rtiAmbassador;
 
     private AmbassadorParameter ambassadorParameter;
 
@@ -89,7 +89,7 @@ public class ChainManagerTest {
     public void setup() throws IllegalValueException, InternalFederateException {
         File ambassadorConfiguration = new File("cell_config.json");
         ambassadorParameter = new AmbassadorParameter("Cell", ambassadorConfiguration);
-        chainManager = new ChainManager(rti, rng, ambassadorParameter) {
+        chainManager = new ChainManager(rtiAmbassador, rng, ambassadorParameter) {
             @Override
             public void addEvent(@Nonnull Event event) {
                 eventsAdded.add(event);
@@ -99,7 +99,7 @@ public class ChainManagerTest {
 
         doAnswer(
                 invocationOnMock -> rtiInteractionsSent.add((Interaction) invocationOnMock.getArguments()[0])
-        ).when(rti).triggerInteraction(ArgumentMatchers.isA(Interaction.class));
+        ).when(rtiAmbassador).triggerInteraction(ArgumentMatchers.isA(Interaction.class));
 
         CNetwork region = new CNetwork();
         region.globalNetwork = new CNetworkProperties();

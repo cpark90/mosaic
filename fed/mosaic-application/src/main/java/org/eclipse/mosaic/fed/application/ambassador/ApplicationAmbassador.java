@@ -210,12 +210,12 @@ public class ApplicationAmbassador extends AbstractFederateAmbassador implements
     public void initialize(final long startTime, final long endTime) throws InternalFederateException {
         super.initialize(startTime, endTime);
         if (log.isTraceEnabled()) {
-            log.trace("subscribedInteractions: {}", Arrays.toString(this.rti.getSubscribedInteractions().toArray()));
+            log.trace("subscribedInteractions: {}", Arrays.toString(this.rtiAmbassador.getSubscribedInteractions().toArray()));
         }
-        SimulationKernel.SimulationKernel.getCentralNavigationComponent().initialize(this.rti);
+        SimulationKernel.SimulationKernel.getCentralNavigationComponent().initialize(this.rtiAmbassador);
         SimulationKernel.SimulationKernel.getCentralPerceptionComponent().initialize();
-        SimulationKernel.SimulationKernel.setInteractable(rti);
-        SimulationKernel.SimulationKernel.setRandomNumberGenerator(rti.createRandomNumberGenerator());
+        SimulationKernel.SimulationKernel.setInteractable(rtiAmbassador);
+        SimulationKernel.SimulationKernel.setRandomNumberGenerator(rtiAmbassador.createRandomNumberGenerator());
 
         // shutdown remaining simulation units within the simulation time frame
         SimulationKernel.SimulationKernel.getEventManager().addEvent(endTime, this::shutdownSimulationUnits);
@@ -395,7 +395,7 @@ public class ApplicationAmbassador extends AbstractFederateAmbassador implements
         );
         log.info("Sending VehicleRegistration Interaction:" + addInteraction);
         try {
-            rti.triggerInteraction(addInteraction);
+            rtiAmbassador.triggerInteraction(addInteraction);
         } catch (InternalFederateException | IllegalValueException e) {
             log.error(ErrorRegister.AMBASSADOR_ErrorSendInteraction.toString(), e);
         }
@@ -706,7 +706,7 @@ public class ApplicationAmbassador extends AbstractFederateAmbassador implements
         }
 
         try {
-            rti.requestAdvanceTime(event.getTime());
+            rtiAmbassador.requestAdvanceTime(event.getTime());
             if (log.isDebugEnabled()) {
                 log.debug("requestAdvanceTime({})", TIME.format(event.getTime()));
             }

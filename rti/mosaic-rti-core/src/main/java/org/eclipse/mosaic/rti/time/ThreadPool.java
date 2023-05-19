@@ -101,7 +101,7 @@ class ThreadPool {
 
         @Override
         public void run() {
-            FederateEvent ev;
+            FederateEvent federateEvent;
             Task task;
 
             while (true) {
@@ -112,10 +112,10 @@ class ThreadPool {
                         }
                     }
                     synchronized (queue.isEmptyMutex) {
-                        ev = queue.getNextScheduledEvent();
+                        federateEvent = queue.getNextScheduledEvent();
                         activeCount++;
                     }
-                    task = new Task(ev);
+                    task = new Task(federateEvent);
                 }
 
                 try {
@@ -124,7 +124,7 @@ class ThreadPool {
                     LOG.error("Could not execute task", e);
                 }
                 synchronized (queue.isEmptyMutex) {
-                    queue.setEventProcessed(ev);
+                    queue.setEventProcessed(federateEvent);
                     activeCount--;
                     LOG.debug("active count: {}; isEmpty: {}", activeCount, queue.isEmpty());
                     if (activeCount == 0 && queue.isEmpty()) {
@@ -137,21 +137,21 @@ class ThreadPool {
 
     private class Task implements Runnable {
 
-        private final FederateEvent ev;
+        private final FederateEvent federateEvent;
 
-        private Task(FederateEvent ev) {
-            this.ev = ev;
+        private Task(FederateEvent federateEvent) {
+            this.federateEvent = federateEvent;
         }
 
         @Override
         public void run() {
             try {
-                FederateAmbassador ambassador = federation.getFederationManagement().getAmbassador(ev.getFederateId());
+                FederateAmbassador ambassador = federation.getFederationManagement().getAmbassador(federateEvent.getFederateId());
                 if (ambassador != null) {
-                    federation.getMonitor().onBeginActivity(ev);
+                    federation.getMonitor().onBeginActivity(federateEvent);
                     long startTime = System.currentTimeMillis();
-                    ambassador.advanceTime(ev.getRequestedTime());
-                    federation.getMonitor().onEndActivity(ev, System.currentTimeMillis() - startTime);
+                    ambassador.advanceTime(federateEvent.getRequestedTime());
+                    federation.getMonitor().onEndActivity(federateEvent, System.currentTimeMillis() - startTime);
                 }
             } catch (InternalFederateException iex) {
                 exceptionInThread = iex;

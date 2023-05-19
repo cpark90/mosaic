@@ -53,7 +53,7 @@ import java.util.Map;
 public class SpawningFrameworkTrafficLightTest {
 
     @Mock
-    public RtiAmbassador rti;
+    public RtiAmbassador rtiAmbassador;
 
     private RandomNumberGenerator rng;
 
@@ -74,11 +74,11 @@ public class SpawningFrameworkTrafficLightTest {
         ArgumentCaptor<TrafficLightRegistration> captor = ArgumentCaptor.forClass(TrafficLightRegistration.class);
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(mappingConfig, tlRegistration, rti, rng);
-        spawningFramework.timeAdvance(0, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(mappingConfig, tlRegistration, rtiAmbassador, rng);
+        spawningFramework.timeAdvance(0, rtiAmbassador, rng);
 
         //ASSERT
-        verify(rti, times(1000)).triggerInteraction(captor.capture());
+        verify(rtiAmbassador, times(1000)).triggerInteraction(captor.capture());
         List <TrafficLightRegistration> tlrs = captor.getAllValues();
         Assert.assertEquals(countAppInTlr(tlrs, "app_1") / 1000d, 0.5d, 0.02d);
         Assert.assertEquals(countAppInTlr(tlrs, "app_2") / 1000d, 0.5d, 0.02d);
@@ -96,11 +96,11 @@ public class SpawningFrameworkTrafficLightTest {
         ArgumentCaptor<TrafficLightRegistration> captor = ArgumentCaptor.forClass(TrafficLightRegistration.class);
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(mappingConfig, tlRegistration, rti, rng);
-        spawningFramework.timeAdvance(0, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(mappingConfig, tlRegistration, rtiAmbassador, rng);
+        spawningFramework.timeAdvance(0, rtiAmbassador, rng);
 
         //ASSERT
-        verify(rti, times(1000)).triggerInteraction(captor.capture());
+        verify(rtiAmbassador, times(1000)).triggerInteraction(captor.capture());
         List <TrafficLightRegistration> tlrs = captor.getAllValues();
         Assert.assertEquals(countAppInTlr(tlrs, "app_1") / 1000d, 0.2d, 0.02d);
         Assert.assertEquals(countAppInTlr(tlrs, "app_2") / 1000d, 0.8d, 0.02d);

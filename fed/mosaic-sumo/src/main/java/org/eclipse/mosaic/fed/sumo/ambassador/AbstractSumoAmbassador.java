@@ -262,13 +262,13 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) {
+    public DockerFederateExecutor createDockerFederateExecutor(String federateDockerImage, int port, CLocalHost.OperatingSystem os) {
         List<String> args = getProgramArguments(port);
         args.add(0, "sumo");
 
         // TODO: deploy target path 
         this.dockerFederateExecutor = new DockerFederateExecutor(
-                dockerImage,
+                federateDockerImage,
                 "docker-volume:mosaic",
                 "/home/mosaic/shared",
                 args
@@ -427,7 +427,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
         }
 
         try {
-            rti.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
+            rtiAmbassador.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
         } catch (IllegalValueException e) {
             log.error("Error during advanceTime request", e);
             throw new InternalFederateException(e);
@@ -677,7 +677,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
 
                 SumoTraciResult sumoTraciResult =
                         ((TraciClientBridge) bridge).writeByteArrayMessage(sumoTraciRequest.getRequestId(), sumoTraciRequest.getCommand());
-                rti.triggerInteraction(new SumoTraciResponse(sumoTraciRequest.getTime(), sumoTraciResult));
+                rtiAmbassador.triggerInteraction(new SumoTraciResponse(sumoTraciRequest.getTime(), sumoTraciResult));
             } else {
                 log.warn("SumoTraciRequests are not supported.");
             }
@@ -852,7 +852,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
             ));
 
             // now tell the RTI that an update happened so that the update can reach other federates
-            this.rti.triggerInteraction(
+            this.rtiAmbassador.triggerInteraction(
                     new TrafficLightUpdates(trafficLightStateChange.getTime(), changedTrafficLightGroupInfo)
             );
         } catch (IllegalValueException e) {
@@ -1260,11 +1260,11 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
             nextTimeStep += sumoConfig.updateInterval * TIME.MILLI_SECOND;
             simulationStepResult.getVehicleUpdates().setNextUpdate(nextTimeStep);
 
-            rti.triggerInteraction(simulationStepResult.getVehicleUpdates());
-            rti.triggerInteraction(simulationStepResult.getTrafficDetectorUpdates());
-            this.rti.triggerInteraction(simulationStepResult.getTrafficLightUpdates());
+            rtiAmbassador.triggerInteraction(simulationStepResult.getVehicleUpdates());
+            rtiAmbassador.triggerInteraction(simulationStepResult.getTrafficDetectorUpdates());
+            this.rtiAmbassador.triggerInteraction(simulationStepResult.getTrafficLightUpdates());
 
-            rti.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
+            rtiAmbassador.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
 
             lastAdvanceTime = time;
         } catch (InternalFederateException | IOException | IllegalValueException e) {
@@ -1349,7 +1349,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
             // propagate new route
             final VehicleRouteRegistration vehicleRouteRegistration = new VehicleRouteRegistration(time, route);
             try {
-                rti.triggerInteraction(vehicleRouteRegistration);
+                rtiAmbassador.triggerInteraction(vehicleRouteRegistration);
             } catch (IllegalValueException e) {
                 throw new InternalFederateException(e);
             }
@@ -1412,7 +1412,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
             }
         }
         Interaction stlRegistration = new ScenarioTrafficLightRegistration(time, trafficLightGroups, trafficLightGroupLaneMap);
-        rti.triggerInteraction(stlRegistration);
+        rtiAmbassador.triggerInteraction(stlRegistration);
     }
 
     /**

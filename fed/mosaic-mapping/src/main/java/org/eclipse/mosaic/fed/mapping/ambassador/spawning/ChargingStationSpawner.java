@@ -89,7 +89,7 @@ public class ChargingStationSpawner extends UnitSpawner implements Spawner {
                 new ChargingStationRegistration(0, chargingStationName, group, getApplications(), position, chargingSpots);
         try {
             LOG.info("Creating Charging Station: {}", this);
-            spawningFramework.getRti().triggerInteraction(chargingStationRegistration);
+            spawningFramework.getRtiAmbassador().triggerInteraction(chargingStationRegistration);
         } catch (IllegalValueException e) {
             LOG.error("Exception while sending ChargingStationRegistration interaction in ChargingStationSpawner.init()");
             throw new InternalFederateException(

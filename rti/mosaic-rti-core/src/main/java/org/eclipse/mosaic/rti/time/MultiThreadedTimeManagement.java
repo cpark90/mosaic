@@ -70,32 +70,32 @@ public class MultiThreadedTimeManagement extends AbstractTimeManagement {
         long currentRealtimeNs;
 
         FederateAmbassador ambassador;
-        FederateEvent event;
+        FederateEvent federateEvent;
         byte priority;
 
-        // run while events are available
-        while (this.events.size() > 0 && this.time < getEndTime()) {
+        // run while federateEvents are available
+        while (this.federateEvents.size() > 0 && this.time < getEndTime()) {
 
-            // remove first event of queue
-            synchronized (this.events) {
-                event = this.events.poll();
+            // remove first federateEvent of queue
+            synchronized (this.federateEvents) {
+                federateEvent = this.federateEvents.poll();
             }
 
-            if (event != null) {
-                this.time = event.getRequestedTime();
+            if (federateEvent != null) {
+                this.time = federateEvent.getRequestedTime();
             } else {
-                this.logger.trace("No more messages in event queue. Finishing simulation run.");
+                this.logger.trace("No more messages in federateEvent queue. Finishing simulation run.");
                 this.time = getEndTime();
                 break;
             }
-            priority = event.getPriority();
+            priority = federateEvent.getPriority();
 
-            this.logger.trace("New minimum valid simulation time: {}", event.getRequestedTime());
+            this.logger.trace("New minimum valid simulation time: {}", federateEvent.getRequestedTime());
 
             // check if other federates can be scheduled in parallel
-            if (this.events.peek() != null
-                    && priority == this.events.peek().getPriority()
-                    && event.getRequestedTime() + event.getLookahead() >= this.events.peek().getRequestedTime()
+            if (this.federateEvents.peek() != null
+                    && priority == this.federateEvents.peek().getPriority()
+                    && federateEvent.getRequestedTime() + federateEvent.getLookahead() >= this.federateEvents.peek().getRequestedTime()
             ) {
                 try {
                     ambassadorRunningSemaphore.acquire();
@@ -103,25 +103,25 @@ public class MultiThreadedTimeManagement extends AbstractTimeManagement {
                     // ignored
                 }
 
-                // schedule next event
+                // schedule next federateEvent
                 int id = createEventId(); // Acquire scheduling block id
-                federation.getMonitor().onScheduling(id, event);
-                this.scheduledEvents.addEvent(event);
+                federation.getMonitor().onScheduling(id, federateEvent);
+                this.scheduledEvents.addEvent(federateEvent);
 
-                // schedule further events that can be executed in parallel
-                while (this.events.peek() != null
-                        && priority == this.events.peek().getPriority()
-                        && scheduledEvents.getMaximumValidTime() >= this.events.peek().getRequestedTime()
+                // schedule further federateEvents that can be executed in parallel
+                while (this.federateEvents.peek() != null
+                        && priority == this.federateEvents.peek().getPriority()
+                        && scheduledEvents.getMaximumValidTime() >= this.federateEvents.peek().getRequestedTime()
                 ) {
-                    synchronized (events) {
-                        event = this.events.poll();
+                    synchronized (federateEvents) {
+                        federateEvent = this.federateEvents.poll();
                     }
-                    this.logger.trace("Parallel execution: {} time={} lookahead={}", event.getFederateId(), event.getRequestedTime(), event.getLookahead());
-                    federation.getMonitor().onScheduling(id, event);
-                    this.scheduledEvents.addEvent(event);
+                    this.logger.trace("Parallel execution: {} time={} lookahead={}", federateEvent.getFederateId(), federateEvent.getRequestedTime(), federateEvent.getLookahead());
+                    federation.getMonitor().onScheduling(id, federateEvent);
+                    this.scheduledEvents.addEvent(federateEvent);
                 }
 
-                // wait until all events are processed in parallel
+                // wait until all federateEvents are processed in parallel
                 synchronized (this.scheduledEvents.isEmptyMutex) {
                     try {
                         if (this.threadPool.isActive()) {
@@ -133,14 +133,14 @@ public class MultiThreadedTimeManagement extends AbstractTimeManagement {
                 }
                 ambassadorRunningSemaphore.release();
             } else {
-                // call ambassador associated with the scheduled event to
-                // process until the next globally scheduled event
-                ambassador = federation.getFederationManagement().getAmbassador(event.getFederateId());
+                // call ambassador associated with the scheduled federateEvent to
+                // process until the next globally scheduled federateEvent
+                ambassador = federation.getFederationManagement().getAmbassador(federateEvent.getFederateId());
                 if (ambassador != null) {
                     this.logger.trace(
                             "Advancing {} to time {}",
-                            federation.getFederationManagement().getAmbassador(event.getFederateId()).getId(),
-                            event.getRequestedTime()
+                            federation.getFederationManagement().getAmbassador(federateEvent.getFederateId()).getId(),
+                            federateEvent.getRequestedTime()
                     );
 
                     try {
@@ -148,13 +148,13 @@ public class MultiThreadedTimeManagement extends AbstractTimeManagement {
                     } catch (InterruptedException e) {
                         this.logger.trace("Error while acquiring semaphore", e);
                     }
-                    federation.getMonitor().onBeginActivity(event);
+                    federation.getMonitor().onBeginActivity(federateEvent);
                     long startTime = System.currentTimeMillis();
 
-                    ambassador.advanceTime(event.getRequestedTime());
+                    ambassador.advanceTime(federateEvent.getRequestedTime());
 
                     ambassadorRunningSemaphore.release();
-                    federation.getMonitor().onEndActivity(event, System.currentTimeMillis() - startTime);
+                    federation.getMonitor().onEndActivity(federateEvent, System.currentTimeMillis() - startTime);
 
                     updateWatchDog();
                 }
@@ -184,7 +184,7 @@ public class MultiThreadedTimeManagement extends AbstractTimeManagement {
     @Override
     public void finishSimulationRun(int statusCode) throws InternalFederateException {
         this.threadPool.shutdown();
-        this.events.clear();
+        this.federateEvents.clear();
         super.finishSimulationRun(statusCode);
     }
 }

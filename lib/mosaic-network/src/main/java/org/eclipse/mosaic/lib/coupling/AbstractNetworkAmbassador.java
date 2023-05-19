@@ -312,7 +312,7 @@ public abstract class AbstractNetworkAmbassador extends AbstractFederateAmbassad
                         log.trace("Requested next_event at {} ", nextTime);
                         // If the federates event is beyond our allowed time we have to request time advance from the RTI
                         if (nextTime > time) {
-                            this.rti.requestAdvanceTime(nextTime);
+                            this.rtiAmbassador.requestAdvanceTime(nextTime);
                         }
                         break;
                     case CMD.MSG_RECV:  // A simulated node has received a V2X message
@@ -327,7 +327,7 @@ public abstract class AbstractNetworkAmbassador extends AbstractFederateAmbassad
                                     rcvMsgContainer.receiverInformation
                             );
                             log.debug("Receive V2XMessage : Id({}) on Node {} at Time={}", msg.getMessageId(), msg.getReceiverName(), TIME.format(msg.getTime()));
-                            this.rti.triggerInteraction(msg);  // Hand the received message to the RTI and thus the other federates
+                            this.rtiAmbassador.triggerInteraction(msg);  // Hand the received message to the RTI and thus the other federates
                         }
                         break;
                     case CMD.END:       // The federate has terminated the current time advance -> we are done here

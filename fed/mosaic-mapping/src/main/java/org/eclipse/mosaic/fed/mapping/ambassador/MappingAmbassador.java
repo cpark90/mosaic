@@ -152,7 +152,7 @@ public class MappingAmbassador extends AbstractFederateAmbassador {
             try {
                 log.info("Mapping Scenario Vehicle. time={}, name={}, type={}, apps={}",
                         framework.getTime(), scenarioVehicle.getName(), scenarioVehicle.getVehicleType().getName(), prototype.applications);
-                rti.triggerInteraction(vehicleRegistration);
+                rtiAmbassador.triggerInteraction(vehicleRegistration);
             } catch (Exception e) {
                 throw new InternalFederateException(e);
             }
@@ -164,7 +164,7 @@ public class MappingAmbassador extends AbstractFederateAmbassador {
     @Override
     protected void processTimeAdvanceGrant(long time) throws InternalFederateException {
         try {
-            framework.timeAdvance(time, rti, randomNumberGenerator);
+            framework.timeAdvance(time, rtiAmbassador, randomNumberGenerator);
         } catch (InternalFederateException e) {
             InternalFederateException ex = new InternalFederateException("Error while processing timeAdvanceGrant", e);
             log.error("Error while processing timeAdvanceGrant", ex);
@@ -176,18 +176,18 @@ public class MappingAmbassador extends AbstractFederateAmbassador {
     public void initialize(long startTime, long endTime) throws InternalFederateException {
         super.initialize(startTime, endTime);
         try {
-            randomNumberGenerator = rti.createRandomNumberGenerator();
+            randomNumberGenerator = rtiAmbassador.createRandomNumberGenerator();
 
             // Create the extended framework (a condensed representation,
             // enriched with functionality)
-            framework = new SpawningFramework(mappingAmbassadorConfiguration, scenarioTrafficLightRegistration, rti, randomNumberGenerator);
+            framework = new SpawningFramework(mappingAmbassadorConfiguration, scenarioTrafficLightRegistration, rtiAmbassador, randomNumberGenerator);
 
             // Send out the VehicleTypesInitialization, publishing information
             // about the different vehicle types in the simulation
-            rti.triggerInteraction(framework.generateVehicleTypesInitialization());
+            rtiAmbassador.triggerInteraction(framework.generateVehicleTypesInitialization());
 
             // and register the initial time advance
-            rti.requestAdvanceTime(0);
+            rtiAmbassador.requestAdvanceTime(0);
         } catch (IllegalValueException e) {
             InternalFederateException ex = new InternalFederateException(
                     "InvalidValueException while sending out VehicleTypesInitialization(after construction!)", e

@@ -90,7 +90,7 @@ public class OutputAmbassador extends AbstractFederateAmbassador {
             createOutputGenerator(loadConfiguration());
 
             this.nextTimestep = startTime + this.globalUpdateInterval;
-            this.rti.requestAdvanceTime(this.nextTimestep, this.globalUpdateInterval, FederatePriority.LOWEST);
+            this.rtiAmbassador.requestAdvanceTime(this.nextTimestep, this.globalUpdateInterval, FederatePriority.LOWEST);
         } catch (IllegalValueException e) {
             throw new InternalFederateException(e);
         }
@@ -180,7 +180,7 @@ public class OutputAmbassador extends AbstractFederateAmbassador {
             }
 
             this.nextTimestep += this.globalUpdateInterval;
-            this.rti.requestAdvanceTime(this.nextTimestep, this.globalUpdateInterval, FederatePriority.LOWEST);
+            this.rtiAmbassador.requestAdvanceTime(this.nextTimestep, this.globalUpdateInterval, FederatePriority.LOWEST);
         } catch (Exception e) {
             throw new InternalFederateException(e);
         }

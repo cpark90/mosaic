@@ -25,9 +25,9 @@ class ScheduledEvents {
     final Object isEmptyMutex = new Object();
 
     /**
-     * Priority queue for events.
+     * Priority queue for federateEvents.
      */
-    private final PriorityBlockingQueue<FederateEvent> events = new PriorityBlockingQueue<>();
+    private final PriorityBlockingQueue<FederateEvent> federateEvents = new PriorityBlockingQueue<>();
 
     /**
      * Priority queue for lookahead values.
@@ -35,48 +35,48 @@ class ScheduledEvents {
     private final PriorityBlockingQueue<Long> lookahead = new PriorityBlockingQueue<>();
 
     /**
-     * Check, whether event queue is empty.
+     * Check, whether federateEvent queue is empty.
      *
-     * @return true, if the event queue contains no elements.
+     * @return true, if the federateEvent queue contains no elements.
      */
     boolean isEmpty() {
-        return this.events.isEmpty();
+        return this.federateEvents.isEmpty();
     }
 
     /**
-     * Clear the PriorityBlockingQueue's events and lookahead.
+     * Clear the PriorityBlockingQueue's federateEvents and lookahead.
      */
     void clear() {
-        this.events.clear();
+        this.federateEvents.clear();
         this.lookahead.clear();
     }
 
     /**
-     * Appends the specified element to the PriorityBlockingQueue's events and lookahead.
+     * Appends the specified element to the PriorityBlockingQueue's federateEvents and lookahead.
      *
-     * @param event element to be appended.
+     * @param federateEvent element to be appended.
      */
-    void addEvent(FederateEvent event) {
-        this.events.add(event);
-        this.lookahead.add(event.getRequestedTime() + event.getLookahead());
+    void addEvent(FederateEvent federateEvent) {
+        this.federateEvents.add(federateEvent);
+        this.lookahead.add(federateEvent.getRequestedTime() + federateEvent.getLookahead());
     }
 
     /**
-     * Returns the next event in the queue (the head) and removes it from the queue.
+     * Returns the next federateEvent in the queue (the head) and removes it from the queue.
      *
-     * @return the event that will be removed
+     * @return the federateEvent that will be removed
      */
     FederateEvent getNextScheduledEvent() {
-        return this.events.remove();
+        return this.federateEvents.remove();
     }
 
     /**
-     * Removes the event depending on input event.
+     * Removes the federateEvent depending on input federateEvent.
      *
-     * @param event event to be stored
+     * @param federateEvent federateEvent to be stored
      */
-    void setEventProcessed(FederateEvent event) {
-        this.lookahead.remove(event.getRequestedTime() + event.getLookahead());
+    void setEventProcessed(FederateEvent federateEvent) {
+        this.lookahead.remove(federateEvent.getRequestedTime() + federateEvent.getLookahead());
     }
 
     /**

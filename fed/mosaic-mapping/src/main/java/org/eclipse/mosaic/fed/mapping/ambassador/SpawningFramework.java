@@ -83,7 +83,7 @@ public class SpawningFramework {
     /**
      * The ambassador of the runtime infrastructure.
      */
-    private RtiAmbassador rti;
+    private RtiAmbassador rtiAmbassador;
     /**
      * Whether mapping already was initialized. We use it in timeAdvance method
      * for initializing static objects such as RSUs, TMCs and charging stations.
@@ -100,15 +100,15 @@ public class SpawningFramework {
      *
      * @param mappingConfiguration             the configuration set through json
      * @param scenarioTrafficLightRegistration used for traffic light mapping if an external scenario is used
-     * @param rti                              the runtime infrastructure ambassador
+     * @param rtiAmbassador                              the runtime infrastructure ambassador
      * @param rng                              {@link RandomNumberGenerator} used for example for flow noise of vehicle spawners
      */
     public SpawningFramework(CMappingAmbassador mappingConfiguration,
                              ScenarioTrafficLightRegistration scenarioTrafficLightRegistration,
-                             RtiAmbassador rti,
+                             RtiAmbassador rtiAmbassador,
                              RandomNumberGenerator rng) {
         this.scenarioTrafficLightRegistration = scenarioTrafficLightRegistration;
-        this.rti = rti;
+        this.rtiAmbassador = rtiAmbassador;
         // config refers to meta parameters like start-/end-time, flow noise etc.
         this.config = mappingConfiguration.config;
 
@@ -265,8 +265,8 @@ public class SpawningFramework {
         return time;
     }
 
-    public RtiAmbassador getRti() {
-        return rti;
+    public RtiAmbassador getRtiAmbassador() {
+        return rtiAmbassador;
     }
 
     void setScenarioTrafficLightRegistration(ScenarioTrafficLightRegistration trafficLightsRegistration) {
@@ -430,16 +430,16 @@ public class SpawningFramework {
      * This method handles a time advance called by the {@link MappingAmbassador}.
      *
      * @param time the time to handle
-     * @param rti  the {@link RtiAmbassador} used for scenario traffic light registration
+     * @param rtiAmbassador  the {@link RtiAmbassador} used for scenario traffic light registration
      * @param rng  the {@link RandomNumberGenerator} used for scenario traffic light registration
      * @throws InternalFederateException thrown if a time advance couldn't be processed
      */
-    void timeAdvance(long time, RtiAmbassador rti, RandomNumberGenerator rng) throws InternalFederateException {
+    void timeAdvance(long time, RtiAmbassador rtiAmbassador, RandomNumberGenerator rng) throws InternalFederateException {
         this.time = time;
 
         // traffic light initialization
         if (scenarioTrafficLightRegistration != null && !trafficLightsInitialized) {
-            initTrafficLights(time, rti, rng);
+            initTrafficLights(time, rtiAmbassador, rng);
             trafficLightsInitialized = true;
         }
         // RSU, TMC, Charging Station Initialization
@@ -457,7 +457,7 @@ public class SpawningFramework {
         }
     }
 
-    private void initTrafficLights(long time, RtiAmbassador rti, RandomNumberGenerator rng) throws InternalFederateException {
+    private void initTrafficLights(long time, RtiAmbassador rtiAmbassador, RandomNumberGenerator rng) throws InternalFederateException {
         WeightedSelector<TrafficLightSpawner> selector = null;
         List<TrafficLightSpawner> itemsWithWeight = tls.values().stream().filter(tl -> tl.getWeight() != 0).collect(Collectors.toList());
         if (!itemsWithWeight.isEmpty()) {
@@ -496,7 +496,7 @@ public class SpawningFramework {
             );
             LOG.info("Creating Traffic Light Group: name={},tlGroupId={},apps={}", name, tlGroup.getGroupId(), apps);
             try {
-                rti.triggerInteraction(tlRegistration);
+                rtiAmbassador.triggerInteraction(tlRegistration);
             } catch (IllegalValueException e) {
                 LOG.error("Couldn't send {}, for tlGroup={}",
                         TrafficLightRegistration.class.getSimpleName(), tlRegistration.getTrafficLightGroup().getGroupId(), e);

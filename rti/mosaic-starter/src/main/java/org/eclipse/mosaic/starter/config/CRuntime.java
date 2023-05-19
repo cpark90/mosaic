@@ -59,11 +59,16 @@ public class CRuntime {
         @JacksonXmlProperty(localName = "priority", isAttribute = true)
         public byte priority = FederatePriority.DEFAULT;
 
-        public String dockerImage;
+        public String federateDockerImage;
+        
+        public String mediatorDockerImage;
 
         public String host = "local";
 
-        public int port = 0;
+        public int federatePort = 0;
+
+        public int mediatorPort = 0;
+
         public boolean deploy = false;
         public boolean start = false;
 

@@ -81,7 +81,7 @@ public class EnvironmentAmbassador extends AbstractFederateAmbassador {
     @Override
     public void initialize(long startTime, long endTime) {
         try {
-            rti.requestAdvanceTime(startTime + TIME.SECOND);
+            rtiAmbassador.requestAdvanceTime(startTime + TIME.SECOND);
         } catch (IllegalValueException e) {
             log.error("First time advance could not be requested", e);
         }
@@ -122,14 +122,14 @@ public class EnvironmentAmbassador extends AbstractFederateAmbassador {
 
         if (nextTimeAdvanceGrant < Long.MAX_VALUE) {
             try {
-                rti.requestAdvanceTime(nextTimeAdvanceGrant);
+                rtiAmbassador.requestAdvanceTime(nextTimeAdvanceGrant);
             } catch (IllegalValueException e) {
                 log.error("Next time advance could not be requested", e);
             }
         }
 
         try {
-            rti.triggerInteraction(new GlobalEnvironmentUpdates(time, currentEvents));
+            rtiAmbassador.triggerInteraction(new GlobalEnvironmentUpdates(time, currentEvents));
         } catch (IllegalValueException e) {
             log.error("Could not send message about current events");
         }
@@ -169,7 +169,7 @@ public class EnvironmentAmbassador extends AbstractFederateAmbassador {
 
             if (!events.isEmpty()) {
                 try {
-                    rti.triggerInteraction(new EnvironmentSensorUpdates(vehicleUpdates.getTime(), info.getName(), events));
+                    rtiAmbassador.triggerInteraction(new EnvironmentSensorUpdates(vehicleUpdates.getTime(), info.getName(), events));
                     if (log.isDebugEnabled()) {
                         log.debug("SimTime {}: Emitted sensor data to vehicle {}", info.getTime(), info.getName());
                     }

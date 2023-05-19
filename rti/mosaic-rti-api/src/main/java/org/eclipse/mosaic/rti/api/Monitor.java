@@ -39,15 +39,15 @@ public interface Monitor {
         // nop
     }
 
-    default void onEndActivity(FederateEvent event, long l) {
+    default void onEndActivity(FederateEvent federateEvent, long l) {
         // nop
     }
 
-    default void onBeginActivity(FederateEvent event) {
+    default void onBeginActivity(FederateEvent federateEvent) {
         // nop
     }
 
-    default void onScheduling(int id, FederateEvent event) {
+    default void onScheduling(int id, FederateEvent federateEvent) {
         // nop
     }
 }

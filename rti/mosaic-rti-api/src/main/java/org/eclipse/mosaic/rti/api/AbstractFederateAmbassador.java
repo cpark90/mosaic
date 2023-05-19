@@ -46,7 +46,7 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
     /**
      * The bridge for interacting with the RTI.
      */
-    protected RtiAmbassador rti;
+    protected RtiAmbassador rtiAmbassador;
 
     /**
      * A priority queue that holds unprocessed interactions.
@@ -103,7 +103,7 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
     public final synchronized void advanceTime(long time) throws InternalFederateException {
         Interaction nextInteraction = interactionQueue.getNextInteraction(time);
         while (nextInteraction != null) {
-            rti.getMonitor().onProcessInteraction(getId(), nextInteraction);
+            rtiAmbassador.getMonitor().onProcessInteraction(getId(), nextInteraction);
             processInteraction(nextInteraction);
             nextInteraction = interactionQueue.getNextInteraction(time);
         }
@@ -133,11 +133,11 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
                     // request with MAX lookahead since federate promised not to send any time stamped interactions (!timeRegulating)
                     lookahead = Long.MAX_VALUE;
                 }
-                rti.requestAdvanceTime(interaction.getTime(), lookahead, descriptor.getPriority());
+                rtiAmbassador.requestAdvanceTime(interaction.getTime(), lookahead, descriptor.getPriority());
                 interactionQueue.add(interaction);
             } else {
                 // not time constrained --> doesn't care about timestamps
-                rti.getMonitor().onProcessInteraction(getId(), interaction);
+                rtiAmbassador.getMonitor().onProcessInteraction(getId(), interaction);
                 processInteraction(interaction);
                 // if fed is time regulating but not time constrained,
                 // it would have to request advance time before it may send
@@ -149,9 +149,9 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
     }
 
     @Override
-    public final void setRtiAmbassador(@Nonnull RtiAmbassador rti) {
-        log.trace("setRtiAmbassador(RtiAmbassador rti)");
-        this.rti = rti;
+    public final void setRtiAmbassador(@Nonnull RtiAmbassador rtiAmbassador) {
+        log.trace("setRtiAmbassador(RtiAmbassador rtiAmbassador)");
+        this.rtiAmbassador = rtiAmbassador;
     }
 
     @Override

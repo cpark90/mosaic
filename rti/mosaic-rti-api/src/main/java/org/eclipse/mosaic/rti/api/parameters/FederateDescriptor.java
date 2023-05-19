@@ -17,6 +17,7 @@ package org.eclipse.mosaic.rti.api.parameters;
 
 import org.eclipse.mosaic.rti.api.FederateAmbassador;
 import org.eclipse.mosaic.rti.api.FederateExecutor;
+import org.eclipse.mosaic.rti.api.MediatorExecutor;
 import org.eclipse.mosaic.rti.config.CLocalHost;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -95,6 +96,11 @@ public class FederateDescriptor {
      * The executor instance which starts the federate.
      */
     private FederateExecutor federateExecutor;
+
+    /**
+     * The executor instance which starts the mediator.
+     */
+    private MediatorExecutor mediatorExecutor;
 
     /**
      * Additional parameters to be applied for federates which need to be
@@ -203,6 +209,17 @@ public class FederateDescriptor {
 
     public void setFederateExecutor(@Nonnull FederateExecutor federateExecutor) {
         this.federateExecutor = Validate.notNull(federateExecutor, "FederateExecutor for federate {} must not be null", id);
+    }
+
+    public MediatorExecutor getMediatorExecutor() {
+        return Validate.notNull(
+                mediatorExecutor,
+                "The descriptor for {} has not been initialized properly: #setMediatorExecutor has not been called yet.", id
+        );
+    }
+
+    public void setMediatorExecutor(@Nonnull MediatorExecutor mediatorExecutor) {
+        this.mediatorExecutor = Validate.notNull(mediatorExecutor, "MediatorExecutor for federate {} must not be null", id);
     }
 
     public JavaFederateParameters getJavaFederateParameters() {

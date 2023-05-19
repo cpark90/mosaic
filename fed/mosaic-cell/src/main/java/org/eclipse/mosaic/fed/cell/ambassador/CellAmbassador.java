@@ -125,9 +125,9 @@ public class CellAmbassador extends AbstractFederateAmbassador {
 
         readConfigurations();
 
-        final RandomNumberGenerator rng = rti.createRandomNumberGenerator();
+        final RandomNumberGenerator rng = rtiAmbassador.createRandomNumberGenerator();
 
-        chainManager = new ChainManager(rti, rng, ambassadorParameter);
+        chainManager = new ChainManager(rtiAmbassador, rng, ambassadorParameter);
 
         initializeBandwidthMeasurements();
 

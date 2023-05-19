@@ -75,7 +75,7 @@ public class SpawningFrameworkTest {
     public MockitoRule mockito = MockitoJUnit.rule();
 
     @Mock
-    public RtiAmbassador rti;
+    public RtiAmbassador rtiAmbassador;
 
     private RandomNumberGenerator rng;
 
@@ -91,7 +91,7 @@ public class SpawningFrameworkTest {
         framework.prototypes = Lists.newArrayList(newPrototype("prototype1"));
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(framework, null, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(framework, null, rtiAmbassador, rng);
 
         //ASSERT
         VehicleTypesInitialization vehicleTypesInitialization = spawningFramework.generateVehicleTypesInitialization();
@@ -107,7 +107,7 @@ public class SpawningFrameworkTest {
         framework.vehicles = Lists.newArrayList(newSpawner("prototype1"));
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(framework, null, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(framework, null, rtiAmbassador, rng);
 
         //ASSERT
         VehicleTypesInitialization vehicleTypesInitialization = spawningFramework.generateVehicleTypesInitialization();
@@ -130,16 +130,16 @@ public class SpawningFrameworkTest {
         ScenarioTrafficLightRegistration scenarioTrafficLightRegistration = MappingAmbassadorTest.createScenarioTrafficLightRegistration();
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(framework, scenarioTrafficLightRegistration, rti, rng);
-        spawningFramework.timeAdvance(0, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(framework, scenarioTrafficLightRegistration, rtiAmbassador, rng);
+        spawningFramework.timeAdvance(0, rtiAmbassador, rng);
 
         //ASSERT
-        verify(rti, times(1)).triggerInteraction(isA(VehicleRegistration.class));
-        verify(rti, times(1)).triggerInteraction(isA(RsuRegistration.class));
-        verify(rti, times(1)).triggerInteraction(isA(TrafficLightRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(VehicleRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(RsuRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(TrafficLightRegistration.class));
 
-        verify(rti, never()).triggerInteraction(isA(ChargingStationRegistration.class));
-        verify(rti, never()).triggerInteraction(isA(TmcRegistration.class));
+        verify(rtiAmbassador, never()).triggerInteraction(isA(ChargingStationRegistration.class));
+        verify(rtiAmbassador, never()).triggerInteraction(isA(TmcRegistration.class));
     }
 
     @Test
@@ -154,17 +154,17 @@ public class SpawningFrameworkTest {
         ScenarioTrafficLightRegistration scenarioTrafficLightRegistration = MappingAmbassadorTest.createScenarioTrafficLightRegistration();
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(mappingAmbassadorConfig, scenarioTrafficLightRegistration, rti, rng);
-        spawningFramework.timeAdvance(0, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(mappingAmbassadorConfig, scenarioTrafficLightRegistration, rtiAmbassador, rng);
+        spawningFramework.timeAdvance(0, rtiAmbassador, rng);
 
         //ASSERT
-        verify(rti, times(1)).triggerInteraction(isA(ChargingStationRegistration.class));
-        verify(rti, times(1)).triggerInteraction(isA(TmcRegistration.class));
-        verify(rti, times(1)).triggerInteraction(isA(ServerRegistration.class));
-        verify(rti, times(1)).triggerInteraction(isA(TrafficLightRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(ChargingStationRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(TmcRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(ServerRegistration.class));
+        verify(rtiAmbassador, times(1)).triggerInteraction(isA(TrafficLightRegistration.class));
 
-        verify(rti, never()).triggerInteraction(isA(VehicleRegistration.class));
-        verify(rti, never()).triggerInteraction(isA(RsuRegistration.class));
+        verify(rtiAmbassador, never()).triggerInteraction(isA(VehicleRegistration.class));
+        verify(rtiAmbassador, never()).triggerInteraction(isA(RsuRegistration.class));
     }
 
     @Test
@@ -178,14 +178,14 @@ public class SpawningFrameworkTest {
         framework.prototypes = Lists.newArrayList(newPrototype("prototype"));
 
         //RUN
-        SpawningFramework spawningFramework = new SpawningFramework(framework, null, rti, rng);
+        SpawningFramework spawningFramework = new SpawningFramework(framework, null, rtiAmbassador, rng);
         for (int i = 0; i < 3600; i++) {
-            spawningFramework.timeAdvance(i * TIME.SECOND, rti, rng);
+            spawningFramework.timeAdvance(i * TIME.SECOND, rtiAmbassador, rng);
         }
 
         //ASSERT:
         // 7 vehicles should be spawned during one hour of simulation (according to sum of odValues in matrixMappers)
-        verify(rti, times(7)).triggerInteraction(isA(VehicleRegistration.class));
+        verify(rtiAmbassador, times(7)).triggerInteraction(isA(VehicleRegistration.class));
     }
 
     private CTrafficManagementCenter newTmc(String prototype) {

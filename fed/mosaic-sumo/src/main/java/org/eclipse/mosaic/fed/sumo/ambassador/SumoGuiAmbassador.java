@@ -66,13 +66,13 @@ public class SumoGuiAmbassador extends SumoAmbassador {
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) {
+    public DockerFederateExecutor createDockerFederateExecutor(String federateDockerImage, int port, CLocalHost.OperatingSystem os) {
         List<String> args = getProgramArguments(port);
         args.add(0, "sumo-gui");
 
         // TODO: deploy target path 
         this.dockerFederateExecutor = new DockerFederateExecutor(
-                dockerImage,
+                federateDockerImage,
                 "docker-volume:mosaic",
                 "/home/mosaic/shared",
                 args

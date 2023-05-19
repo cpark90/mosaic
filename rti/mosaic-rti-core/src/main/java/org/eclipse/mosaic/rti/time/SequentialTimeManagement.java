@@ -60,46 +60,46 @@ public class SequentialTimeManagement extends AbstractTimeManagement {
         final RealtimeSynchronisation realtimeSync = new RealtimeSynchronisation(realtimeBrake);
 
         long currentRealtimeNs;
-        FederateEvent event;
+        FederateEvent federateEvent;
         FederateAmbassador ambassador;
 
         while (this.time <= getEndTime()) {
-            // the end time is inclusive, in order to schedule events in the last simulation time step
+            // the end time is inclusive, in order to schedule federateEvents in the last simulation time step
 
             // sync with real time
             if (this.time > 0) {
                 realtimeSync.sync(this.time);
             }
 
-            // remove all events at the head of the queue that are created by the same federate
-            synchronized (this.events) {
-                event = this.events.poll();
+            // remove all federateEvents at the head of the queue that are created by the same federate
+            synchronized (this.federateEvents) {
+                federateEvent = this.federateEvents.poll();
                 // advance global time
-                if (event == null || event.getRequestedTime() > getEndTime()) {
+                if (federateEvent == null || federateEvent.getRequestedTime() > getEndTime()) {
                     this.time = getEndTime();
                     break;
                 } else {
-                    this.time = event.getRequestedTime();
+                    this.time = federateEvent.getRequestedTime();
                 }
             }
 
-            // call ambassador associated with the scheduled event
-            ambassador = federation.getFederationManagement().getAmbassador(event.getFederateId());
+            // call ambassador associated with the scheduled federateEvent
+            ambassador = federation.getFederationManagement().getAmbassador(federateEvent.getFederateId());
             if (ambassador != null) {
-                federation.getMonitor().onBeginActivity(event);
+                federation.getMonitor().onBeginActivity(federateEvent);
                 long startTime = System.currentTimeMillis();
-                ambassador.advanceTime(event.getRequestedTime());
-                federation.getMonitor().onEndActivity(event, System.currentTimeMillis() - startTime);
+                ambassador.advanceTime(federateEvent.getRequestedTime());
+                federation.getMonitor().onEndActivity(federateEvent, System.currentTimeMillis() - startTime);
 
-                // check, if event queue is empty after the last time advance.
-                // If no more events are in the list, the simulation can be skipped to the endTime.
-                if (this.events.isEmpty()) {
-                    logger.debug("No events anymore, skipping to end time: {}", getEndTime());
+                // check, if federateEvent queue is empty after the last time advance.
+                // If no more federateEvents are in the list, the simulation can be skipped to the endTime.
+                if (this.federateEvents.isEmpty()) {
+                    logger.debug("No federateEvents anymore, skipping to end time: {}", getEndTime());
 
-                    federation.getMonitor().onBeginActivity(event);
+                    federation.getMonitor().onBeginActivity(federateEvent);
                     startTime = System.currentTimeMillis();
                     ambassador.advanceTime(getEndTime());
-                    federation.getMonitor().onEndActivity(event, System.currentTimeMillis() - startTime);
+                    federation.getMonitor().onEndActivity(federateEvent, System.currentTimeMillis() - startTime);
                 }
             }
             currentRealtimeNs = System.nanoTime();
