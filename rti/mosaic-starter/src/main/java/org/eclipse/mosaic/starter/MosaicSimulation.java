@@ -383,10 +383,10 @@ public class MosaicSimulation {
             if (StringUtils.isNotEmpty(federate.dockerImage)) {
                 final String container = federate.id + '-' + simulationId;
                 descriptor.setFederateExecutor(
-                        descriptor.getAmbassador().createDockerFederateExecutor(federate.dockerImage, federate.port, host.operatingSystem).setContainerName(container)
+                        descriptor.getAmbassador().createDockerFederateExecutor(federate.dockerImage, federate.federatePort, host.operatingSystem).setContainerName(container)
                 );
             } else {
-                int port = federate.port;
+                int port = federate.federatePort;
                 if (port == 0) {
                     port = SocketUtils.findFreePort();
                     log.info("Federate {}: No port given. Using free port: {}", descriptor.getId(), port);
@@ -397,8 +397,8 @@ public class MosaicSimulation {
 
         } else {
             // connect only, if address and port are given
-            if (federate.port > 0) {
-                ambassador.connectToFederate(host.address, federate.port);
+            if (federate.federatePort > 0) {
+                ambassador.connectToFederate(host.address, federate.federatePort);
             }
         }
     }

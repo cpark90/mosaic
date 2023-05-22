@@ -6,6 +6,7 @@ filegroup(
         glob(["src/main/**/rti/config/*.java"]) +
         glob(["src/main/**/rti/api/*.java"]) +
         glob(["src/main/**/rti/api/federatestarter/*.java"]) +
+        glob(["src/main/**/rti/api/mediatorstarter/*.java"]) +
         glob(["src/main/**/rti/api/parameters/*.java"]) +
         glob(["src/main/**/rti/api/time/*.java"])
 )

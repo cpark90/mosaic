@@ -1,0 +1,34 @@
+package(default_visibility = ["//visibility:public"])
+
+# ambassador unit test
+
+java_test(
+    name = "carla_ambassador_test",
+    srcs = glob(["java/**/carla/ambassador/CarlaAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-carla",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+    ],
+    test_class = "org.eclipse.mosaic.fed.carla.ambassador.CarlaAmbassadorTest",
+)
+
+# config unit test
+
+java_test(
+    name = "carla_configuration_test",
+    srcs = glob(["java/**/carla/config/CarlaConfigurationTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-carla",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.carla.config.CarlaConfigurationTest",
+)

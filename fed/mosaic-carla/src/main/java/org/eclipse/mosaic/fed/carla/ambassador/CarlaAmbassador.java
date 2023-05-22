@@ -28,9 +28,9 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.mosaic.fed.carla.carlaconnect.CarlaConnection;
 import org.eclipse.mosaic.fed.carla.config.CarlaConfiguration;
-import org.eclipse.mosaic.fed.sumo.traci.constants.CommandSimulationControl;
-import org.eclipse.mosaic.fed.sumo.traci.writer.ListTraciWriter;
-import org.eclipse.mosaic.fed.sumo.traci.writer.StringTraciWriter;
+import org.eclipse.mosaic.fed.sumo.bridge.traci.constants.CommandSimulationControl;
+import org.eclipse.mosaic.fed.sumo.bridge.traci.writer.ListTraciWriter;
+import org.eclipse.mosaic.fed.sumo.bridge.traci.writer.StringTraciWriter;
 import org.eclipse.mosaic.interactions.application.CarlaTraciRequest;
 import org.eclipse.mosaic.interactions.application.CarlaTraciResponse;
 import org.eclipse.mosaic.interactions.application.CarlaV2xMessageReception;
@@ -45,6 +45,7 @@ import org.eclipse.mosaic.rti.api.FederateExecutor;
 import org.eclipse.mosaic.rti.api.IllegalValueException;
 import org.eclipse.mosaic.rti.api.Interaction;
 import org.eclipse.mosaic.rti.api.InternalFederateException;
+import org.eclipse.mosaic.rti.api.federatestarter.DockerFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.ExecutableFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.NopFederateExecutor;
 import org.eclipse.mosaic.rti.api.parameters.AmbassadorParameter;
@@ -66,6 +67,15 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
      * Command used to start CARLA simulator.
      */
     FederateExecutor federateExecutor = null;
+
+    DockerFederateExecutor dockerFederateExecutor = null;
+
+    /**
+     * Command used to start CARLA simulator.
+     */
+    MediatorExecutor mediatorExecutor = null;
+
+    DockerMediatorExecutor dockerMediatorExecutor = null;
 
     /**
      * Simulation time.
@@ -189,6 +199,23 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         return executable;
     }
 
+    @Override
+    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) {
+        List<String> args = getProgramArguments(port);
+        args.add(0, "/home/carla/CarlaUE4.sh");
+
+        // TODO: deploy target path 
+        this.dockerFederateExecutor = new DockerFederateExecutor(
+                dockerImage,
+                "docker-volume:mosaic",
+                "/home/mosaic/shared",
+                args
+        );
+        this.dockerFederateExecutor.addPortBinding(port, port);
+        this.federateExecutor = this.dockerFederateExecutor;
+        return this.dockerFederateExecutor;
+    }
+
     /**
      * This method is called to tell the federate the start time and the end time.
      * It is also used to start CARLA, and connect to CARLA.
@@ -307,8 +334,11 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             Process p = federateExecutor.startLocalFederate(dir);
             connectToFederate("localhost", p.getInputStream(), p.getErrorStream());
             // read error output of process in an extra thread
-            new ProcessLoggingThread(log, p.getInputStream(), "carla", ProcessLoggingThread.Level.Info).start();
-            new ProcessLoggingThread(log, p.getErrorStream(), "carla", ProcessLoggingThread.Level.Error).start();
+            new ProcessLoggingThread("carla", p.getInputStream(), log::debug).start();
+            new ProcessLoggingThread("carla", p.getErrorStream(), line -> {
+                log.error(line);
+                System.err.println(line); // make sure that we see what's wrong when SUMO cannot start
+            }).start();
 
         } catch (FederateExecutor.FederateStarterException e) {
             log.error("Error while executing command: {}", federateExecutor.toString());

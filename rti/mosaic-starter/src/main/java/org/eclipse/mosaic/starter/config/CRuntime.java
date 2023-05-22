@@ -63,7 +63,8 @@ public class CRuntime {
 
         public String host = "local";
 
-        public int port = 0;
+        public int federatePort = 0;
+        public int mediatorPort = 0;
         public boolean deploy = false;
         public boolean start = false;
 

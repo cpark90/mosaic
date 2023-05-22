@@ -8,7 +8,7 @@ filegroup(
 )
 
 java_library(
-    name = "mosaic-sumo",
+    name = "mosaic-carla",
     srcs = [
         ":srcs",
         ],
@@ -16,21 +16,13 @@ java_library(
     deps = [
         "@maven//:org_apache_commons_commons_lang3",
         "@maven//:com_google_guava_guava",
-        "@maven//:com_google_code_findbugs_annotations",
-        "@maven//:commons_io_commons_io",
         "@maven//:com_google_code_findbugs_jsr305",
-        "@maven//:javax_activation_activation",
         "@maven//:org_slf4j_slf4j_api",
         "@maven//:com_google_code_gson_gson",
-        "@maven//:org_w3c_dom",
-        "@maven//:javax_xml_parsers_jaxp_api",
-        "@maven//:org_eclipse_sumo_libsumo",
-        "@maven//:org_apache_johnzon_johnzon_core",
 
+        "//fed/mosaic-sumo",
         "//lib/mosaic-interactions",
-        "//lib/mosaic-objects",
         "//lib/mosaic-utils",
-        "//lib/mosaic-geomath",
         "//rti/mosaic-rti-api",
     ],
 )

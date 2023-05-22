@@ -32,7 +32,8 @@
                 <xs:element ref="config" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="configDeployPath" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="dockerImage" maxOccurs="1" minOccurs="0"/>
-                <xs:element ref="port" maxOccurs="1" minOccurs="0"/>
+                <xs:element ref="federatePort" maxOccurs="1" minOccurs="0"/>
+                <xs:element ref="mediatorPort" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="javaClasspathEntries" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="javaMemorySizeXms" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="javaMemorySizeXmx" maxOccurs="1" minOccurs="0"/>
@@ -141,12 +142,22 @@
     </xs:element>
     <xs:element name="windowSizeInNs" type="xs:integer"/>
     <xs:element name="stateSaveManager" type="xs:string"/>
-    <xs:element name="port" type="xs:integer">
+    <xs:element name="federatePort" type="xs:integer">
         <xs:annotation>
             <xs:documentation xml:lang="en">
-                The port, which is used
+                The federatePort, which is used
                 for communication
                 between federate and
+                ambassador.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="mediatorPort" type="xs:integer">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                The mediatorPort, which is used
+                for communication
+                between mediator and
                 ambassador.
             </xs:documentation>
         </xs:annotation>

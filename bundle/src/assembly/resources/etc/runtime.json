@@ -7,7 +7,7 @@
             "configuration": "application_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -39,12 +39,30 @@
             "javaClasspathEntries": []
         },
         {
+            "id": "carla",
+            "classname": "org.eclipse.mosaic.fed.carla.ambassador.CarlaAmbassador",
+            "configuration": "carla_config.json",
+            "configurationDeployPath": "carla-federate/simulations",
+            "priority": 50,
+            "dockerImage": "carla:mosaic_0_9_14",
+            "host": "local",
+            "federatePort": 2000,
+            "deploy": true,
+            "start": true,
+            "subscriptions": [
+                "CarlaTraciResponse",
+                "SimulationStepResponse",
+                "CarlaV2xMessageReception"
+            ],
+            "javaClasspathEntries": []
+        },
+        {
             "id": "environment",
             "classname": "org.eclipse.mosaic.fed.environment.ambassador.EnvironmentAmbassador",
             "configuration": "environment_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -59,7 +77,7 @@
             "configuration": "mapping_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -75,7 +93,7 @@
             "configuration": "cell_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -98,7 +116,7 @@
             "priority": 50,
             "dockerImage": "omnetpp:mosaic",
             "host": "local",
-            "port": 4998,
+            "federatePort": 4998,
             "deploy": true,
             "start": true,
             "subscriptions": [
@@ -119,7 +137,7 @@
             "priority": 50,
             "dockerImage": "",
             "host": "local",
-            "port": 5011,
+            "federatePort": 5011,
             "deploy": true,
             "start": true,
             "subscriptions": [
@@ -138,7 +156,7 @@
             "configuration": "sns_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -159,7 +177,7 @@
             "priority": 50,
             "dockerImage": "sumo:mosaic_1_17_0",
             "host": "local",
-            "port": 3222,
+            "federatePort": 3222,
             "deploy": true,
             "start": true,
             "subscriptions": [

@@ -77,6 +77,52 @@ public interface FederateAmbassador extends Comparable<FederateAmbassador> {
     void connectToFederate(String host, int port);
 
     /**
+     * Returns a {@link MediatorExecutor} which is used to start the federate this
+     * ambassador is associated with. If no separate federate needs to be started,
+     * a {@link NopMediatorExecutor} should be returned.
+     *
+     * @param host name of the host (as specified in /etc/hosts.xml)
+     * @param port port number to be used by this federate
+     * @param os   the current operating system of the system
+     * @return the {@link MediatorExecutor} which starts the federate
+     */
+    @Nonnull
+    MediatorExecutor createMediatorExecutor(String host, int port, OperatingSystem os);
+
+    /**
+     * If the mediator can be executed as a docker container, this method returns a
+     * {@link DockerMediatorExecutor}.
+     *
+     * @param mediatorDockerImage name of the docker image containing the mediator (as specified in /etc/defaults.xml)
+     * @param os          the current operating system of the host machine
+     * @return the {@link DockerMediatorExecutor} which starts the mediator
+     * @throws UnsupportedOperationException if the ambassador does not support running the mediator in a docker container.
+     */
+    DockerMediatorExecutor createDockerMediatorExecutor(String mediatorDockerImage, int port, OperatingSystem os) throws UnsupportedOperationException;
+
+    /**
+     * This method is called by the federation management service after it has started the corresponding mediator.
+     *
+     * @param host The host on which the mediator is running.
+     * @param in   This input stream is connected to the output stream of the
+     *             started mediator process. The stream is only valid during
+     *             this method call.
+     * @throws InternalMediatorException This exception is to be thrown when a federation specific
+     *                                   error occurs.
+     */
+    void connectToMediator(String host, InputStream in, InputStream err) throws InternalMediatorException;
+
+    /**
+     * This method is called by the federation management service to connect to the
+     * mediator without starting it. This requires the port to be configured in the configuration
+     * file for the RTI.
+     *
+     * @param host the host on which the mediator is running
+     * @param port the port to use for connecting to the mediator
+     */
+    void connectToMediator(String host, int port);
+
+    /**
      * Assigns a new {@link RtiAmbassador} to this federate. The {@link RtiAmbassador} is the bridge
      * the the RTI providing various methods, e.g. to exchange interactions. Each ambassador requires
      * its own instance of the {@link RtiAmbassador}.

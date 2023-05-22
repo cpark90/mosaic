@@ -17,6 +17,8 @@ package org.eclipse.mosaic.rti.api;
 
 import org.eclipse.mosaic.rti.api.federatestarter.DockerFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.NopFederateExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.DockerMediatorExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.NopMediatorExecutor;
 import org.eclipse.mosaic.rti.api.parameters.AmbassadorParameter;
 import org.eclipse.mosaic.rti.api.parameters.FederateDescriptor;
 import org.eclipse.mosaic.rti.config.CLocalHost;
@@ -240,6 +242,62 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
     @Override
     public void connectToFederate(String host, InputStream in, InputStream err) throws InternalFederateException {
         log.trace("connectToFederate(String host, InputStream in, InputStream err); host: {}", host);
+    }
+
+    /**
+     * Creates a Docker mediator executor.
+     *
+     * @param mediatorDockerImage name of the docker image containing the mediator
+     * @param os        operating system enum from {@link CLocalHost}
+     * @return the {@link MediatorExecutor} which starts the mediator in a docker container
+     */
+    @Override
+    public DockerMediatorExecutor createDockerMediatorExecutor(String mediatorDockerImage, int port, CLocalHost.OperatingSystem os) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("This ambassador does not support mediators inside of a docker container");
+    }
+
+    /**
+     * If a federate should be started by MOSAIC, an implementation of {@link FederateExecutor} must be
+     * provided. This method must return a nonnull object. The default implementation returns a {@link NopFederateExecutor},
+     * which does nothing when called.
+     *
+     * @param host name of the host (as specified in /etc/hosts.xml)
+     * @param port port number to be used by this federate
+     * @param os   operating system enum
+     * @return the {@link FederateExecutor} which starts the federate
+     */
+    @Nonnull
+    @Override
+    public MediatorExecutor createMediatorExecutor(String host, int port, CLocalHost.OperatingSystem os) {
+        log.trace("createMediatorExecutor(String host, int port, CLocalHost.OperatingSystem os); host: {}, port: {}, os: {}", host, port, os);
+        return new NopMediatorExecutor();
+    }
+
+    /**
+     * This method is called by the federation management service if the federate does not need
+     * to be started.
+     *
+     * @param host the host on which the simulator is running
+     * @param port the port to use for connecting to the simulator
+     */
+    @Override
+    public void connectToMediator(String host, int port) {
+        log.trace("connectToMediator(String host, int port); host: {}, port: {}", host, port);
+    }
+
+    /**
+     * Connects to the federate.
+     *
+     * @param host The host on which the simulator is running.
+     * @param in   This input stream is connected to the output stream of the
+     *             started simulator process. The stream is only valid during
+     *             this method call.
+     * @param err  The error input stream
+     * @throws InternalMediatorException if the federation should be stopped due to an critical error
+     */
+    @Override
+    public void connectToMediator(String host, InputStream in, InputStream err) throws InternalMediatorException {
+        log.trace("connectToMediator(String host, InputStream in, InputStream err); host: {}", host);
     }
 
     /**

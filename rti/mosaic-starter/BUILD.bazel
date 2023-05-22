@@ -70,6 +70,7 @@ java_binary(
         "//fed/mosaic-output",
         "//fed/mosaic-sns",
         "//fed/mosaic-sumo",
+        "//fed/mosaic-carla",
     ],
     main_class = "org.eclipse.mosaic.starter.MosaicStarter",
 )
@@ -92,6 +93,7 @@ java_image(
         "//fed/mosaic-output",
         "//fed/mosaic-sns",
         "//fed/mosaic-sumo",
+        "//fed/mosaic-carla",
     ],
     resources = glob(["src/main/resources/**/*"]),
     deps = [
