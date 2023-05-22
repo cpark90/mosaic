@@ -1,0 +1,36 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/carla/ambassador/*.java"]) +
+        glob(["src/main/java/**/carla/carlaconnect/*.java"]) +
+        glob(["src/main/java/**/carla/config/*.java"])
+)
+
+java_library(
+    name = "mosaic-sumo",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_annotations",
+        "@maven//:commons_io_commons_io",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:javax_activation_activation",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:org_w3c_dom",
+        "@maven//:javax_xml_parsers_jaxp_api",
+        "@maven//:org_eclipse_sumo_libsumo",
+        "@maven//:org_apache_johnzon_johnzon_core",
+
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-objects",
+        "//lib/mosaic-utils",
+        "//lib/mosaic-geomath",
+        "//rti/mosaic-rti-api",
+    ],
+)
