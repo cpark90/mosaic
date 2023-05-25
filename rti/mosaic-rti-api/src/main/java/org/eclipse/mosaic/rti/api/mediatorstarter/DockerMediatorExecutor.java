@@ -13,7 +13,7 @@
  * Contact: mosaic@fokus.fraunhofer.de
  */
 
-package org.eclipse.mosaic.rti.api.federatestarter;
+package org.eclipse.mosaic.rti.api.mediatorstarter;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
@@ -96,7 +96,7 @@ public class DockerMediatorExecutor implements MediatorExecutor {
     }
 
     @Override
-    public Process startLocalFederate(File fedDir) {
+    public Process startLocalMediator(File fedDir) {
         this.dockerClient = new DockerClient();
         final DockerRun run;
 
@@ -104,12 +104,11 @@ public class DockerMediatorExecutor implements MediatorExecutor {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
-                    .gpusAll()
                     .removeAfterRun()
+                    .networkHost()
                     .currentUser()
                     .args(args)
-                    .volumeBinding(sharedDirectoryPath.replaceFirst("^docker-volume:", ""), imageVolume)
-                    .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");
+                    .volumeBinding(sharedDirectoryPath.replaceFirst("^docker-volume:", ""), imageVolume);
         } else {
             run = this.dockerClient
                     .run(image)
@@ -145,7 +144,7 @@ public class DockerMediatorExecutor implements MediatorExecutor {
     }
 
     @Override
-    public void stopLocalFederate() {
+    public void stopLocalMediator() {
         if (dockerClient != null) {
             dockerClient.killContainer(this.container, true);
             dockerClient.close();
@@ -153,39 +152,13 @@ public class DockerMediatorExecutor implements MediatorExecutor {
     }
 
     @Override
-    public int startRemoteFederate(CLocalHost host, PrintStream sshStream, InputStream sshStreamIn) {
+    public int startRemoteMediator(CLocalHost host, PrintStream sshStream, InputStream sshStreamIn) {
         throw new UnsupportedOperationException("Starting docker containers remotely is not supported yet.");
     }
 
     @Override
-    public void stopRemoteFederate(PrintStream sshStreamOut) {
+    public void stopRemoteMediator(PrintStream sshStreamOut) {
         throw new UnsupportedOperationException("Stopping docker containers remotely is not supported yet.");
-    }
-
-    @Override
-    public Process startDockerMediator(File fedDir) throws MediatorStarterException {
-        log.debug("start: (command={} {})", command, StringUtils.join(args, " "));
-        try {
-            List<String> commandWithArgs = Lists.newArrayList(command);
-            commandWithArgs.addAll(args);
-            currentLocalProcess = new ProcessBuilder(commandWithArgs).directory(fedDir).start();
-            return currentLocalProcess;
-        } catch (IOException e) {
-            throw new MediatorStarterException(e);
-        }
-    }
-
-    @Override
-    public void stopDockerMediator() {
-        if (currentLocalProcess != null) {
-            try {
-                currentLocalProcess.waitFor(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                log.warn("Something went wrong when stopping a process", e);
-            } finally {
-                currentLocalProcess.destroy();
-            }
-        }
     }
 
     @Override

@@ -395,10 +395,31 @@ public class MosaicSimulation {
                 descriptor.setFederateExecutor(descriptor.getAmbassador().createFederateExecutor(host.address, port, host.operatingSystem));
             }
 
+            if (federate.mediatorPort > -1) {
+                if (StringUtils.isNotEmpty(federate.mediatorDockerImage)) {
+                    final String container = federate.id + '-' + simulationId + "-mediator";
+                    descriptor.setMediatorExecutor(
+                            descriptor.getAmbassador().createDockerMediatorExecutor(federate.mediatorDockerImage, federate.mediatorPort, host.operatingSystem).setContainerName(container)
+                    );
+                } else {
+                    int port = federate.federatePort;
+                    if (port == 0) {
+                        port = SocketUtils.findFreePort();
+                        log.info("Mediator {}: No port given. Using free port: {}", descriptor.getId(), port);
+                    }
+
+                    descriptor.setMediatorExecutor(descriptor.getAmbassador().createMediatorExecutor(host.address, port, host.operatingSystem));
+                }
+            }
+
         } else {
             // connect only, if address and port are given
             if (federate.federatePort > 0) {
                 ambassador.connectToFederate(host.address, federate.federatePort);
+            }
+
+            if (federate.mediatorPort > 0) {
+                ambassador.connectToMediator(host.address, federate.mediatorPort);
             }
         }
     }

@@ -60,6 +60,8 @@ public class CRuntime {
         public byte priority = FederatePriority.DEFAULT;
 
         public String dockerImage;
+        
+        public String mediatorDockerImage;
 
         public String host = "local";
 

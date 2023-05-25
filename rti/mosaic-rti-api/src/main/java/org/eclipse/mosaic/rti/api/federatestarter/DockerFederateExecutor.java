@@ -104,9 +104,11 @@ public class DockerFederateExecutor implements FederateExecutor {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
+                    .runPrivileged()
                     .gpusAll()
                     .removeAfterRun()
-                    .currentUser()
+                    .networkHost()
+                    .user("1000")
                     .args(args)
                     .volumeBinding(sharedDirectoryPath.replaceFirst("^docker-volume:", ""), imageVolume)
                     .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");

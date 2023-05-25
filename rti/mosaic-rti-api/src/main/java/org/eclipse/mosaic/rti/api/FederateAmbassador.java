@@ -17,6 +17,8 @@ package org.eclipse.mosaic.rti.api;
 
 import org.eclipse.mosaic.rti.api.federatestarter.DockerFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.NopFederateExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.DockerMediatorExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.NopMediatorExecutor;
 import org.eclipse.mosaic.rti.api.parameters.FederateDescriptor;
 import org.eclipse.mosaic.rti.config.CLocalHost.OperatingSystem;
 

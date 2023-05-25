@@ -40,9 +40,12 @@ public class CarlaConfiguration implements Serializable {
     public String carlaUE4Path;
 
     /**
-     * path to connection bridge
+     * path to connection mediator
      */
-    public String bridgePath;
+    public String mediatorMap;
+    public String mediatorNetFile;
+    public double mediatorStepLength;
+    public String mediatorTlsManager;
 
     /**
      * Carla connection port

@@ -13,7 +13,7 @@
  * Contact: mosaic@fokus.fraunhofer.de
  */
 
-package org.eclipse.mosaic.rti.api.federatestarter;
+package org.eclipse.mosaic.rti.api.mediatorstarter;
 
 import org.eclipse.mosaic.rti.api.FederateAmbassador;
 import org.eclipse.mosaic.rti.api.MediatorExecutor;

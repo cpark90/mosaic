@@ -32,6 +32,7 @@
                 <xs:element ref="config" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="configDeployPath" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="dockerImage" maxOccurs="1" minOccurs="0"/>
+                <xs:element ref="mediatorDockerImage" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="federatePort" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="mediatorPort" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="javaClasspathEntries" maxOccurs="1" minOccurs="0"/>
@@ -135,6 +136,15 @@
         <xs:annotation>
             <xs:documentation xml:lang="en">
                 Define a name of an docker image on which the federate is
+                installed. This
+                image will be used to create and run a docker container.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="mediatorDockerImage" type="xs:string">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Define a name of an docker image on which the mediator is
                 installed. This
                 image will be used to create and run a docker container.
             </xs:documentation>

@@ -43,9 +43,12 @@ public class DockerRun {
     private List<String> args;
     private List<Pair<File, String>> hostVolumeBindings = new Vector<>();
     private List<Pair<String, String>> dockerVolumeBindings = new Vector<>();
+    private boolean runPrivileged = false;
     private boolean gpusAll = false;
     private boolean removeAfterRun = false;
     private boolean removeBeforeRun;
+    private boolean networkHost = false;
+    private boolean ipcHost = false;
 
     DockerRun(DockerClient dockerClient, String image) {
         this.client = dockerClient;
@@ -59,6 +62,11 @@ public class DockerRun {
      */
     public DockerRun name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public DockerRun runPrivileged() {
+        this.runPrivileged = true;
         return this;
     }
 
@@ -84,6 +92,16 @@ public class DockerRun {
      */
     public DockerRun removeBeforeRun() {
         this.removeBeforeRun = true;
+        return this;
+    }
+
+    public DockerRun networkHost() {
+        this.networkHost = true;
+        return this;
+    }
+
+    public DockerRun ipcHost() {
+        this.ipcHost = true;
         return this;
     }
 
@@ -178,6 +196,10 @@ public class DockerRun {
     public DockerContainer execute() {
         List<String> options = new Vector<>();
 
+        if (runPrivileged) {
+            options.add("--privileged");
+        }
+
         if (gpusAll) {
             options.add("--gpus");
             options.add("all");
@@ -185,6 +207,16 @@ public class DockerRun {
 
         if (removeAfterRun) {
             options.add("--rm");
+        }
+
+        if (networkHost) {
+            options.add("--network");
+            options.add("host");
+        }
+
+        if (ipcHost) {
+            options.add("--ipc");
+            options.add("host");
         }
 
         if (user != null && !user.isEmpty()) {
@@ -202,10 +234,10 @@ public class DockerRun {
             options.add(binding.getKey() + ":" + binding.getValue());
         }
 
-        for (Pair<Integer, Integer> binding : portBindings) {
-            options.add("-p");
-            options.add(binding.getKey() + ":" + binding.getValue());
-        }
+        // for (Pair<Integer, Integer> binding : portBindings) {
+        //     options.add("-p");
+        //     options.add(binding.getKey() + ":" + binding.getValue());
+        // }
 
         for (Pair<String, Object> param : parameters) {
             options.add("-e");

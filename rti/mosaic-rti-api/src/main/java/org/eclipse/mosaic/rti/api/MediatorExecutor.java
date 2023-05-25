@@ -65,23 +65,6 @@ public interface MediatorExecutor {
      */
     void stopRemoteMediator(PrintStream sshStreamOut) throws MediatorStarterException;
 
-    /**
-     * Starts the mediator in the given working dir on docker.
-     *
-     * @param fedDir the working directory
-     *
-     * @return the local process of the mediator
-     * @throws MediatorStarterException if something went wrong during starting the mediator
-     */
-    Process startDockerMediator(File fedDir) throws MediatorStarterException;
-
-    /**
-     * Stops the previously started mediator on docker.
-     *
-     * @throws MediatorStarterException if the start of the mediator failed
-     */
-    void stopDockerMediator() throws MediatorStarterException;
-
     class MediatorStarterException extends Exception {
 
         private static final long serialVersionUID = 1L;

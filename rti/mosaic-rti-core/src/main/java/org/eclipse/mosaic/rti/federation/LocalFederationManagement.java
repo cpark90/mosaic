@@ -19,6 +19,7 @@ import org.eclipse.mosaic.lib.util.ProcessLoggingThread;
 import org.eclipse.mosaic.rti.api.ComponentProvider;
 import org.eclipse.mosaic.rti.api.FederateAmbassador;
 import org.eclipse.mosaic.rti.api.FederateExecutor;
+import org.eclipse.mosaic.rti.api.MediatorExecutor;
 import org.eclipse.mosaic.rti.api.FederationManagement;
 import org.eclipse.mosaic.rti.api.IllegalValueException;
 import org.eclipse.mosaic.rti.api.WatchDog;
@@ -274,6 +275,28 @@ public class LocalFederationManagement implements FederationManagement {
         );
         outputLoggingThread.start();
         loggingThreads.put(descriptor.getId(), outputLoggingThread);
+
+        try {
+            final MediatorExecutor mediatorExecutor = descriptor.getMediatorExecutor();
+            final Process mediatorProcess = mediatorExecutor.startLocalMediator(fedDir);
+            if (mediatorProcess == null) {
+                return;
+            }
+
+            //make the process known to the watchdog(and thus ensuring its termination)
+            if (watchDog != null) {
+                watchDog.attachProcess(mediatorProcess);
+            }
+            descriptor.getAmbassador().connectToMediator(LOCALHOST, mediatorProcess.getInputStream(), mediatorProcess.getErrorStream());
+
+        } catch (Exception e) {
+            if (log != null) {
+                log.debug("Could not start mediator for Federate executor: {}", federateExecutor.toString());
+            }
+            if (log != null) {
+                log.error("Could not start mediator ", e);
+            }
+        }
     }
 
     /**

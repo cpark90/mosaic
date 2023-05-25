@@ -42,12 +42,16 @@ import org.eclipse.mosaic.lib.util.objects.ObjectInstantiation;
 import org.eclipse.mosaic.rti.TIME;
 import org.eclipse.mosaic.rti.api.AbstractFederateAmbassador;
 import org.eclipse.mosaic.rti.api.FederateExecutor;
+import org.eclipse.mosaic.rti.api.MediatorExecutor;
 import org.eclipse.mosaic.rti.api.IllegalValueException;
 import org.eclipse.mosaic.rti.api.Interaction;
 import org.eclipse.mosaic.rti.api.InternalFederateException;
 import org.eclipse.mosaic.rti.api.federatestarter.DockerFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.ExecutableFederateExecutor;
 import org.eclipse.mosaic.rti.api.federatestarter.NopFederateExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.DockerMediatorExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.ExecutableMediatorExecutor;
+import org.eclipse.mosaic.rti.api.mediatorstarter.NopMediatorExecutor;
 import org.eclipse.mosaic.rti.api.parameters.AmbassadorParameter;
 import org.eclipse.mosaic.rti.config.CLocalHost;
 
@@ -111,6 +115,11 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
      * Carla simulator client port
      */
     private int carlaSimulatorClientPort = -1;
+
+    /**
+     * Carla mediator port
+     */
+    private int mediatorPort = -1;
 
     /**
      * The process for running the connection bridge client
@@ -212,8 +221,74 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
                 args
         );
         this.dockerFederateExecutor.addPortBinding(port, port);
+        this.dockerFederateExecutor.addPortBinding(8913, 8913);
         this.federateExecutor = this.dockerFederateExecutor;
         return this.dockerFederateExecutor;
+    }
+
+    /**
+     * Creates and sets new mediator executor.
+     *
+     * @param host name of the host (as specified in /etc/hosts.json)
+     * @param port port number to be used by this federate
+     * @param os   operating system enum
+     * @return MediatorExecutor.
+     */
+    @Nonnull
+    @Override
+    public MediatorExecutor createMediatorExecutor(String host, int port, CLocalHost.OperatingSystem os) {
+        // CARLA needs to start the federate by itself, therefore we need to store the
+        // federate starter locally and use it later
+        mediatorExecutor = new ExecutableMediatorExecutor(descriptor, getMediatorExecutable("CarlaUE4"),
+                getMediatorArguments(port));
+        this.mediatorPort = port;
+        return new NopMediatorExecutor();
+    }
+
+    /**
+     * Get CARLA mediator executable file location
+     *
+     * @param executable the name of carla executable file
+     * @return the path to CarlaUE4 executable file
+     */
+    String getMediatorExecutable(String executable) {
+        // execute mediator in scenario directory
+        String carlaHome = null;
+        if (carlaConfig.carlaUE4Path != null) {
+            carlaHome = carlaConfig.carlaUE4Path;
+            log.info("use carla path from configuration file: " + carlaHome);
+        }
+        else if (System.getenv("CARLA_HOME") != null) {
+            carlaHome = System.getenv("CARLA_HOME");
+            log.info("use carla path from environmental variable: " + carlaHome);
+        }
+        if (StringUtils.isNotBlank(carlaHome)) {
+            boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+            if (isWindows) {
+                executable += ".exe";
+            } else {
+                executable += ".sh";
+            }
+            return carlaHome + File.separator + executable;
+        }
+        return executable;
+    }
+
+    @Override
+    public DockerMediatorExecutor createDockerMediatorExecutor(String dockerImage, int port, CLocalHost.OperatingSystem os) {
+        List<String> args = getMediatorArguments(port);
+
+        // TODO: deploy target path 
+        this.dockerMediatorExecutor = new DockerMediatorExecutor(
+                dockerImage,
+                "docker-volume:mosaic",
+                "/home/mosaic/shared",
+                args
+        );
+        this.dockerMediatorExecutor.addPortBinding(port, port);
+        this.dockerMediatorExecutor.addPortBinding(2000, 2000);
+        this.mediatorExecutor = this.dockerMediatorExecutor;
+        return this.dockerMediatorExecutor;
     }
 
     /**
@@ -250,19 +325,36 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
     @Override
     public void connectToFederate(String host, int port) {
         // Start the Carla connection server
+        // connect carla client
+    }
+
+    @Override
+    public void connectToFederate(String host, InputStream in, InputStream err) {
+        this.connectToFederate(host, carlaSimulatorClientPort);
+    }
+
+    /**
+     * Connects to CARLA simulator using the given host and port.
+     *
+     * @param host host on which CARLA simulator is running.
+     * @param port port on which CARLA client is listening.
+     */
+    @Override
+    public void connectToMediator(String host, int port) {
+        // Start the Carla connection server
         String bridgePath = null;
         int carlaConnectionPort = 8913;
         if (carlaConfig.carlaConnectionPort != 0)
             carlaConnectionPort = carlaConfig.carlaConnectionPort; // set the carla connection port
 
-        // get the connection bridge file
-        if (carlaConfig.bridgePath != null) {
-            bridgePath = carlaConfig.bridgePath;
-            log.info("Use connection bridge path from configuration file: " + carlaConfig.bridgePath);
-        } else {
-            log.error("Could not find connection bridge.");
-            return;
-        }
+        // // get the connection bridge file
+        // if (carlaConfig.bridgePath != null) {
+        //     bridgePath = carlaConfig.bridgePath;
+        //     log.info("Use connection bridge path from configuration file: " + carlaConfig.bridgePath);
+        // } else {
+        //     log.error("Could not find connection bridge.");
+        //     return;
+        // }
         if (carlaConnection == null) {
             // start the carla connection
 
@@ -271,51 +363,51 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             carlaThread.start();
         }
 
-        String[] bridgePathArray = bridgePath.split(";");
+        // String[] bridgePathArray = bridgePath.split(";");
 
-        String path = bridgePathArray[0];
-        String command = bridgePathArray[1];
+        // String path = bridgePathArray[0];
+        // String command = bridgePathArray[1];
 
-        // check the current operating system
-        boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+        // // check the current operating system
+        // boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
-        if (isWindows) {
-            command = "cmd.exe /c start " + command;
-        } else {
-            command = "sh " + command;
-        }
-        // connect carla client
-        while (connectionAttempts-- > 0) {
-            boolean connected = true;
+        // if (isWindows) {
+        //     command = "cmd.exe /c start " + command;
+        // } else {
+        //     command = "sh " + command;
+        // }
+        // // connect carla client
+        // while (connectionAttempts-- > 0) {
+        //     boolean connected = true;
 
-            try {
-                connectionProcess = Runtime.getRuntime().exec(command, null, new File(path));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                if (connectionAttempts == 0) {
-                    log.info("Maximum connection attempts reached and connecting to CARLA simulator failed.");
-                } else {
-                    log.warn("Error while connecting to CARLA simulator. Retrying.");
-                }
+        //     try {
+        //         connectionProcess = Runtime.getRuntime().exec(command, null, new File(path));
+        //     } catch (Exception ex) {
+        //         ex.printStackTrace();
+        //         if (connectionAttempts == 0) {
+        //             log.info("Maximum connection attempts reached and connecting to CARLA simulator failed.");
+        //         } else {
+        //             log.warn("Error while connecting to CARLA simulator. Retrying.");
+        //         }
 
-                try {
-                    Thread.sleep(SLEEP_AFTER_ATTEMPT);
-                } catch (InterruptedException e) {
-                    log.error("Could not execute Thread.sleep({}). Reason: {}", SLEEP_AFTER_ATTEMPT, e.getMessage());
-                }
-                connected = false;
-            }
+        //         try {
+        //             Thread.sleep(SLEEP_AFTER_ATTEMPT);
+        //         } catch (InterruptedException e) {
+        //             log.error("Could not execute Thread.sleep({}). Reason: {}", SLEEP_AFTER_ATTEMPT, e.getMessage());
+        //         }
+        //         connected = false;
+        //     }
 
-            if (connected) {
-                log.info("Client connected");
-                break;
-            }
-        }
+        //     if (connected) {
+        //         log.info("Client connected");
+        //         break;
+        //     }
+        // }
     }
 
     @Override
-    public void connectToFederate(String host, InputStream in, InputStream err) {
-        this.connectToFederate(host, carlaSimulatorClientPort);
+    public void connectToMediator(String host, InputStream in, InputStream err) {
+        this.connectToMediator(host, mediatorPort);
     }
 
     /**
@@ -331,6 +423,7 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         log.info("Directory: " + dir);
 
         try {
+            federateExecutor.stopLocalFederate();
             Process p = federateExecutor.startLocalFederate(dir);
             connectToFederate("localhost", p.getInputStream(), p.getErrorStream());
             // read error output of process in an extra thread
@@ -343,6 +436,17 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         } catch (FederateExecutor.FederateStarterException e) {
             log.error("Error while executing command: {}", federateExecutor.toString());
             throw new InternalFederateException("Error while starting Carla: " + e.getLocalizedMessage());
+        }
+
+        if (mediatorExecutor != null) {
+            try {
+                mediatorExecutor.stopLocalMediator();
+                Process mediatorProcess = mediatorExecutor.startLocalMediator(dir);
+                connectToMediator("localhost", mediatorProcess.getInputStream(), mediatorProcess.getErrorStream());
+            } catch (MediatorExecutor.MediatorStarterException e) {
+                log.error("Error while executing command: {}", mediatorExecutor.toString());
+                throw new InternalFederateException("Error while starting Carla: " + e.getLocalizedMessage());
+            }
         }
     }
 
@@ -388,7 +492,11 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         log.info("Closing CARLA connection.");
 
         if (carlaConnection != null) {
-            carlaConnection.closeSocket();
+            try {
+                carlaConnection.closeSocket();
+            } catch (Exception e) {
+                log.warn("Could not properly stop carla connection");
+            }
         }
 
         if (federateExecutor != null) {
@@ -396,6 +504,14 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
                 federateExecutor.stopLocalFederate();
             } catch (FederateExecutor.FederateStarterException e) {
                 log.warn("Could not properly stop federate");
+            }
+        }
+
+        if (mediatorExecutor != null) {
+            try {
+                mediatorExecutor.stopLocalMediator();
+            } catch (MediatorExecutor.MediatorStarterException e) {
+                log.warn("Could not properly stop mediator");
             }
         }
 
@@ -420,11 +536,25 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
      */
     List<String> getProgramArguments(int port) {
 
-        List<String> args = Lists.newArrayList("-carla-rpc-port", Integer.toString(port));
+        List<String> args = Lists.newArrayList("-carla-rpc-port", Integer.toString(port), "-RenderOffScreen");
+        
 
         return args;
     }
 
+    /**
+     * get the CARLA mediator command arguments
+     *
+     * @param port CARLA simulator client port
+     * @return the list of CARLA command arguments
+     */
+    List<String> getMediatorArguments(int port) {
+
+        List<String> args = Lists.newArrayList("--bridge-server-port", Integer.toString(port), "-m", carlaConfig.mediatorMap, carlaConfig.mediatorNetFile, "--step-length", Double.toString(carlaConfig.mediatorStepLength), "--tls-manager", carlaConfig.mediatorTlsManager);
+
+        return args;
+    }
+    
     /**
      * Returns whether this federate is time constrained. Is set if the federate is
      * sensitive towards the correct ordering of events. The federate ambassador

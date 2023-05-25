@@ -1,6 +1,10 @@
 {
     "updateInterval": 100,
     "carlaUE4Path": "/opt/carla/",
-    "bridgePath": "./scenarios/Town04_20/carla; bridge.sh",
-    "carlaConnectionPort": 8913
+    "carlaConnectionPort": 8913,
+
+    "mediatorMap": "Town04",
+    "mediatorNetFile": "/home/mosaic/shared/carla/carla-federate/simulations/Town04.net.xml",
+    "mediatorStepLength": 0.1,
+    "mediatorTlsManager": "sumo"
 }

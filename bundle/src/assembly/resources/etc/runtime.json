@@ -45,8 +45,10 @@
             "configurationDeployPath": "carla-federate/simulations",
             "priority": 50,
             "dockerImage": "carla:mosaic_0_9_14",
+            "mediatorDockerImage": "bazel/mediator:mediator_carla_main_image",
             "host": "local",
             "federatePort": 2000,
+            "mediatorPort": 8913,
             "deploy": true,
             "start": true,
             "subscriptions": [

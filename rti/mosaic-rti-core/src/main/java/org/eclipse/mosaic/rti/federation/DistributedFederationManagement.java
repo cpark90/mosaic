@@ -82,7 +82,7 @@ public class DistributedFederationManagement extends LocalFederationManagement {
     }
 
     /**
-     * Deploys a federate represented by its handle on a remote machine using
+     * Deploys a federate represented by its descriptor on a remote machine using
      * SSH.
      *
      * @param descriptor federate descriptor consisting all necessary data to deploy a federate
@@ -131,22 +131,22 @@ public class DistributedFederationManagement extends LocalFederationManagement {
     }
 
     /**
-     * Starts a federate represented by its handle on a remote machine using
+     * Starts a federate represented by its descriptor on a remote machine using
      * SSH.
      *
-     * @param handle federate handle consisting all necessary data to start a
+     * @param descriptor federate descriptor consisting all necessary data to start a
      *               federate
      * @throws Exception if the federate could not be started
      */
     @Override
-    protected void startFederate(FederateDescriptor handle) throws Exception {
+    protected void startFederate(FederateDescriptor descriptor) throws Exception {
         PrintStream out = null;
 
         try {
-            CLocalHost host = handle.getHost();
+            CLocalHost host = descriptor.getHost();
 
             if (!(host instanceof CRemoteHost)) {
-                super.startFederate(handle);
+                super.startFederate(descriptor);
                 return;
             }
 
@@ -172,12 +172,12 @@ public class DistributedFederationManagement extends LocalFederationManagement {
 
             this.log.info("Start federate ... ");
             out.println("cd " + host.workingDirectory);
-            out.println("cd " + handle.getId());
+            out.println("cd " + descriptor.getId());
 
-            int processId = handle.getFederateExecutor().startRemoteFederate(host, out, in);
+            int processId = descriptor.getFederateExecutor().startRemoteFederate(host, out, in);
 
             if (processId >= 0) {
-                handle.getAmbassador().connectToFederate(host.address, in, null);
+                descriptor.getAmbassador().connectToFederate(host.address, in, null);
 
                 this.log.info("Close channel ...");
                 channel.disconnect();
@@ -191,20 +191,20 @@ public class DistributedFederationManagement extends LocalFederationManagement {
     }
 
     /**
-     * Stops a federate represented by its handle on a remote machine using SSH.
+     * Stops a federate represented by its descriptor on a remote machine using SSH.
      *
-     * @param handle federate handle consisting all necessary data to stop a
+     * @param descriptor federate descriptor consisting all necessary data to stop a
      *               federate
      * @throws Exception if the federate could not be stopped
      */
     @SuppressWarnings("unused")
-    protected void stopFederate(FederateDescriptor handle) throws Exception {
+    protected void stopFederate(FederateDescriptor descriptor) throws Exception {
 
         PrintStream out = null;
         try {
-            CLocalHost host = handle.getHost();
+            CLocalHost host = descriptor.getHost();
             if (!(host instanceof CRemoteHost)) {
-                super.stopFederate(handle, true);
+                super.stopFederate(descriptor, true);
                 return;
             }
 
@@ -219,7 +219,7 @@ public class DistributedFederationManagement extends LocalFederationManagement {
             this.log.info("Connected.");
 
             this.log.info("Stop federate ... ");
-            handle.getFederateExecutor().stopRemoteFederate(out);
+            descriptor.getFederateExecutor().stopRemoteFederate(out);
             this.log.info("Stopped.");
 
             this.log.info("Close channel ...");
@@ -233,17 +233,17 @@ public class DistributedFederationManagement extends LocalFederationManagement {
     }
 
     /**
-     * Undeploys a federate represented by its handle on a remote machine using
+     * Undeploys a federate represented by its descriptor on a remote machine using
      * SSH.
      *
-     * @param handle federate handle consisting all necessary data to undeploy a federate
+     * @param descriptor federate descriptor consisting all necessary data to undeploy a federate
      * @throws Exception if the federate could not be undeployed
      */
     @Override
-    protected void undeployFederate(FederateDescriptor handle) throws Exception {
-        CLocalHost host = handle.getHost();
+    protected void undeployFederate(FederateDescriptor descriptor) throws Exception {
+        CLocalHost host = descriptor.getHost();
         if (!(host instanceof CRemoteHost)) {
-            super.undeployFederate(handle);
+            super.undeployFederate(descriptor);
             return;
         }
 
@@ -255,7 +255,7 @@ public class DistributedFederationManagement extends LocalFederationManagement {
 
         this.log.info("Remove all deployed files ...");
         channel.cd(host.workingDirectory);
-        this.removeDirectory(channel, handle.getId());
+        this.removeDirectory(channel, descriptor.getId());
         this.log.info("Finished.");
 
         this.log.info("Close channel ...");
