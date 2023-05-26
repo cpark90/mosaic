@@ -53,6 +53,7 @@ import org.eclipse.mosaic.rti.api.mediatorstarter.DockerMediatorExecutor;
 import org.eclipse.mosaic.rti.api.mediatorstarter.ExecutableMediatorExecutor;
 import org.eclipse.mosaic.rti.api.mediatorstarter.NopMediatorExecutor;
 import org.eclipse.mosaic.rti.api.parameters.AmbassadorParameter;
+import org.eclipse.mosaic.rti.api.parameters.FederatePriority;
 import org.eclipse.mosaic.rti.config.CLocalHost;
 
 /**
@@ -312,7 +313,7 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             throw new InternalFederateException(e);
         }
         // Start the CARLA simulator
-        startCarlaLocal();
+        // startCarlaLocal();
 
     }
 
@@ -359,6 +360,12 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             // start the carla connection
 
             carlaConnection = new CarlaConnection("localhost", carlaConnectionPort, this);
+            Thread carlaThread = new Thread(carlaConnection);
+            carlaThread.start();
+        } else {
+            carlaConnection.closeSocket();
+            carlaConnection.setCarlaPort(carlaConnectionPort);
+            carlaConnection.setCarlaHostName("localhost");
             Thread carlaThread = new Thread(carlaConnection);
             carlaThread.start();
         }
@@ -475,7 +482,8 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
                 nextTimeStep += carlaConfig.updateInterval * TIME.MILLI_SECOND;
                 isSimulationStep = false;
             }
-            rti.requestAdvanceTime(nextTimeStep + this.executedTimes, 0, (byte) 2);
+            log.debug("CarlaAmbassador timestep : " + Long.toString(nextTimeStep));
+            rti.requestAdvanceTime(nextTimeStep + this.executedTimes, 0, FederatePriority.higher(descriptor.getPriority()));
             this.executedTimes++;
         } catch (IllegalValueException e) {
             log.error("Error during advanceTime(" + time + ")", e);
@@ -494,6 +502,7 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         if (carlaConnection != null) {
             try {
                 carlaConnection.closeSocket();
+
             } catch (Exception e) {
                 log.warn("Could not properly stop carla connection");
             }
@@ -551,6 +560,15 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
     List<String> getMediatorArguments(int port) {
 
         List<String> args = Lists.newArrayList("--bridge-server-port", Integer.toString(port), "-m", carlaConfig.mediatorMap, carlaConfig.mediatorNetFile, "--step-length", Double.toString(carlaConfig.mediatorStepLength), "--tls-manager", carlaConfig.mediatorTlsManager);
+        if (carlaConfig.syncVehicleLights) {
+            args.add("--sync-vehicle-lights");
+        }
+        if (carlaConfig.syncVehicleColor) {
+            args.add("--sync-vehicle-color");
+        }
+        if (carlaConfig.syncVehicleAll) {
+            args.add("--sync-vehicle-all");
+        }
 
         return args;
     }
@@ -591,15 +609,23 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         try {
             // trigger interaction based on the command type simulation step or not
             if (command[5] == CommandSimulationControl.COMMAND_SIMULATION_STEP) {
+
+                log.debug("SimulationStep in carlaAmbassador");
+
                 rti.triggerInteraction(new SimulationStep(this.nextTimeStep));
                 isSimulationStep = true;
                 // log.debug("trigger simulation step interaction at time: " +
                 // this.nextTimeStep);
             } else if (command[5] == 0x0d) {
+                
+                log.debug("0x0d in carlaAmbassador");
+
                 // send received V2X message to CARLA simulator
                 sendReceivedV2xMessageToCarla();
                 // log.debug("Carla ambassador sends V2X messages to bridge client.");
             } else if (command[5] == 0x2f) {
+                log.debug("0x2f in carlaAmbassador");
+
                 // receive message from CARLA simulator
                 String[] message = processReceivedV2xMessageFromCarla(length, command);
                 if (message != null) {
@@ -609,6 +635,8 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
                     // message[1]);
                 }
             } else {
+                log.debug("CarlaTraciRequest in carlaAmbassador");
+
                 rti.triggerInteraction(new CarlaTraciRequest(this.nextTimeStep, length, command));
             }
 

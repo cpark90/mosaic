@@ -61,6 +61,14 @@ public class CarlaConnection implements Runnable {
         this.carlaAmbassador = fedAmbassador;
     }
 
+    public void setCarlaPort(int carlaPort) {
+        this.carlaPort = carlaPort;
+    }
+
+    public void setCarlaHostName(String carlaHostName) {
+        this.carlaHostName = carlaHostName;
+    }
+
     /**
      * This method is used to run the CarlaConnection. After CARLA simulator
      * connected, the message begins to transfer between too ends.
@@ -113,10 +121,14 @@ public class CarlaConnection implements Runnable {
         try {
             // close carla socket
             log.info("carla socket closing");
-            carlaSocket.close();
+            if (carlaSocket != null) {
+                carlaSocket.close();
+            }
             // close connection server socket
             log.info("carla connection server socket closing");
-            carlaConnectionServerSocket.close();
+            if (carlaConnectionServerSocket != null) {
+                carlaConnectionServerSocket.close();
+            }
         } catch (Exception e) {
             log.error("error occurs during closing carla socket: " + e.getMessage());
         }

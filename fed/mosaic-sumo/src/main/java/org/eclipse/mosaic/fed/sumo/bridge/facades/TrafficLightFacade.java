@@ -214,16 +214,18 @@ public class TrafficLightFacade {
                 outgoing = null;
                 trafficLightPosition = junctionPosition;
                 log.warn("There seem to be more states than links controlled by the TrafficLightProgram.");
+                break;
             } else {
                 incoming = controlledLinks.get(index).getIncoming();
                 outgoing = controlledLinks.get(index).getOutgoing();
-                try {
-                    // try to get exact traffic light position
-                    List<Position> laneShape = bridge.getSimulationControl().getShapeOfLane(incoming);
-                    trafficLightPosition = Iterables.getLast(laneShape).getGeographicPosition();
-                } catch (Exception e) {
-                    trafficLightPosition = junctionPosition;
-                }
+                // try {
+                //     // try to get exact traffic light position
+                //     List<Position> laneShape = bridge.getSimulationControl().getShapeOfLane(incoming);
+                //     trafficLightPosition = Iterables.getLast(laneShape).getGeographicPosition();
+                // } catch (Exception e) {
+                //     trafficLightPosition = junctionPosition;
+                // }
+                trafficLightPosition = junctionPosition;
             }
             trafficLights.add(new TrafficLight(index++, trafficLightPosition, incoming, outgoing, state));
         }

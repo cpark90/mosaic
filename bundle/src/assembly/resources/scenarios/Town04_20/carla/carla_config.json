@@ -6,5 +6,10 @@
     "mediatorMap": "Town04",
     "mediatorNetFile": "/home/mosaic/shared/carla/carla-federate/simulations/Town04.net.xml",
     "mediatorStepLength": 0.1,
-    "mediatorTlsManager": "sumo"
+    "mediatorTlsManager": "sumo",
+
+
+    "syncVehicleLights": false,
+    "syncVehicleColor": false,
+    "syncVehicleAll": false
 }

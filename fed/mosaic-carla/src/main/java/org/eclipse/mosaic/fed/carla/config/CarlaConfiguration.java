@@ -47,6 +47,10 @@ public class CarlaConfiguration implements Serializable {
     public double mediatorStepLength;
     public String mediatorTlsManager;
 
+    public boolean syncVehicleLights;
+    public boolean syncVehicleColor;
+    public boolean syncVehicleAll;
+
     /**
      * Carla connection port
      */

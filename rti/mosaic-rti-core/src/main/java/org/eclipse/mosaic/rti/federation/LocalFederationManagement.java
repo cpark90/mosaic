@@ -311,6 +311,11 @@ public class LocalFederationManagement implements FederationManagement {
 
             loggingThreads.get(descriptor.getId()).forEach(ProcessLoggingThread::close);
         }
+
+        if (descriptor.getMediatorExecutor() != null) {
+            descriptor.getMediatorExecutor().stopLocalMediator();
+
+        }
     }
 
     /**

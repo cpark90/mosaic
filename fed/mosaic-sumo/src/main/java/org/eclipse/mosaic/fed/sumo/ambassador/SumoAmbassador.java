@@ -46,6 +46,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.mosaic.interactions.application.CarlaTraciRequest;
+import org.eclipse.mosaic.interactions.application.CarlaTraciResponse;
+import org.eclipse.mosaic.interactions.application.SimulationStep;
+import org.eclipse.mosaic.interactions.application.SimulationStepResponse;
+
+import java.util.Arrays;
+
 /**
  * Implementation of a {@link AbstractSumoAmbassador} for the traffic simulator
  * SUMO. It allows to control the progress of the traffic simulation and
@@ -118,6 +125,10 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
             this.receiveInteraction((VehicleTypesInitialization) interaction);
         } else if (interaction.getTypeId().equals(VehicleRegistration.TYPE_ID)) {
             this.receiveInteraction((VehicleRegistration) interaction);
+        } else if (interaction.getTypeId().equals(CarlaTraciRequest.TYPE_ID)) {
+            this.receiveInteraction((CarlaTraciRequest) interaction);
+        } else if (interaction.getTypeId().equals(SimulationStep.TYPE_ID)) {
+            this.receiveInteraction((SimulationStep) interaction);
         } else {
             // ... everything else is saved for later
             super.processInteraction(interaction);
@@ -214,6 +225,55 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
         sumoStartupProcedure();
     }
 
+    /**
+     * This processes a {@link CarlarTraciRequest} that have been dynamically
+     * created.
+     *
+     * @param interaction Interaction containing information about carla request.
+     */
+    private void receiveInteraction(CarlaTraciRequest interaction) throws InternalFederateException {
+        log.debug("Received CarlaTraciRequest");
+        try {
+            sumoCarlaCoSimulation = true;
+            bridge.getOut().write(interaction.getCommand());
+            byte[] returnedMessage = new byte[65535];
+            int len = bridge.getIn().read(returnedMessage);
+            byte[] messageToCarla = Arrays.copyOfRange(returnedMessage, 0, len);
+
+            // trigger a CarlaTraciResponse interaction
+            rti.triggerInteraction(new CarlaTraciResponse(interaction.getTime(), len, messageToCarla));
+
+        } catch (Exception e) {
+            log.error("error occurs during process carla request interaction: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This processes a {@link SimulationStep} that have been dynamically created.
+     *
+     * @param interaction Interaction containing information about bridge simulation
+     *                    step from carla.
+     */
+    private void receiveInteraction(SimulationStep interaction) throws InternalFederateException {
+        log.debug("Received SimulationStep");
+        try {
+            byte[] simulationStepResponse = new byte[] { 0, 0, 0, 15, 7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            log.info("sumo received carla simulation step at time: " + interaction.getTime() + " at sumo time: "
+                    + this.nextTimeStep);
+            // trigger a simulation step response
+            rti.triggerInteraction(new SimulationStepResponse(interaction.getTime(), simulationStepResponse.length,
+                    simulationStepResponse));
+            // set the simulation step flag
+            receivedSimulationStep = true;
+
+        } catch (
+
+        Exception e) {
+            log.error("error occurs during process simulation step interaction: " + e.getMessage());
+        }
+    }
+
     private void sumoStartupProcedure() throws InternalFederateException {
         writeTypesFromRti(cachedVehicleTypesInitialization);
         startSumoLocal();
@@ -249,7 +309,7 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
     /**
      * Passes on initial routes (e.g., from scenario database) to SUMO.
      *
-     * @throws InternalFederateException if there was a problem with traci
+     * @throws InternalFederateException if there was a problem with bridge
      */
     private void addInitialRoutesFromRti() throws InternalFederateException {
         for (Map.Entry<String, VehicleRoute> routeEntry : cachedVehicleRoutesInitialization.getRoutes().entrySet()) {

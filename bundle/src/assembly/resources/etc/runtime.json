@@ -177,7 +177,7 @@
             "configuration": "sumo_config.json",
             "configurationDeployPath": "sumo-federate/simulations",
             "priority": 50,
-            "dockerImage": "sumo:mosaic_1_17_0",
+            "dockerImage": "sumo:mosaic_1_16_0",
             "host": "local",
             "federatePort": 3222,
             "deploy": true,
@@ -203,7 +203,9 @@
                 "InductionLoopDetectorSubscription",
                 "LaneAreaDetectorSubscription",
                 "TrafficLightSubscription",
-                "VehicleSightDistanceConfiguration"
+                "VehicleSightDistanceConfiguration",
+                "CarlaTraciRequest",
+                "SimulationStep"
             ],
             "javaClasspathEntries": []
         },

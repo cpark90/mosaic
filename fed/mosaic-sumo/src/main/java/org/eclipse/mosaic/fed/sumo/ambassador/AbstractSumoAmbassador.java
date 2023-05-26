@@ -210,6 +210,17 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
     final HashMap<String, VehicleRoute> routes = new HashMap<>();
 
     /**
+     * received simulation step from carla
+     *
+     */
+    protected boolean receivedSimulationStep = false;
+
+    /**
+     * CARLA federate is enabled
+     */
+    protected boolean sumoCarlaCoSimulation = false;
+
+    /**
      * Creates a new {@link AbstractSumoAmbassador} object.
      *
      * @param ambassadorParameter includes parameters for the sumo ambassador.
@@ -1250,20 +1261,23 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
                 firstAdvanceTime = false;
             }
 
-            setExternalVehiclesToLatestPositions();
-            TraciSimulationStepResult simulationStepResult = bridge.getSimulationControl().simulateUntil(time);
+            if (receivedSimulationStep || !sumoCarlaCoSimulation) {
 
-            log.trace("Leaving advance time: {}", time);
-            removeExternalVehiclesFromUpdates(simulationStepResult.getVehicleUpdates());
-            propagateNewRoutes(simulationStepResult.getVehicleUpdates(), time);
+                setExternalVehiclesToLatestPositions();
+                TraciSimulationStepResult simulationStepResult = bridge.getSimulationControl().simulateUntil(time);
 
-            nextTimeStep += sumoConfig.updateInterval * TIME.MILLI_SECOND;
-            simulationStepResult.getVehicleUpdates().setNextUpdate(nextTimeStep);
+                log.trace("Leaving advance time: {}", time);
+                removeExternalVehiclesFromUpdates(simulationStepResult.getVehicleUpdates());
+                propagateNewRoutes(simulationStepResult.getVehicleUpdates(), time);
 
-            rti.triggerInteraction(simulationStepResult.getVehicleUpdates());
-            rti.triggerInteraction(simulationStepResult.getTrafficDetectorUpdates());
-            this.rti.triggerInteraction(simulationStepResult.getTrafficLightUpdates());
+                nextTimeStep += sumoConfig.updateInterval * TIME.MILLI_SECOND;
+                simulationStepResult.getVehicleUpdates().setNextUpdate(nextTimeStep);
 
+                rti.triggerInteraction(simulationStepResult.getVehicleUpdates());
+                rti.triggerInteraction(simulationStepResult.getTrafficDetectorUpdates());
+                this.rti.triggerInteraction(simulationStepResult.getTrafficLightUpdates());
+                receivedSimulationStep = false;
+            }
             rti.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
 
             lastAdvanceTime = time;
