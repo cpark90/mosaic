@@ -218,7 +218,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
     /**
      * CARLA federate is enabled
      */
-    protected boolean sumoCarlaCoSimulation = false;
+    protected boolean sumoCarlaCoSimulation = true;
 
     /**
      * Creates a new {@link AbstractSumoAmbassador} object.

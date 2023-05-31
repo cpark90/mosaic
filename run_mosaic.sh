@@ -7,8 +7,8 @@ docker run -it --rm --name mosaic \
 	-v ~/git/mosaic_with_carla/bundle/src/assembly/resources/etc:/app/etc \
 	-v ~/git/mosaic_with_carla/bundle/src/assembly/resources/scenarios:/app/scenarios \
         -v ~/git/mosaic/bundle/src/assembly/resources/fed:/app/fed \
-	bazel/rti/mosaic-starter:mosaic-image -s Town04_20 -b 1 -o DEBUG 
-#	bazel/rti/mosaic-starter:mosaic-image -s Barnim 
+	bazel/rti/mosaic-starter:mosaic-image -s Town04_20 -b 1  
+#	bazel/rti/mosaic-starter:mosaic-image -s Barnim -b 1 
 #	bazel/rti/mosaic-starter:mosaic-image -s Tiergarten 
 #	bazel/rti/mosaic-starter:mosaic-image -s LuST 
 #	bazel/rti/mosaic-starter:mosaic-image -s Highway 

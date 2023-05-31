@@ -92,6 +92,8 @@ public class FederateDescriptor {
      */
     private final byte priority;
 
+    private byte reducedPriority;
+
     /**
      * The executor instance which starts the federate.
      */
@@ -120,6 +122,7 @@ public class FederateDescriptor {
         this.id = id;
         this.ambassador = ambassador;
         this.priority = priority;
+        this.reducedPriority = this.priority;
     }
 
     /**
@@ -137,7 +140,12 @@ public class FederateDescriptor {
      * Returns the priority of this federate. The lower the value the higher the priority.
      */
     public byte getPriority() {
-        return priority;
+        if (this.reducedPriority < 100) this.reducedPriority += 1;
+        return reducedPriority;
+    }
+
+    public void resetPriority() {
+        this.reducedPriority = this.priority;
     }
 
     @Nonnull

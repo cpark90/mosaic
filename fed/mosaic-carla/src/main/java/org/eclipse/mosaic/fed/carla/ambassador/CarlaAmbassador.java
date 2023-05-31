@@ -39,6 +39,10 @@ import org.eclipse.mosaic.interactions.application.SimulationStep;
 import org.eclipse.mosaic.interactions.application.SimulationStepResponse;
 import org.eclipse.mosaic.lib.util.ProcessLoggingThread;
 import org.eclipse.mosaic.lib.util.objects.ObjectInstantiation;
+import org.eclipse.mosaic.lib.util.scheduling.DefaultEventScheduler;
+import org.eclipse.mosaic.lib.util.scheduling.Event;
+import org.eclipse.mosaic.lib.util.scheduling.EventProcessor;
+import org.eclipse.mosaic.lib.util.scheduling.EventScheduler;
 import org.eclipse.mosaic.rti.TIME;
 import org.eclipse.mosaic.rti.api.AbstractFederateAmbassador;
 import org.eclipse.mosaic.rti.api.FederateExecutor;
@@ -126,6 +130,18 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
      * The process for running the connection bridge client
      */
     private Process connectionProcess = null;
+
+    /**
+     * Indicates whether advance time is called for the first time.
+     */
+    private boolean firstAdvanceTime = true;
+    
+
+    /**
+     * An event scheduler which is currently used to change the speed to
+     * a given value after slowing down the vehicle.
+     */
+    private final EventScheduler eventScheduler = new DefaultEventScheduler();
 
     /**
      * Queue for temporary storage of V2X messages that CARLA vehicles receive
@@ -307,7 +323,7 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
 
         nextTimeStep = startTime;
         try {
-            rti.requestAdvanceTime(nextTimeStep, 0, (byte) 1);
+            rti.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
         } catch (IllegalValueException e) {
             log.error("Error during advanceTime request", e);
             throw new InternalFederateException(e);
@@ -473,17 +489,22 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             // simulation time step
             return;
         }
+            
+        // schedule events, e.g. change speed events
+        int scheduled = eventScheduler.scheduleEvents(time);
+        // log.debug("scheduled {} events at time {}", scheduled, TIME.format(time));
 
         try {
 
             // if the simulation step received from CARLA, advance CARLA federate local
             // simulation time
             if (isSimulationStep) {
+                log.debug("CarlaAmbassador timestep advance");
                 nextTimeStep += carlaConfig.updateInterval * TIME.MILLI_SECOND;
                 isSimulationStep = false;
             }
-            log.debug("CarlaAmbassador timestep : " + Long.toString(nextTimeStep));
-            rti.requestAdvanceTime(nextTimeStep + this.executedTimes, 0, FederatePriority.higher(descriptor.getPriority()));
+
+            rti.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
             this.executedTimes++;
         } catch (IllegalValueException e) {
             log.error("Error during advanceTime(" + time + ")", e);

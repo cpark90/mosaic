@@ -104,7 +104,7 @@ public class DockerMediatorExecutor implements MediatorExecutor {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
-                    .removeAfterRun()
+                    // .removeAfterRun()
                     .networkHost()
                     .currentUser()
                     .args(args)

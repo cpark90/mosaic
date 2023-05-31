@@ -78,6 +78,8 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
      */
     protected final Queue<FederateEvent> events;
 
+    protected FederateEvent recentEvents;
+
     protected final ComponentProvider federation;
 
     /**

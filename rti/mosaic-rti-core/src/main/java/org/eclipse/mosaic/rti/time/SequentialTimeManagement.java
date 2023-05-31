@@ -83,7 +83,6 @@ public class SequentialTimeManagement extends AbstractTimeManagement {
                 }
             }
 
-            logger.debug(event.getFederateId() + " : " + Long.toString(event.getRequestedTime()));
             // call ambassador associated with the scheduled event
             ambassador = federation.getFederationManagement().getAmbassador(event.getFederateId());
             if (ambassador != null) {

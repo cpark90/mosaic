@@ -110,6 +110,7 @@ public class TypeBasedInteractionManagement implements InteractionManagement {
         for (FederateAmbassador ambassador : ambassadors) {
             try {
                 federation.getMonitor().onReceiveInteraction(ambassador.getId(), interaction);
+                LOG.debug("receive interaction getTime : " + Long.toString(interaction.getTime()) + " getTypeId : " + interaction.getTypeId());
                 ambassador.receiveInteraction(interaction);
             } catch (InternalFederateException e) {
                 LOG.error("Error during interaction distribution", e);
