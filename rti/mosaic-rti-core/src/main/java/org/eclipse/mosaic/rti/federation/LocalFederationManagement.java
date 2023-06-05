@@ -179,7 +179,8 @@ public class LocalFederationManagement implements FederationManagement {
      * @throws Exception if the federate could not be deployed
      */
     protected void deployFederate(FederateDescriptor descriptor) throws Exception {
-        File hostDeployDir = new File(descriptor.getHost().workingDirectory);
+        File hostDeployDir = new File(descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId());
+        log.info(hostDeployDir.toPath().toString());
 
         if (!hostDeployDir.exists()) {
             log.debug("Destination directory does not exist, try to create it.");
@@ -237,7 +238,7 @@ public class LocalFederationManagement implements FederationManagement {
      */
     protected void startFederate(FederateDescriptor descriptor) throws Exception {
 
-        File fedDir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
+        File fedDir = new File(descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(), descriptor.getId());
 
         final FederateExecutor federateExecutor = descriptor.getFederateExecutor();
 
@@ -292,9 +293,6 @@ public class LocalFederationManagement implements FederationManagement {
         } catch (Exception e) {
             if (log != null) {
                 log.debug("Could not start mediator for Federate executor: {}", federateExecutor.toString());
-            }
-            if (log != null) {
-                log.error("Could not start mediator ", e);
             }
         }
     }

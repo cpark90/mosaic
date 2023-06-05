@@ -2,7 +2,7 @@
     "localHosts": [
         {
             "id": "local",
-            "workingDirectory": "./tmp",
+            "workingDirectory": "/tmp",
             "address": "localhost",
             "operatingSystem": "LINUX"
         }

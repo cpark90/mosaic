@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class ServerSpawner extends UnitSpawner implements Spawner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServerSpawner.class);
+    private static final Logger log = LoggerFactory.getLogger(ServerSpawner.class);
 
     /**
      * Constructor for {@link ServerSpawner} using configuration
@@ -73,10 +73,10 @@ public class ServerSpawner extends UnitSpawner implements Spawner {
         String name = UnitNameGenerator.nextServerName();
         ServerRegistration interaction = new ServerRegistration(0, name, group, getApplications());
         try {
-            LOG.info("Creating Server: {}", this);
+            log.info("Creating Server: {}", this);
             spawningFramework.getRti().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
-            LOG.error("Exception while sending Interaction in ServerSpawner.init()");
+            log.error("Exception while sending Interaction in ServerSpawner.init()");
             throw new InternalFederateException("Exception while sending Interaction in ServerSpawner.init()", e);
         }
     }

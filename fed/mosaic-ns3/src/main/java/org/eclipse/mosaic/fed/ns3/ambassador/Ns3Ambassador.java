@@ -61,11 +61,11 @@ public class Ns3Ambassador extends AbstractNetworkAmbassador {
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String imageName, int port, OperatingSystem os) {
+    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, OperatingSystem os) {
         this.dockerFederateExecutor = new DockerFederateExecutor(
-                imageName,
-                "ns3/scratch",
-                "/home/mosaic/bin/fed/ns3/scratch"
+                dockerImage,
+                descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
+                ""
         );
         return dockerFederateExecutor;
     }

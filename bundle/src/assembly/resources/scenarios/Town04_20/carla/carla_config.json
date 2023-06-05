@@ -4,7 +4,7 @@
     "carlaConnectionPort": 8913,
 
     "mediatorMap": "Town04",
-    "mediatorNetFile": "/home/mosaic/shared/carla/carla-federate/simulations/Town04.net.xml",
+    "mediatorNetFile": "/tmp/mediator_carla/carla/carla-federate/simulations/Town04.net.xml",
     "mediatorStepLength": 0.1,
     "mediatorTlsManager": "sumo",
 

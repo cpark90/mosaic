@@ -93,6 +93,7 @@ public class DistributedFederationManagement extends LocalFederationManagement {
 
         CLocalHost host = descriptor.getHost();
         if (!(host instanceof CRemoteHost)) {
+            // A federate that does not have remote host is deployed locally.
             super.deployFederate(descriptor);
             return;
         }
@@ -107,9 +108,14 @@ public class DistributedFederationManagement extends LocalFederationManagement {
         this.log.info("Transfer directories and files.");
         channel.cd(host.workingDirectory);
         try {
+            channel.mkdir(descriptor.getSimulationId());
+            channel.cd(descriptor.getSimulationId());
             channel.mkdir(descriptor.getId());
         } catch (SftpException e) {
             log.warn("Removing existing run-Directory: " + descriptor.getId());
+            removeDirectory(channel, descriptor.getSimulationId());
+            channel.mkdir(descriptor.getSimulationId());
+            channel.cd(descriptor.getSimulationId());
             removeDirectory(channel, descriptor.getId());
             channel.mkdir(descriptor.getId());
         }
@@ -146,6 +152,7 @@ public class DistributedFederationManagement extends LocalFederationManagement {
             CLocalHost host = descriptor.getHost();
 
             if (!(host instanceof CRemoteHost)) {
+                // A federate that does not have remote host is started locally.
                 super.startFederate(descriptor);
                 return;
             }
@@ -172,12 +179,20 @@ public class DistributedFederationManagement extends LocalFederationManagement {
 
             this.log.info("Start federate ... ");
             out.println("cd " + host.workingDirectory);
+            out.println("cd " + descriptor.getSimulationId());
             out.println("cd " + descriptor.getId());
 
-            int processId = descriptor.getFederateExecutor().startRemoteFederate(host, out, in);
+            int federateProcessId = descriptor.getFederateExecutor().startRemoteFederate(host, out, in);
 
-            if (processId >= 0) {
+            if (federateProcessId >= 0) {
                 descriptor.getAmbassador().connectToFederate(host.address, in, null);
+            }
+
+
+            int mediatorProcessId = descriptor.getMediatorExecutor().startRemoteMediator(host, out, in);
+
+            if (mediatorProcessId >= 0) {
+                descriptor.getAmbassador().connectToMediator(host.address, in, null);
 
                 this.log.info("Close channel ...");
                 channel.disconnect();
@@ -222,6 +237,10 @@ public class DistributedFederationManagement extends LocalFederationManagement {
             descriptor.getFederateExecutor().stopRemoteFederate(out);
             this.log.info("Stopped.");
 
+            this.log.info("Stop mediator ... ");
+            descriptor.getMediatorExecutor().stopRemoteMediator(out);
+            this.log.info("Stopped.");
+
             this.log.info("Close channel ...");
             channel.disconnect();
             this.log.info("Closed.");
@@ -255,7 +274,7 @@ public class DistributedFederationManagement extends LocalFederationManagement {
 
         this.log.info("Remove all deployed files ...");
         channel.cd(host.workingDirectory);
-        this.removeDirectory(channel, descriptor.getId());
+        this.removeDirectory(channel, descriptor.getSimulationId());
         this.log.info("Finished.");
 
         this.log.info("Close channel ...");

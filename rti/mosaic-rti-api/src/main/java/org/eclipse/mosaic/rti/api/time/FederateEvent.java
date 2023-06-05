@@ -63,6 +63,11 @@ public class FederateEvent implements Comparable<FederateEvent> {
     protected final byte priority;
 
     /**
+     * Count to schedule two events if they have the same time and priority.
+     */
+    protected final int counter;
+
+    /**
      * Constructor to create an event using all fields.
      *
      * @param federateId    identifier of the requesting federate
@@ -71,12 +76,13 @@ public class FederateEvent implements Comparable<FederateEvent> {
      *                      federate will not create any further events
      * @param priority      priority to schedule two events if they have the same time
      */
-    public FederateEvent(String federateId, long requestedTime, long lookahead, byte priority) {
+    public FederateEvent(String federateId, long requestedTime, long lookahead, byte priority, int counter) {
         id = createUniqueId();
         this.requestedTime = requestedTime;
         this.federateId = federateId;
         this.lookahead = lookahead;
         this.priority = priority;
+        this.counter = counter;
     }
 
     /**
@@ -129,7 +135,11 @@ public class FederateEvent implements Comparable<FederateEvent> {
         if (event.requestedTime == this.requestedTime) {
             int priorityCompare = FederatePriority.compareTo(event.priority, this.priority);
             if (priorityCompare == 0) {
-                return event.lookahead < this.lookahead ? 1 : -1;
+                if (event.lookahead == this.lookahead) {
+                    return event.counter < this.counter ? 1 : -1;
+                } else {
+                    return event.lookahead < this.lookahead ? 1 : -1;
+                }
             }
             return priorityCompare;
         }

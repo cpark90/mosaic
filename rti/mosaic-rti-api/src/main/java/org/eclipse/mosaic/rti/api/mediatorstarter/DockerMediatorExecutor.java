@@ -100,23 +100,22 @@ public class DockerMediatorExecutor implements MediatorExecutor {
         this.dockerClient = new DockerClient();
         final DockerRun run;
 
-        if (sharedDirectoryPath.startsWith("docker-volume:")) {
+        if (!imageVolume.isEmpty()) {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
-                    // .removeAfterRun()
+                    .removeAfterRun()
                     .networkHost()
-                    .currentUser()
                     .args(args)
-                    .volumeBinding(sharedDirectoryPath.replaceFirst("^docker-volume:", ""), imageVolume);
+                    .volumeBinding(imageVolume, "/tmp/mediator_carla");
         } else {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
                     .removeAfterRun()
-                    .currentUser()
+                    .networkHost()
                     .args(args)
-                    .volumeBinding(new File(fedDir.getParent()), imageVolume);
+                    .volumeBinding(sharedDirectoryPath, "/tmp/mediator_carla");
         }
 
         for (Map.Entry<String, Object> param : parameters.entrySet()) {

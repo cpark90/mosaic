@@ -62,7 +62,7 @@ import java.util.function.Consumer;
 
 public class MosaicSimulationRule extends TemporaryFolder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MosaicSimulationRule.class);
+    private static final Logger log = LoggerFactory.getLogger(MosaicSimulationRule.class);
 
     protected CHosts hostsConfiguration;
     protected CRuntime runtimeConfiguration;
@@ -92,7 +92,7 @@ public class MosaicSimulationRule extends TemporaryFolder {
     public MosaicSimulationRule(File tempDir) {
         super(tempDir);
         if (!tempDir.exists() && !tempDir.mkdirs()) {
-            LOG.warn("Could not create temporary directory at {}", tempDir.getAbsolutePath());
+            log.warn("Could not create temporary directory at {}", tempDir.getAbsolutePath());
         }
     }
 
@@ -181,7 +181,7 @@ public class MosaicSimulationRule extends TemporaryFolder {
                             .readFile(scenarioDirectory.resolve("scenario_config.json").toFile())
             );
         } catch (InstantiationException e) {
-            LOG.error("", e);
+            log.error("", e);
 
             MosaicSimulation.SimulationResult result = new MosaicSimulation.SimulationResult();
             result.exception = e;
@@ -229,7 +229,7 @@ public class MosaicSimulationRule extends TemporaryFolder {
             MosaicSimulation.SimulationResult result = new MosaicSimulation.SimulationResult();
             result.exception = e;
             result.success = false;
-            return logResult(simulation != null ? simulation.getLogger() : LOG, result);
+            return logResult(simulation != null ? simulation.getLogger() : log, result);
         } finally {
             resetSingletons();
         }

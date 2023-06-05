@@ -280,8 +280,8 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
         // TODO: deploy target path 
         this.dockerFederateExecutor = new DockerFederateExecutor(
                 dockerImage,
-                "docker-volume:mosaic",
-                "/home/mosaic/shared",
+                descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
+                "",
                 args
         );
         this.dockerFederateExecutor.addPortBinding(port, port);
@@ -476,7 +476,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
         }
 
         try {
-            File sumoWorkingDir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
+            File sumoWorkingDir = new File(descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(), descriptor.getId());
             trafficSignManager.configure(bridge, sumoWorkingDir);
         } catch (Exception e) {
             log.error("Could not load TrafficSignManager. No traffic signs will be displayed.");
@@ -1204,7 +1204,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
             return;
         }
 
-        File fedDir = new File(descriptor.getHost().workingDirectory, descriptor.getId());
+        File fedDir = new File(descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(), descriptor.getId());
 
         log.info("Start Federate local");
         log.info("Directory: " + fedDir);
@@ -1467,7 +1467,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
         log.info("Simulation step size is {} sec.", stepSize);
         
         List<String> args = Lists.newArrayList(
-                "-c", "/home/mosaic/shared/" + descriptor.getId() + "/" + descriptor.getConfigTargetPath().toString() + "/" + sumoConfig.sumoConfigurationFile,
+                "-c", descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId() + "/" + descriptor.getId() + "/" + descriptor.getConfigTargetPath().toString() + "/" + sumoConfig.sumoConfigurationFile,
                 "-v",
                 "--remote-port", Integer.toString(port),
                 "--step-length", String.format(Locale.ENGLISH, "%.2f", stepSize)

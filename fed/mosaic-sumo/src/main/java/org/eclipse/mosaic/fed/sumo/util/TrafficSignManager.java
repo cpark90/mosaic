@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class TrafficSignManager {
 
-    private final static Logger LOG = LoggerFactory.getLogger(TrafficSignManager.class);
+    private final static Logger log = LoggerFactory.getLogger(TrafficSignManager.class);
 
     private final double laneWidth;
 
@@ -97,13 +97,13 @@ public class TrafficSignManager {
         if (bridge != null && image != null) {
             bridge.getPoiControl().addImagePoi(id, CartesianPoint.xy(x, y), image, laneWidth, laneWidth, angle);
         } else {
-            LOG.error("Could not add traffic sign image.");
+            log.error("Could not add traffic sign image.");
         }
     }
 
     public void changeVariableSpeedSign(String trafficSignId, int lane, double speedLimit) throws InternalFederateException {
         if (!variableTrafficSigns.contains(trafficSignId)) {
-            LOG.warn("Could not find variable traffic sign with Id \"{}\". Skipping", trafficSignId);
+            log.warn("Could not find variable traffic sign with Id \"{}\". Skipping", trafficSignId);
             return;
         }
 
@@ -112,13 +112,13 @@ public class TrafficSignManager {
         if (bridge != null && image != null) {
             bridge.getPoiControl().changeImage(id, image);
         } else {
-            LOG.error("Could not add traffic sign image.");
+            log.error("Could not add traffic sign image.");
         }
     }
 
     public void changeVariableLaneAssignmentSign(String trafficSignId, int lane, List<VehicleClass> allowedVehicleClasses) throws InternalFederateException {
         if (!variableTrafficSigns.contains(trafficSignId)) {
-            LOG.warn("Could not find variable traffic sign with Id \"{}\". Skipping", trafficSignId);
+            log.warn("Could not find variable traffic sign with Id \"{}\". Skipping", trafficSignId);
             return;
         }
 
@@ -127,7 +127,7 @@ public class TrafficSignManager {
         if (bridge != null && image != null) {
             bridge.getPoiControl().changeImage(id, image);
         } else {
-            LOG.error("Could not add traffic sign image.");
+            log.error("Could not add traffic sign image.");
         }
     }
 

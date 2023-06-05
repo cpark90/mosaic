@@ -94,7 +94,7 @@ public class SequentialTimeManagement extends AbstractTimeManagement {
                 // check, if event queue is empty after the last time advance.
                 // If no more events are in the list, the simulation can be skipped to the endTime.
                 if (this.events.isEmpty()) {
-                    logger.debug("No events anymore, skipping to end time: {}", getEndTime());
+                    log.debug("No events anymore, skipping to end time: {}", getEndTime());
 
                     federation.getMonitor().onBeginActivity(event);
                     startTime = System.currentTimeMillis();

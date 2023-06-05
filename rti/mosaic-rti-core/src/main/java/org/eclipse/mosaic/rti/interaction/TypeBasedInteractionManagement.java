@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class TypeBasedInteractionManagement implements InteractionManagement {
 
-    private final static Logger LOG = LoggerFactory.getLogger(TypeBasedInteractionManagement.class);
+    private final static Logger log = LoggerFactory.getLogger(InteractionManagement.class);
 
     /**
      * mapping between an interaction type id and a list of subscribed ambassadors.
@@ -110,10 +110,10 @@ public class TypeBasedInteractionManagement implements InteractionManagement {
         for (FederateAmbassador ambassador : ambassadors) {
             try {
                 federation.getMonitor().onReceiveInteraction(ambassador.getId(), interaction);
-                LOG.debug("receive interaction getTime : " + Long.toString(interaction.getTime()) + " getTypeId : " + interaction.getTypeId());
+                log.debug("receive interaction getTime : " + Long.toString(interaction.getTime()) + " getTypeId : " + interaction.getTypeId());
                 ambassador.receiveInteraction(interaction);
             } catch (InternalFederateException e) {
-                LOG.error("Error during interaction distribution", e);
+                log.error("Error during interaction distribution", e);
                 throw e;
             }
         }

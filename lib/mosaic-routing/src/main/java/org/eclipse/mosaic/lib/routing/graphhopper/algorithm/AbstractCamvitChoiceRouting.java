@@ -57,7 +57,7 @@ public abstract class AbstractCamvitChoiceRouting extends AbstractRoutingAlgorit
     private double constraintThresholdLocalOptimality = 0.3d;
     private double constraintMinLocalOptimality = 0.1d;
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected int from;
     protected int to;
@@ -98,7 +98,7 @@ public abstract class AbstractCamvitChoiceRouting extends AbstractRoutingAlgorit
             heapTo = new PriorityQueue<>(nodes / 10);
             shortestWeightsTo = new IntObjectHashMap<>(nodes / 10);
         } catch (OutOfMemoryError e) {
-            logger.error("Not sufficient memory", e);
+            log.error("Not sufficient memory", e);
             throw e;
         }
     }
@@ -182,7 +182,7 @@ public abstract class AbstractCamvitChoiceRouting extends AbstractRoutingAlgorit
 
         alternativePaths = new ArrayList<Path>();
 
-        logger.debug("calc " + (requestAlternatives + 1) + " paths from " + from + " to " + to);
+        log.debug("calc " + (requestAlternatives + 1) + " paths from " + from + " to " + to);
 
         if (from == to) {
             return new Path(graph, weighting);
@@ -414,7 +414,7 @@ public abstract class AbstractCamvitChoiceRouting extends AbstractRoutingAlgorit
         PlateauPath nextPath = createPathFromPlateau(optimalPath);
         while (nextPath != null) {
 
-            // logger.debug("Found next path: weight "+nextPath.getWeight()+"");
+            // log.debug("Found next path: weight "+nextPath.getWeight()+"");
             alternativePaths.add(nextPath);
             // continue with next path, if we not yet have the desired number of
             // paths (maxPath < 0 means as many as possible)

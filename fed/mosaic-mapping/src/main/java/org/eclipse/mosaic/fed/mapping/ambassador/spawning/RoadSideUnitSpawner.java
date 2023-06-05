@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RoadSideUnitSpawner extends UnitSpawner implements Spawner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RoadSideUnitSpawner.class);
+    private static final Logger log = LoggerFactory.getLogger(RoadSideUnitSpawner.class);
 
     /**
      * The position of the ChargingStation defined by a {@link GeoPoint}.
@@ -63,10 +63,10 @@ public class RoadSideUnitSpawner extends UnitSpawner implements Spawner {
         String name = UnitNameGenerator.nextRsuName();
         RsuRegistration interaction = new RsuRegistration(0, name, group, getApplications(), this.position);
         try {
-            LOG.info("Creating RSU: {}", this);
+            log.info("Creating RSU: {}", this);
             spawningFramework.getRti().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
-            LOG.error("Exception while sending Interaction in RoadSideUnitSpawner.init()");
+            log.error("Exception while sending Interaction in RoadSideUnitSpawner.init()");
             throw new InternalFederateException("Exception while sending Interaction in RoadSideUnitSpawner.init()", e);
         }
     }

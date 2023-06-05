@@ -41,6 +41,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Observable;
 import java.util.Queue;
+import java.util.Map;
+import java.util.HashMap;
 import javax.annotation.Nonnull;
 
 /**
@@ -60,7 +62,7 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
     protected static final DecimalFormat FORMAT_ONE_DIGIT = new DecimalFormat("#0.0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     protected static final DecimalFormat FORMAT_TWO_DIGIT = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
-    protected final Logger logger;
+    protected final Logger log;
     private final Logger progressLogger;
 
     private long lastLogTime = 0;
@@ -82,6 +84,8 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
 
     protected final ComponentProvider federation;
 
+    private final Map<String, Integer> federateCounterMap = new HashMap<>();
+    private final Map<String, Long> lastReqeustedTimeMap = new HashMap<>();
     /**
      * The end time of the simulation.
      */
@@ -97,7 +101,7 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
 
     protected AbstractTimeManagement(ComponentProvider federation, MosaicComponentParameters componentParameters) {
         this.progressLogger = LoggerFactory.getLogger("SimulationProgress");
-        this.logger = LoggerFactory.getLogger(getClass());
+        this.log = LoggerFactory.getLogger(getClass());
         this.events = new EfficientPriorityQueue<>();
         this.federation = federation;
         this.endTime = componentParameters.getEndTime();
@@ -122,7 +126,8 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
             ));
         }
         synchronized (this.events) {
-            FederateEvent e = new FederateEvent(federateId, time, lookahead, priority);
+            int counter = getFederateCounter(federateId, time);
+            FederateEvent e = new FederateEvent(federateId, time, lookahead, priority, counter);
             if (!this.events.contains(e)) {
                 this.events.add(e);
             }
@@ -166,7 +171,7 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
                 fed.finishSimulation();
             }
         } finally {
-            PerformanceMonitor.getInstance().logSummary(logger);
+            PerformanceMonitor.getInstance().logSummary(log);
             // always print simulation finished even if federate throws exception on finishing
             printSimulationFinished(durationMs, statusCode);
             federation.getMonitor().onEndSimulation(federation.getFederationManagement(), this, durationMs, statusCode);
@@ -185,18 +190,18 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
 
         final long currentTime = System.currentTimeMillis();
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        logger.info("Simulation ended after {}s of {}s ({}%)", time / TIME.SECOND, getEndTime() / TIME.SECOND, (time * 100) / getEndTime());
-        logger.info("Started: " + dateFormat.format(new Date(currentTime - durationMs)));
-        logger.info("Ended: " + dateFormat.format(new Date(currentTime)));
-        logger.info("Duration: {} (RTF: {})",
+        log.info("Simulation ended after {}s of {}s ({}%)", time / TIME.SECOND, getEndTime() / TIME.SECOND, (time * 100) / getEndTime());
+        log.info("Started: " + dateFormat.format(new Date(currentTime - durationMs)));
+        log.info("Ended: " + dateFormat.format(new Date(currentTime)));
+        log.info("Duration: {} (RTF: {})",
                 DurationFormatUtils.formatDuration(durationMs, "HH'h' mm'm' ss.SSS's'"),
                 durationMs > 0 ? FORMAT_TWO_DIGIT.format((time / TIME.MILLI_SECOND) / durationMs) : 0
         );
-        logger.info("");
+        log.info("");
         if (statusCode == STATUS_CODE_SUCCESS) {
-            logger.info("Simulation finished: {}", statusCode);
+            log.info("Simulation finished: {}", statusCode);
         } else {
-            logger.info("Simulation interrupted: {}", statusCode);
+            log.info("Simulation interrupted: {}", statusCode);
         }
     }
 
@@ -239,6 +244,31 @@ public abstract class AbstractTimeManagement extends Observable implements TimeM
             externalWatchDog = new ExternalWatchDog(federation, port);
             externalWatchDog.start();
         }
+    }
+
+    /**
+     * Returns the priority of this federate. The lower the value the higher the priority.
+     */
+    @Override
+    public int getFederateCounter(String federateId, long requestedTime) {
+        if (!lastReqeustedTimeMap.containsKey(federateId)) {
+            lastReqeustedTimeMap.put(federateId, requestedTime);
+            federateCounterMap.put(federateId, 1);
+        }
+
+        long lastRequestedTime = lastReqeustedTimeMap.get(federateId);
+        int federateCounter = federateCounterMap.get(federateId);
+
+        if (lastRequestedTime < requestedTime) {
+            lastReqeustedTimeMap.put(federateId, requestedTime);
+            federateCounterMap.put(federateId, 1);
+        } else {
+            federateCounterMap.put(federateId, federateCounter + 1);
+        }
+
+        federateCounter = federateCounterMap.get(federateId);
+
+        return federateCounter;
     }
 
     protected void printProgress(long currentRealTimeNs, PerformanceInformation performanceInformation) {

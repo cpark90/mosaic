@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class TrafficManagementCenterSpawner extends ServerSpawner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TrafficManagementCenterSpawner.class);
+    private static final Logger log = LoggerFactory.getLogger(TrafficManagementCenterSpawner.class);
 
     private final List<String> inductionLoopDetectors;
     private final List<String> laneAreaDetectors;
@@ -68,10 +68,10 @@ public class TrafficManagementCenterSpawner extends ServerSpawner {
         String name = UnitNameGenerator.nextTmcName();
         TmcRegistration interaction = new TmcRegistration(0, name, group, getApplications(), getInductionLoopList(), getLaneAreaList());
         try {
-            LOG.info("Creating TMC: {}", this);
+            log.info("Creating TMC: {}", this);
             spawningFramework.getRti().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
-            LOG.error("Exception while sending Interaction in TrafficManagementCenterSpawner.init()");
+            log.error("Exception while sending Interaction in TrafficManagementCenterSpawner.init()");
             throw new InternalFederateException("Exception while sending Interaction in TrafficManagementCenterSpawner.init()", e);
         }
     }

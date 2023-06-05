@@ -127,7 +127,6 @@ public abstract class AbstractFederateAmbassador implements FederateAmbassador {
     public final void receiveInteraction(@Nonnull Interaction interaction) throws InternalFederateException {
         log.debug("receive interactions getTime : " + Long.toString(interaction.getTime()) + " getTypeId : " + interaction.getTypeId());
         try {
-            descriptor.resetPriority();
             // request time advance to process interaction if necessary
             if (isTimeConstrained()) {
                 final long lookahead;

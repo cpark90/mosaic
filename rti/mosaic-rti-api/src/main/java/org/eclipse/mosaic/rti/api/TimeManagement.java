@@ -107,4 +107,6 @@ public interface TimeManagement {
      * @throws IllegalValueException a parameter has an invalid value
      */
     long getNextEventTimestamp() throws IllegalValueException;
+
+    int getFederateCounter(String federateId, long requestedTime);
 }

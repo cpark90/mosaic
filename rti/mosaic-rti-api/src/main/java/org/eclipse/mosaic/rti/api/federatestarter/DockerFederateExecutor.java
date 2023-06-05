@@ -100,7 +100,7 @@ public class DockerFederateExecutor implements FederateExecutor {
         this.dockerClient = new DockerClient();
         final DockerRun run;
 
-        if (sharedDirectoryPath.startsWith("docker-volume:")) {
+        if (!imageVolume.isEmpty()) {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
@@ -110,16 +110,20 @@ public class DockerFederateExecutor implements FederateExecutor {
                     .networkHost()
                     .user("1000")
                     .args(args)
-                    .volumeBinding(sharedDirectoryPath.replaceFirst("^docker-volume:", ""), imageVolume)
+                    .volumeBinding(imageVolume, sharedDirectoryPath)
                     .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");
         } else {
             run = this.dockerClient
                     .run(image)
                     .name(containerName)
+                    .runPrivileged()
+                    .gpusAll()
                     .removeAfterRun()
-                    .currentUser()
+                    .networkHost()
+                    .user("1000")
                     .args(args)
-                    .volumeBinding(new File(fedDir.getParent()), imageVolume);
+                    .volumeBinding(sharedDirectoryPath, sharedDirectoryPath)
+                    .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");
         }
 
         for (Map.Entry<String, Object> param : parameters.entrySet()) {

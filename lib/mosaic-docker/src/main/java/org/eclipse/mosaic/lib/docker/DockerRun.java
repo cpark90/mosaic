@@ -30,7 +30,7 @@ import java.util.Vector;
  * Provides methods to easily compose a "docker run" command.
  */
 public class DockerRun {
-    private final static Logger LOG = LoggerFactory.getLogger(DockerRun.class);
+    private final static Logger log = LoggerFactory.getLogger(DockerRun.class);
 
     private final DockerClient client;
     private final String image;
@@ -155,7 +155,7 @@ public class DockerRun {
                 Object system = systemClass.newInstance();
                 user = String.format("%d:%d", (Long) getUid.invoke(system), (Long) getGid.invoke(system));
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                LOG.warn("Cannot fetch user id and group id. User will not be set.");
+                log.warn("Cannot fetch user id and group id. User will not be set.");
             }
         }
 
@@ -246,6 +246,4 @@ public class DockerRun {
 
         return this.client.runImage(image, name, options, args, removeBeforeRun);
     }
-
-
 }

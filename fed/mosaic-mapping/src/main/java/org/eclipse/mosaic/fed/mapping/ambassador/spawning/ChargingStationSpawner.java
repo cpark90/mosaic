@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 public class ChargingStationSpawner extends UnitSpawner implements Spawner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChargingStationSpawner.class);
+    private static final Logger log = LoggerFactory.getLogger(ChargingStationSpawner.class);
 
     /**
      * The position of the ChargingStation defined by a {@link GeoPoint}.
@@ -88,10 +88,10 @@ public class ChargingStationSpawner extends UnitSpawner implements Spawner {
         ChargingStationRegistration chargingStationRegistration =
                 new ChargingStationRegistration(0, chargingStationName, group, getApplications(), position, chargingSpots);
         try {
-            LOG.info("Creating Charging Station: {}", this);
+            log.info("Creating Charging Station: {}", this);
             spawningFramework.getRti().triggerInteraction(chargingStationRegistration);
         } catch (IllegalValueException e) {
-            LOG.error("Exception while sending ChargingStationRegistration interaction in ChargingStationSpawner.init()");
+            log.error("Exception while sending ChargingStationRegistration interaction in ChargingStationSpawner.init()");
             throw new InternalFederateException(
                     "Exception while sending Interaction in ChargingStationSpawner.init()", e);
         }

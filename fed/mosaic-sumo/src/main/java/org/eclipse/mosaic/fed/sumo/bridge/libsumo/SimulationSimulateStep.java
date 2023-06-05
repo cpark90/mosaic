@@ -56,7 +56,7 @@ import java.util.List;
 
 public class SimulationSimulateStep implements org.eclipse.mosaic.fed.sumo.bridge.api.SimulationSimulateStep {
 
-    private final static Logger LOG = LoggerFactory.getLogger(SimulationSimulateStep.class);
+    private final static Logger log = LoggerFactory.getLogger(SimulationSimulateStep.class);
 
     final static List<String> VEHICLE_SUBSCRIPTIONS = new ArrayList<>();
     final static List<String> INDUCTION_LOOP_SUBSCRIPTIONS = new ArrayList<>();
@@ -124,7 +124,7 @@ public class SimulationSimulateStep implements org.eclipse.mosaic.fed.sumo.bridg
             try {
                 result.position = getPosition(Vehicle.getPosition(sumoVehicleId, true));
             } catch (IllegalArgumentException e) {
-                LOG.error("Could not read position from vehicle. Unsubscribe.", e);
+                log.error("Could not read position from vehicle. Unsubscribe.", e);
                 subscriptionsIt.remove();
             }
             if (result.position == null) {

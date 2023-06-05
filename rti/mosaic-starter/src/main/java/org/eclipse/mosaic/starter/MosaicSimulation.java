@@ -226,7 +226,6 @@ public class MosaicSimulation {
         );
     }
 
-
     /**
      * Reads simulation parameters from the scenario configuration and creates a
      * simulation parameters object. Additionally, the projection and IP resolver
@@ -295,22 +294,22 @@ public class MosaicSimulation {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
 
-        final List<FederateDescriptor> federates = new ArrayList<>();
+        final List<FederateDescriptor> descriptors = new ArrayList<>();
 
         // load all federates skipping inactive ones
-        for (CRuntime.CFederate federate : this.runtimeConfiguration.federates) {
-            Validate.notNull(federate.id, "federate.id must not be empty");
-            Validate.notNull(federate.classname, "federate.classname must not be empty");
+        for (CRuntime.CFederate federateRuntimeConf : this.runtimeConfiguration.federates) {
+            Validate.notNull(federateRuntimeConf.id, "federate.id must not be empty in runtime");
+            Validate.notNull(federateRuntimeConf.classname, "federate.classname must not be empty");
 
-            if (!activeFederates.remove(federate.id)) {
+            if (!activeFederates.remove(federateRuntimeConf.id)) {
                 continue;
             }
 
-            final FederateDescriptor descriptor = loadFederate(scenarioDirectory, federate);
+            final FederateDescriptor descriptor = loadFederate(scenarioDirectory, federateRuntimeConf);
 
-            initializeFederate(federate, descriptor);
+            initializeFederate(federateRuntimeConf, descriptor);
 
-            federates.add(descriptor);
+            descriptors.add(descriptor);
         }
 
         if (!activeFederates.isEmpty()) {
@@ -320,20 +319,20 @@ public class MosaicSimulation {
                             + "]. Please check your configuration files.");
         }
 
-        return federates;
+        return descriptors;
     }
 
-    private FederateDescriptor loadFederate(Path scenarioDirectory, CRuntime.CFederate federate) throws Exception {
-        final Path configurationDirectory = scenarioDirectory.resolve(federate.id);
+    private FederateDescriptor loadFederate(Path scenarioDirectory, CRuntime.CFederate federateRuntimeConf) throws Exception {
+        final Path configurationDirectory = scenarioDirectory.resolve(federateRuntimeConf.id);
 
-        final Path configurationFile = StringUtils.isNotBlank(federate.configuration)
-                ? configurationDirectory.resolve(federate.configuration)
+        final Path configurationFile = StringUtils.isNotBlank(federateRuntimeConf.configuration)
+                ? configurationDirectory.resolve(federateRuntimeConf.configuration)
                 : configurationDirectory;
 
         Class<? extends FederateAmbassador> ambassadorClass =
-                (Class<? extends FederateAmbassador>) classLoader.loadClass(federate.classname);
+                (Class<? extends FederateAmbassador>) classLoader.loadClass(federateRuntimeConf.classname);
 
-        final AmbassadorParameter ambassadorParameter = new AmbassadorParameter(federate.id, configurationFile.toFile());
+        final AmbassadorParameter ambassadorParameter = new AmbassadorParameter(federateRuntimeConf.id, configurationFile.toFile());
 
         // instantiate ambassador from class name
         final FederateAmbassador ambassador;
@@ -343,50 +342,52 @@ public class MosaicSimulation {
         ambassador = declaredConstructor.newInstance(ambassadorParameter);
 
         // create new descriptor and set common properties
-        final int readPriority = federate.priority;
+        final int readPriority = federateRuntimeConf.priority;
         if (FederatePriority.isInRange(readPriority)) {
             throw new IllegalArgumentException("Provided priority " + readPriority + "lies out of allowed range: "
                     + FederatePriority.LOWEST + " - " + FederatePriority.HIGHEST + " (lowest priority - highest priority)");
         }
-        final FederateDescriptor descriptor = new FederateDescriptor(federate.id, ambassador, (byte) readPriority);
+        final FederateDescriptor descriptor = new FederateDescriptor(federateRuntimeConf.id, ambassador, (byte) readPriority);
         ambassador.setFederateDescriptor(descriptor);
 
-        descriptor.setJavaFederateParameters(readJavaFederateParameters(federate));
-        descriptor.setInteractions(getInteractionDescriptors(federate));
+        descriptor.setSimulationId(simulationId);
 
-        descriptor.setDeployAndUndeploy(federate.deploy);
+        descriptor.setJavaFederateParameters(readJavaFederateParameters(federateRuntimeConf));
+        descriptor.setInteractions(getInteractionDescriptors(federateRuntimeConf));
+
+        descriptor.setDeployAndUndeploy(federateRuntimeConf.deploy);
         if (descriptor.isToDeployAndUndeploy()) {
-            descriptor.setBinariesDir(FEDERATE_BIN_DIRECTORY.resolve(federate.id).toFile());
+            descriptor.setBinariesDir(FEDERATE_BIN_DIRECTORY.resolve(federateRuntimeConf.id).toFile());
             descriptor.setConfigDir(configurationDirectory.toFile());
 
-            if (federate.configurationDeployPath != null) {
-                descriptor.setConfigTargetPath(Paths.get(federate.configurationDeployPath));
+            if (federateRuntimeConf.configurationDeployPath != null) {
+                descriptor.setConfigTargetPath(Paths.get(federateRuntimeConf.configurationDeployPath));
             }
         }
-        descriptor.setStartAndStop(federate.start);
+        descriptor.setStartAndStop(federateRuntimeConf.start);
 
         final CLocalHost host = Validate.notNull(
-                hostsConfiguration.getHostById(federate.host), "No suitable host found for federate " + federate.id
+                hostsConfiguration.getHostById(federateRuntimeConf.host), "No suitable host found for federate " + federateRuntimeConf.id
         );
         descriptor.setHost(host);
 
         return descriptor;
     }
 
-    private void initializeFederate(CRuntime.CFederate federate, FederateDescriptor descriptor) {
+    private void initializeFederate(CRuntime.CFederate federateRuntimeConf, FederateDescriptor descriptor) {
 
         final FederateAmbassador ambassador = descriptor.getAmbassador();
         final CLocalHost host = descriptor.getHost();
 
         if (descriptor.isToStartAndStop()) {
 
-            if (StringUtils.isNotEmpty(federate.dockerImage)) {
-                final String container = federate.id + '-' + simulationId;
+            if (StringUtils.isNotEmpty(federateRuntimeConf.dockerImage)) {
+                final String container = federateRuntimeConf.id + '-' + simulationId;
                 descriptor.setFederateExecutor(
-                        descriptor.getAmbassador().createDockerFederateExecutor(federate.dockerImage, federate.federatePort, host.operatingSystem).setContainerName(container)
+                        descriptor.getAmbassador().createDockerFederateExecutor(federateRuntimeConf.dockerImage, federateRuntimeConf.federatePort, host.operatingSystem).setContainerName(container)
                 );
             } else {
-                int port = federate.federatePort;
+                int port = federateRuntimeConf.federatePort;
                 if (port == 0) {
                     port = SocketUtils.findFreePort();
                     log.info("Federate {}: No port given. Using free port: {}", descriptor.getId(), port);
@@ -395,14 +396,14 @@ public class MosaicSimulation {
                 descriptor.setFederateExecutor(descriptor.getAmbassador().createFederateExecutor(host.address, port, host.operatingSystem));
             }
 
-            if (federate.mediatorPort > -1) {
-                if (StringUtils.isNotEmpty(federate.mediatorDockerImage)) {
-                    final String container = federate.id + '-' + simulationId + "-mediator";
+            if (federateRuntimeConf.mediatorPort > -1) {
+                if (StringUtils.isNotEmpty(federateRuntimeConf.mediatorDockerImage)) {
+                    final String container = federateRuntimeConf.id + '-' + simulationId + "-mediator";
                     descriptor.setMediatorExecutor(
-                            descriptor.getAmbassador().createDockerMediatorExecutor(federate.mediatorDockerImage, federate.mediatorPort, host.operatingSystem).setContainerName(container)
+                            descriptor.getAmbassador().createDockerMediatorExecutor(federateRuntimeConf.mediatorDockerImage, federateRuntimeConf.mediatorPort, host.operatingSystem).setContainerName(container)
                     );
                 } else {
-                    int port = federate.federatePort;
+                    int port = federateRuntimeConf.federatePort;
                     if (port == 0) {
                         port = SocketUtils.findFreePort();
                         log.info("Mediator {}: No port given. Using free port: {}", descriptor.getId(), port);
@@ -414,12 +415,12 @@ public class MosaicSimulation {
 
         } else {
             // connect only, if address and port are given
-            if (federate.federatePort > 0) {
-                ambassador.connectToFederate(host.address, federate.federatePort);
+            if (federateRuntimeConf.federatePort > 0) {
+                ambassador.connectToFederate(host.address, federateRuntimeConf.federatePort);
             }
 
-            if (federate.mediatorPort > 0) {
-                ambassador.connectToMediator(host.address, federate.mediatorPort);
+            if (federateRuntimeConf.mediatorPort > 0) {
+                ambassador.connectToMediator(host.address, federateRuntimeConf.mediatorPort);
             }
         }
     }
@@ -448,11 +449,11 @@ public class MosaicSimulation {
      * Creates a federation based on the given parameters.
      *
      * @param simulationParams the simulation parameters
-     * @param federates        list of federate descriptors
+     * @param descriptors        list of federate descriptors
      * @return a fully initialized {@link ComponentProvider} instance ready for simulation
      * @throws Exception if something went wrong during initalization of any federate
      */
-    private ComponentProvider createFederation(final MosaicComponentParameters simulationParams, final List<FederateDescriptor> federates) throws Exception {
+    private ComponentProvider createFederation(final MosaicComponentParameters simulationParams, final List<FederateDescriptor> descriptors) throws Exception {
         final ComponentProvider componentProvider = componentProviderFactory.createComponentProvider(simulationParams);
 
         FederationManagement federation = componentProvider.getFederationManagement();
@@ -470,21 +471,21 @@ public class MosaicSimulation {
             time.startExternalWatchDog(federationId, externalWatchdogPort);
         }
 
-        final InteractionManagement inter = componentProvider.getInteractionManagement();
+        final InteractionManagement interaction = componentProvider.getInteractionManagement();
 
-        // add federates
-        for (FederateDescriptor descriptor : federates) {
+        // add federates to rti(federation, interaction, time)
+        for (FederateDescriptor descriptor : descriptors) {
             federation.addFederate(descriptor);
-            inter.subscribeInteractions(descriptor.getId(), descriptor.getInteractions());
+            interaction.subscribeInteractions(descriptor.getId(), descriptor.getInteractions());
             time.updateWatchDog();
         }
         return componentProvider;
     }
 
-    private void stopFederation(ComponentProvider federation) {
+    private void stopFederation(ComponentProvider componentProvider) {
         try {
-            if (federation != null) {
-                federation.getFederationManagement().stopFederation();
+            if (componentProvider != null) {
+                componentProvider.getFederationManagement().stopFederation();
             }
         } catch (Throwable e2) {
             if (log != null) {
@@ -637,5 +638,4 @@ public class MosaicSimulation {
         public boolean success;
         public Throwable exception;
     }
-
 }

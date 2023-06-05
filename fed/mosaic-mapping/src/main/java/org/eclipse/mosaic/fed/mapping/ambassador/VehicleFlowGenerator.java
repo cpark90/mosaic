@@ -61,7 +61,7 @@ import javax.annotation.Nonnull;
  */
 public class VehicleFlowGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VehicleFlowGenerator.class);
+    private static final Logger log = LoggerFactory.getLogger(VehicleFlowGenerator.class);
 
     private final RandomNumberGenerator randomNumberGenerator;
 
@@ -158,7 +158,7 @@ public class VehicleFlowGenerator {
             this.odInfo = null;
         }
 
-        LOG.info("Creating VehicleFlowGenerator: {}", this);
+        log.info("Creating VehicleFlowGenerator: {}", this);
     }
 
     private List<VehicleTypeSpawner> createPrototypes(CVehicle vehicleConfiguration) {
@@ -340,7 +340,7 @@ public class VehicleFlowGenerator {
                 vehicleTypeSpawner.setPrototypeName(key);
             }
             types.put(key, vehicleTypeSpawner.convertType());
-            LOG.info("Registering Vehicle Type: {}", types.get(key));
+            log.info("Registering Vehicle Type: {}", types.get(key));
         }
     }
 
@@ -367,7 +367,7 @@ public class VehicleFlowGenerator {
             try {
                 framework.getRti().requestAdvanceTime(nextSpawnTime);
             } catch (IllegalValueException e) {
-                LOG.error("Exception while requesting time advance in VehicleStreamGenerator.timeAdvance()", e);
+                log.error("Exception while requesting time advance in VehicleStreamGenerator.timeAdvance()", e);
                 throw new InternalFederateException("Exception while requesting time advance in VehicleStreamGenerator.timeAdvance()", e);
             }
         }
@@ -380,7 +380,7 @@ public class VehicleFlowGenerator {
         try {
             framework.getRti().requestAdvanceTime(nextSpawnTime);
         } catch (IllegalValueException e) {
-            LOG.error("Exception in VehicleStreamGenerator.timeAdvance()", e);
+            log.error("Exception in VehicleStreamGenerator.timeAdvance()", e);
             throw new InternalFederateException("Exception in VehicleStreamGenerator.timeAdvance()", e);
         }
 
@@ -390,7 +390,7 @@ public class VehicleFlowGenerator {
             maxNumberVehicles--;
         }
 
-        LOG.debug("TimerCall Spawner. Time=" + framework.getTime() + ", nextTime=" + nextSpawnTime);
+        log.debug("TimerCall Spawner. Time=" + framework.getTime() + ", nextTime=" + nextSpawnTime);
 
         // determine the type of the vehicle to spawn by use of the selector
         // (either deterministic or stochastic, determined in constructor)
@@ -411,7 +411,7 @@ public class VehicleFlowGenerator {
             throws InternalFederateException {
 
         if (notInTimeFrame(framework.getTime())) {
-            LOG.info("Omit vehicle spawner at time {} (not in time span)", framework.getTime());
+            log.info("Omit vehicle spawner at time {} (not in time span)", framework.getTime());
             return;
         }
         // if no group is defined in vehicle definition take group declared in prototype
@@ -435,12 +435,12 @@ public class VehicleFlowGenerator {
         }
 
         try {
-            LOG.info("Creating Vehicle: time={},name={},route={},laneSelectionMode={},lane={},departConnectionIndex={},pos={},type={},departSpeed={},applications={}",
+            log.info("Creating Vehicle: time={},name={},route={},laneSelectionMode={},lane={},departConnectionIndex={},pos={},type={},departSpeed={},applications={}",
                     framework.getTime(), name, route, laneSelectionMode, lane,
                     departConnectionIndex, pos, type.getPrototypeName(), departSpeed, type.getApplications());
             framework.getRti().triggerInteraction(interaction);
         } catch (IllegalValueException e) {
-            LOG.error("Couldn't send an {} interaction in VehicleStreamGenerator.timeAdvance()", interaction.getTypeId(), e);
+            log.error("Couldn't send an {} interaction in VehicleStreamGenerator.timeAdvance()", interaction.getTypeId(), e);
             throw new InternalFederateException("Exception in VehicleStreamGenerator.timeAdvance()", e);
         }
     }

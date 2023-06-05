@@ -45,7 +45,7 @@ import java.util.Set;
  */
 public class DatabaseGraphLoader implements GraphLoader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DatabaseGraphLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(DatabaseGraphLoader.class);
 
     private GraphHopperStorage graphStorage;
     private EncodingManager encodingManager;
@@ -89,7 +89,7 @@ public class DatabaseGraphLoader implements GraphLoader {
             final Node to = con.getTo();
 
             if (!mainGraph.contains(from) || !mainGraph.contains(to)) {
-                LOG.debug("Connection {} has not been added to the routing graph, "
+                log.debug("Connection {} has not been added to the routing graph, "
                         + "since it is not within the main graph of the traffic network", con.getId());
                 continue;
             }
@@ -119,7 +119,7 @@ public class DatabaseGraphLoader implements GraphLoader {
                 edgeIt.setAdditionalField(
                         WayTypeEncoder.encode(way.getType(), way.getNumberOfLanesForward(), 0));
             } else {
-                LOG.warn("Connection on (way={}, type={}) is not accessible by any vehicle type"
+                log.warn("Connection on (way={}, type={}) is not accessible by any vehicle type"
                         + " and will therefore be ignored during routing.", way.getId(), way.getType());
             }
         }

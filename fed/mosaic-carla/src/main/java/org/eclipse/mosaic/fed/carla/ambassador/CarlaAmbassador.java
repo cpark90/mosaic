@@ -112,11 +112,6 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
     private int connectionAttempts = 5;
 
     /**
-     * Maximum amount of attempts to connect to CARLA simulator.
-     */
-     private int executedTimes = 0;
-
-    /**
      * Carla simulator client port
      */
     private int carlaSimulatorClientPort = -1;
@@ -231,10 +226,17 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         args.add(0, "/home/carla/CarlaUE4.sh");
 
         // TODO: deploy target path 
+        // copy data from host to docker volume
+        // this.dockerClient.createDockerVolume(imageVolume);
+
+        // if (!imageVolume.isEmpty()) {
+        //     this.dockerClient.copyFile(containerName, fedDir.toString(), sharedDirectoryPath);
+        // }
+        // descriptor.getSimulationId() + "-" + descriptor.getId()
         this.dockerFederateExecutor = new DockerFederateExecutor(
                 dockerImage,
-                "docker-volume:mosaic",
-                "/home/mosaic/shared",
+                descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
+                "",
                 args
         );
         this.dockerFederateExecutor.addPortBinding(port, port);
@@ -298,8 +300,8 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         // TODO: deploy target path 
         this.dockerMediatorExecutor = new DockerMediatorExecutor(
                 dockerImage,
-                "docker-volume:mosaic",
-                "/home/mosaic/shared",
+                descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
+                "",
                 args
         );
         this.dockerMediatorExecutor.addPortBinding(port, port);
@@ -328,9 +330,6 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             log.error("Error during advanceTime request", e);
             throw new InternalFederateException(e);
         }
-        // Start the CARLA simulator
-        // startCarlaLocal();
-
     }
 
     /**
@@ -342,7 +341,7 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
     @Override
     public void connectToFederate(String host, int port) {
         // Start the Carla connection server
-        // connect carla client
+        // TODO: connect carla client to control carla simulator
     }
 
     @Override
@@ -364,14 +363,6 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
         if (carlaConfig.carlaConnectionPort != 0)
             carlaConnectionPort = carlaConfig.carlaConnectionPort; // set the carla connection port
 
-        // // get the connection bridge file
-        // if (carlaConfig.bridgePath != null) {
-        //     bridgePath = carlaConfig.bridgePath;
-        //     log.info("Use connection bridge path from configuration file: " + carlaConfig.bridgePath);
-        // } else {
-        //     log.error("Could not find connection bridge.");
-        //     return;
-        // }
         if (carlaConnection == null) {
             // start the carla connection
 
@@ -385,47 +376,6 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             Thread carlaThread = new Thread(carlaConnection);
             carlaThread.start();
         }
-
-        // String[] bridgePathArray = bridgePath.split(";");
-
-        // String path = bridgePathArray[0];
-        // String command = bridgePathArray[1];
-
-        // // check the current operating system
-        // boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-
-        // if (isWindows) {
-        //     command = "cmd.exe /c start " + command;
-        // } else {
-        //     command = "sh " + command;
-        // }
-        // // connect carla client
-        // while (connectionAttempts-- > 0) {
-        //     boolean connected = true;
-
-        //     try {
-        //         connectionProcess = Runtime.getRuntime().exec(command, null, new File(path));
-        //     } catch (Exception ex) {
-        //         ex.printStackTrace();
-        //         if (connectionAttempts == 0) {
-        //             log.info("Maximum connection attempts reached and connecting to CARLA simulator failed.");
-        //         } else {
-        //             log.warn("Error while connecting to CARLA simulator. Retrying.");
-        //         }
-
-        //         try {
-        //             Thread.sleep(SLEEP_AFTER_ATTEMPT);
-        //         } catch (InterruptedException e) {
-        //             log.error("Could not execute Thread.sleep({}). Reason: {}", SLEEP_AFTER_ATTEMPT, e.getMessage());
-        //         }
-        //         connected = false;
-        //     }
-
-        //     if (connected) {
-        //         log.info("Client connected");
-        //         break;
-        //     }
-        // }
     }
 
     @Override
@@ -505,7 +455,6 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
             }
 
             rti.requestAdvanceTime(nextTimeStep, 0, FederatePriority.higher(descriptor.getPriority()));
-            this.executedTimes++;
         } catch (IllegalValueException e) {
             log.error("Error during advanceTime(" + time + ")", e);
             throw new InternalFederateException(e);
@@ -715,7 +664,6 @@ public class CarlaAmbassador extends AbstractFederateAmbassador {
 
             if (carlaConnection.getDataOutputStream() != null) {
                 carlaConnection.getDataOutputStream().write(interaction.getResult());
-                this.executedTimes = 0;
             }
 
         } catch (Exception e) {

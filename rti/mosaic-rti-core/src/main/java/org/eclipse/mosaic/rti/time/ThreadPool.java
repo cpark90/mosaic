@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 class ThreadPool {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ThreadPool.class);
+    private static final Logger log = LoggerFactory.getLogger(ThreadPool.class);
 
 
     private final Worker[] workers;
@@ -121,12 +121,12 @@ class ThreadPool {
                 try {
                     task.run();
                 } catch (RuntimeException e) {
-                    LOG.error("Could not execute task", e);
+                    log.error("Could not execute task", e);
                 }
                 synchronized (queue.isEmptyMutex) {
                     queue.setEventProcessed(ev);
                     activeCount--;
-                    LOG.debug("active count: {}; isEmpty: {}", activeCount, queue.isEmpty());
+                    log.debug("active count: {}; isEmpty: {}", activeCount, queue.isEmpty());
                     if (activeCount == 0 && queue.isEmpty()) {
                         queue.isEmptyMutex.notifyAll();
                     }

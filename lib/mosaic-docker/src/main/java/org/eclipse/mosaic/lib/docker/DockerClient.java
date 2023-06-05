@@ -37,7 +37,7 @@ public class DockerClient {
     private final DockerCommandLine docker;
     private final Vector<DockerContainer> runningContainers = new Vector<>();
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public DockerClient() {
         this(new DockerCommandLine());
@@ -85,11 +85,11 @@ public class DockerClient {
 
         final Process p;
         if ("true".equals(System.getProperty("mosaic.docker.no-detach", SystemUtils.IS_OS_WINDOWS ? "true" : "false"))) {
-            logger.info("Starting container without detaching.");
+            log.info("Starting container without detaching.");
             p = docker.run(image, options, args);
         } else {
             String exitMessage = docker.runAndDetach(image, options, args);
-            logger.info("Container was started with message {}", exitMessage);
+            log.info("Container was started with message {}", exitMessage);
             p = docker.attach(containerName);
         }
 
@@ -169,5 +169,17 @@ public class DockerClient {
      */
     public Process readLogs(String containerName) {
         return docker.logs(containerName);
+    }
+
+    public void createDockerVolume(String volumeName) {
+        docker.createVolume(volumeName);
+    }
+
+    public void removeDockerVolume(String volumeName) {
+        docker.removeVolume(volumeName);
+    }
+
+    public void copyFile(String containerName, String srcPath, String dstPath) {
+        docker.copyFile(containerName, srcPath, dstPath);
     }
 }

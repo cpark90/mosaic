@@ -73,10 +73,11 @@ public class SumoGuiAmbassador extends SumoAmbassador {
         // TODO: deploy target path 
         this.dockerFederateExecutor = new DockerFederateExecutor(
                 dockerImage,
-                "docker-volume:mosaic",
-                "/home/mosaic/shared",
+                descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
+                "",
                 args
         );
+
         this.startCmdPort = port;
         this.dockerFederateExecutor.addPortBinding(port, port);
         this.dockerFederateExecutor.addParameter("DISPLAY", ":1");

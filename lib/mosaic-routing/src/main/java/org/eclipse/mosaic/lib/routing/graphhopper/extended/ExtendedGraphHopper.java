@@ -53,7 +53,7 @@ import java.util.List;
  */
 public class ExtendedGraphHopper extends GraphHopper {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected GraphLoader graphLoader;
     protected TurnCostExtension tcStorage;
@@ -105,7 +105,7 @@ public class ExtendedGraphHopper extends GraphHopper {
             throw new IllegalStateException("A mapper is required for importing database");
         }
 
-        logger.info("start creating graph from database");
+        log.info("start creating graph from database");
 
         graphLoader.initialize(getGraphHopperStorage(), getEncodingManager(), mapper);
         graphLoader.loadGraph();
@@ -114,7 +114,7 @@ public class ExtendedGraphHopper extends GraphHopper {
         try {
             cleanUp();
         } catch (Exception e) {
-            logger.warn("Could not clean up routing graph, skipping. Routing might not work as expected!");
+            log.warn("Could not clean up routing graph, skipping. Routing might not work as expected!");
         }
         // optimize();
         flush();

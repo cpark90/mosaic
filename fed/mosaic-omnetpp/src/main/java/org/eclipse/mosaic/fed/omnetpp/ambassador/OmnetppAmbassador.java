@@ -66,16 +66,16 @@ public class OmnetppAmbassador extends AbstractNetworkAmbassador {
     }
 
     @Override
-    public DockerFederateExecutor createDockerFederateExecutor(String federateDockerImage, int port, OperatingSystem os) {
+    public DockerFederateExecutor createDockerFederateExecutor(String dockerImage, int port, OperatingSystem os) {
 
         String omnetppConfigFileName = ObjectUtils.defaultIfNull(config.federateConfigurationFile, "omnetpp.ini");
-        String omnetppConfigFilePath = "/home/mosaic/shared/omnetpp/omnetpp-federate/simulations/" + omnetppConfigFileName;
+        String omnetppConfigFilePath = descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId() + "/omnetpp/omnetpp-federate/simulations/" + omnetppConfigFileName;
         String inetSourceDirectories = "inet:omnetpp-federate/src";
-
+        
         this.dockerFederateExecutor = new DockerFederateExecutor(
-                federateDockerImage,
-                "docker-volume:mosaic",
-                "/home/mosaic/shared",
+                dockerImage,
+                descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
+                "",
                 "omnetpp-federate/omnetpp-federate",
                 "-u", "Cmdenv",
                 "-f", omnetppConfigFilePath,
@@ -84,6 +84,7 @@ public class OmnetppAmbassador extends AbstractNetworkAmbassador {
                 "--mosaiceventscheduler-port=" + port,
                 "--mosaiccmd-port=" + (port + 1)
         );
+
         this.dockerFederateExecutor.addPortBinding(port, port);
         this.dockerFederateExecutor.addPortBinding(port + 1, port + 1);
 

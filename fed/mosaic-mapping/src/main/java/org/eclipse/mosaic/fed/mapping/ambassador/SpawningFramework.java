@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
  */
 public class SpawningFramework {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SpawningFramework.class);
+    private static final Logger log = LoggerFactory.getLogger(SpawningFramework.class);
 
     private final List<CPrototype> prototypeConfigurations = new ArrayList<>();
     private final Map<String, TrafficLightSpawner> tls = new HashMap<>();
@@ -240,7 +240,7 @@ public class SpawningFramework {
         }
 
         if (mappingConfiguration.vehicles == null || !spawnersExist) {
-            LOG.info("No vehicle spawners defined in mapping config. Only external vehicles will be simulated.");
+            log.info("No vehicle spawners defined in mapping config. Only external vehicles will be simulated.");
         }
 
         // OD-Matrices
@@ -494,11 +494,11 @@ public class SpawningFramework {
                     time, name, group, apps, tlGroup,
                     scenarioTrafficLightRegistration.getLanesControlledByGroups().get(tlGroup.getGroupId())
             );
-            LOG.info("Creating Traffic Light Group: name={},tlGroupId={},apps={}", name, tlGroup.getGroupId(), apps);
+            log.info("Creating Traffic Light Group: name={},tlGroupId={},apps={}", name, tlGroup.getGroupId(), apps);
             try {
                 rti.triggerInteraction(tlRegistration);
             } catch (IllegalValueException e) {
-                LOG.error("Couldn't send {}, for tlGroup={}",
+                log.error("Couldn't send {}, for tlGroup={}",
                         TrafficLightRegistration.class.getSimpleName(), tlRegistration.getTrafficLightGroup().getGroupId(), e);
                 throw new InternalFederateException(e);
             }

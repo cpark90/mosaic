@@ -259,8 +259,6 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
         try {
             byte[] simulationStepResponse = new byte[] { 0, 0, 0, 15, 7, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-            log.info("sumo received carla simulation step at time: " + interaction.getTime() + " at sumo time: "
-                    + this.nextTimeStep);
             // trigger a simulation step response
             rti.triggerInteraction(new SimulationStepResponse(interaction.getTime(), simulationStepResponse.length,
                     simulationStepResponse));
@@ -549,7 +547,7 @@ public class SumoAmbassador extends AbstractSumoAmbassador {
      * @param typesInit Interaction contains predefined vehicle types.
      */
     private void writeTypesFromRti(VehicleTypesInitialization typesInit) {
-        File dir = new File(descriptor.getHost().workingDirectory, descriptor.getId() + "/" + descriptor.getConfigTargetPath().toString());
+        File dir = new File(descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId() + "/" + descriptor.getId(), descriptor.getConfigTargetPath().toString());
         String subDir = new File(sumoConfig.sumoConfigurationFile).getParent();
         if (StringUtils.isNotBlank(subDir)) {
             dir = new File(dir, subDir);

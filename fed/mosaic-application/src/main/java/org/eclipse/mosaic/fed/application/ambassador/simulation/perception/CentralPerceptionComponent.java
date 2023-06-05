@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class CentralPerceptionComponent {
 
-    private final static Logger LOG = LoggerFactory.getLogger(CentralPerceptionComponent.class);
+    private final static Logger log = LoggerFactory.getLogger(CentralPerceptionComponent.class);
 
     private CartesianRectangle scenarioBounds;
     /**
@@ -98,9 +98,9 @@ public class CentralPerceptionComponent {
             boolean vehicleIndexConfigured = configuration.vehicleIndex != null;
             boolean trafficLightIndexConfigured = configuration.trafficLightIndex != null;
 
-            TrafficObjectIndex.Builder indexBuilder = new TrafficObjectIndex.Builder(LOG);
+            TrafficObjectIndex.Builder indexBuilder = new TrafficObjectIndex.Builder(log);
             if (scenarioBounds.getArea() <= 0) {
-                LOG.warn("The bounding area of the scenario could not be determined. Defaulting to low performance spatial index.");
+                log.warn("The bounding area of the scenario could not be determined. Defaulting to low performance spatial index.");
                 if (vehicleIndexConfigured) { // if configured default to map index
                     indexBuilder.withVehicleIndex(new VehicleMap());
                 }

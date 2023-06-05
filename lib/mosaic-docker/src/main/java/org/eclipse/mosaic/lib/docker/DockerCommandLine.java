@@ -32,12 +32,12 @@ import java.util.List;
  */
 public class DockerCommandLine {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected Process execCommand(String... cmd) {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Execute docker command: $ docker {}", StringUtils.join(cmd, " "));
+            if (log.isDebugEnabled()) {
+                log.debug("Execute docker command: $ docker {}", StringUtils.join(cmd, " "));
             }
             return Runtime.getRuntime().exec(ArrayUtils.insert(0, cmd, "docker"));
         } catch (IOException e) {
@@ -65,7 +65,7 @@ public class DockerCommandLine {
             int exitCode = p.waitFor();
             String result = readFromProcess(p.getInputStream());
             if (exitCode == 0) {
-                logger.debug("Docker command result: {}", result);
+                log.debug("Docker command result: {}", result);
                 return result;
             } else {
                 String error = readFromProcess(p.getErrorStream());
@@ -122,18 +122,33 @@ public class DockerCommandLine {
         return execCommand(cmd);
     }
 
+    public void copyFile(String containerName, String srcPath, String dstPath) {
+        String result = execCommandAndRead("cp", srcPath, containerName + ":" + dstPath);
+        log.info("Copy file from host to docker container exited with result - {}.", result);
+    }
+
+    public void createVolume(String volumeName) {
+        int exitCode = execAndWaitForCommand("volume", "create", volumeName);
+        log.info("Create docker volume exited with code {}.", exitCode);
+    }
+
+    public void removeVolume(String volumeName) {
+        int exitCode = execAndWaitForCommand("volume", "rm", volumeName);
+        log.info("Remove docker volume exited with code {}.", exitCode);
+    }
+
     public Process attach(String container) {
         return execCommand("attach", container);
     }
 
     public void kill(String containerName) {
         int exitCode = execAndWaitForCommand("kill", containerName);
-        logger.info("Kill command exited with code {}.", exitCode);
+        log.info("Kill command exited with code {}.", exitCode);
     }
 
     public void rm(String containerName) {
         int exitCode = execAndWaitForCommand("rm", "-f", containerName);
-        logger.info("Remove command exited with code {}.", exitCode);
+        log.info("Remove command exited with code {}.", exitCode);
 
     }
 
@@ -153,13 +168,5 @@ public class DockerCommandLine {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         IOUtils.copy(stream, baos);
         return new String(baos.toByteArray(), StandardCharsets.UTF_8);
-    }
-
-    public String createVolume(String dockerVolumeName) {
-        return execCommandAndRead("volume", "create", dockerVolumeName);
-    }
-
-    public String removeVolume(String dockerVolumeName) {
-        return execCommandAndRead("volume", "rm", dockerVolumeName);
     }
 }

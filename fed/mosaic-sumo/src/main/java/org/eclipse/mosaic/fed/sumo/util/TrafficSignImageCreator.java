@@ -38,7 +38,7 @@ import javax.imageio.ImageIO;
  */
 class TrafficSignImageCreator {
 
-    private final static Logger LOG = LoggerFactory.getLogger(TrafficSignImageCreator.class);
+    private final static Logger log = LoggerFactory.getLogger(TrafficSignImageCreator.class);
     public static final String SIGN_FONT = "Helvetica";
 
     private final Path sumoWorkingDir;
@@ -76,7 +76,7 @@ class TrafficSignImageCreator {
         try {
             Files.createDirectories(imageFilesDir);
         } catch (IOException e) {
-            LOG.warn("Could not create directories", e);
+            log.warn("Could not create directories", e);
         }
 
         try {
@@ -130,7 +130,7 @@ class TrafficSignImageCreator {
             ImageIO.write(resultImage, "PNG", imageFilePath.toFile());
             return imageFilePath;
         } catch (IOException e) {
-            LOG.error("Could not create image file for traffic sign in " + imageFilePath.toAbsolutePath(), e);
+            log.error("Could not create image file for traffic sign in " + imageFilePath.toAbsolutePath(), e);
             return imageFilePath;
         }
     }

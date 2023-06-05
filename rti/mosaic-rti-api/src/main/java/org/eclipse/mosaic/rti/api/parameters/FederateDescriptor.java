@@ -45,6 +45,11 @@ public class FederateDescriptor {
     private final FederateAmbassador ambassador;
 
     /**
+     * Unique string identifying a federate. Must be non empty.
+     */
+    private String simulationId;
+    
+    /**
      * Flag signalizing whether to deploy and undeploy the federate (e.g. an external executable) in the
      * working directory before starting it.
      */
@@ -92,8 +97,6 @@ public class FederateDescriptor {
      */
     private final byte priority;
 
-    private byte reducedPriority;
-
     /**
      * The executor instance which starts the federate.
      */
@@ -122,7 +125,6 @@ public class FederateDescriptor {
         this.id = id;
         this.ambassador = ambassador;
         this.priority = priority;
-        this.reducedPriority = this.priority;
     }
 
     /**
@@ -140,12 +142,7 @@ public class FederateDescriptor {
      * Returns the priority of this federate. The lower the value the higher the priority.
      */
     public byte getPriority() {
-        if (this.reducedPriority < 100) this.reducedPriority += 1;
-        return reducedPriority;
-    }
-
-    public void resetPriority() {
-        this.reducedPriority = this.priority;
+        return priority;
     }
 
     @Nonnull
@@ -154,6 +151,14 @@ public class FederateDescriptor {
                 interactions,
                 "The descriptor for {} has not been initialized properly: #setInteractions has not been called yet.", id
         );
+    }
+
+    public void setSimulationId(String simulationId) {
+        this.simulationId = Validate.notNull(simulationId, "The simulationId for must not be null.");
+    }
+
+    public String getSimulationId() {
+        return this.simulationId;
     }
 
     public void setInteractions(@Nonnull Collection<InteractionDescriptor> interactions) {

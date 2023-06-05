@@ -175,6 +175,10 @@
         <appender-ref ref="EnvironmentLog"/>
     </logger>
 
+    <logger name="org.eclipse.mosaic.fed.carla" additivity="false" level="INFO">
+        <appender-ref ref="EnvironmentLog"/>
+    </logger>
+
     <logger name="org.eclipse.mosaic.fed.sumo" additivity="false" level="INFO">
         <appender-ref ref="TrafficLog"/>
     </logger>

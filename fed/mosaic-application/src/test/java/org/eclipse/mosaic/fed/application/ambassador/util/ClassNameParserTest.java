@@ -37,23 +37,23 @@ public class ClassNameParserTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    private Logger logger;
+    private Logger log;
 
 
     @Test(expected = RuntimeException.class)
     public void fullQualifiedName_notAssignable() {
-        new ClassNameParser(logger).createInstanceFromClassName(baseClassName, String.class);
+        new ClassNameParser(log).createInstanceFromClassName(baseClassName, String.class);
     }
 
     @Test
     public void fullQualifiedName_assignableFromSameClass() {
-        final ClassNameParserTestClass o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName, ClassNameParserTestClass.class);
+        final ClassNameParserTestClass o = new ClassNameParser(log).createInstanceFromClassName(baseClassName, ClassNameParserTestClass.class);
         assertNotNull(o);
     }
 
     @Test
     public void fullQualifiedName_assignableFromObject() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName, Object.class);
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName, Object.class);
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -61,7 +61,7 @@ public class ClassNameParserTest {
 
     @Test
     public void fullQualifiedName() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName);
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName);
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -69,12 +69,12 @@ public class ClassNameParserTest {
 
     @Test(expected = RuntimeException.class)
     public void fullQualifiedName_wrongConstructor() {
-        new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "(\"value\", true)");
+        new ClassNameParser(log).createInstanceFromClassName(baseClassName + "(\"value\", true)");
     }
 
     @Test
     public void fullQualifiedName_oneStringParam() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "(\"value\")");
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName + "(\"value\")");
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -83,7 +83,7 @@ public class ClassNameParserTest {
 
     @Test
     public void fullQualifiedName_oneStringParamWithSingleQuotes() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "('value')");
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName + "('value')");
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -92,7 +92,7 @@ public class ClassNameParserTest {
 
     @Test
     public void fullQualifiedName_oneIntParam() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "(42)");
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName + "(42)");
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -101,7 +101,7 @@ public class ClassNameParserTest {
 
     @Test
     public void fullQualifiedName_oneDoubleParam() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "(4.2)");
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName + "(4.2)");
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -110,7 +110,7 @@ public class ClassNameParserTest {
 
     @Test
     public void fullQualifiedName_oneBooleanParam() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "(true)");
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName + "(true)");
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
@@ -119,7 +119,7 @@ public class ClassNameParserTest {
 
     @Test
     public void fullQualifiedName_parameterList() {
-        final Object o = new ClassNameParser(logger).createInstanceFromClassName(baseClassName + "( \"value\", 42, 4.2, true )");
+        final Object o = new ClassNameParser(log).createInstanceFromClassName(baseClassName + "( \"value\", 42, 4.2, true )");
 
         assertNotNull(o);
         assertTrue(o instanceof ClassNameParserTestClass);
