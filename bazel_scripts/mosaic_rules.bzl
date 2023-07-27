@@ -31,12 +31,11 @@ def mosaic_rules():
             url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
         )
 
-    if not native.existing_rule("rules_proto"):
-        http_archive(
-            name = "rules_proto",
-            sha256 = "dc3fb206a2cb3441b485eb1e423165b231235a1ea9b031b4433cf7bc1fa460dd",
-            strip_prefix = "rules_proto-5.3.0-21.7",
-            urls = [
-                "https://github.com/bazelbuild/rules_proto/archive/refs/tags/5.3.0-21.7.tar.gz",
-            ],
+def mosaic_proto_rules():
+    """Loads common dependencies needed to compile the protobuf library."""
+    if not native.existing_rule("mosaic_proto"):
+        git_repository(
+            name = "mosaic_proto",
+            remote = "https://github.com/cpark90/mosaic_proto",
+            tag = "v0.01",
         )

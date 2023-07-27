@@ -59,6 +59,7 @@ public class FederateDescriptor {
      * Flag signalizing whether to start/stop the federate external component (e.g. an external executable).
      */
     private boolean startAndStop = false;
+    private boolean mediatorStartAndStop = false;
 
     /**
      * Parameters describing the host on which the federate is running or is to
@@ -211,6 +212,14 @@ public class FederateDescriptor {
 
     public void setStartAndStop(boolean startAndStop) {
         this.startAndStop = startAndStop;
+    }
+
+    public boolean isToMediatorStartAndStop() {
+        return this.mediatorStartAndStop;
+    }
+
+    public void setMediatorStartAndStop(boolean mediatorStartAndStop) {
+        this.mediatorStartAndStop = mediatorStartAndStop;
     }
 
     public void setFederateExecutor(@Nonnull FederateExecutor federateExecutor) {

@@ -105,6 +105,10 @@ public class LocalFederationManagement implements FederationManagement {
             this.startFederate(descriptor);
         }
 
+        if (descriptor.isToMediatorStartAndStop()) {
+            this.startMediator(descriptor);
+        }
+
         descriptor.getAmbassador().setRtiAmbassador(federation.createRtiAmbassador(descriptor.getId()));
         this.federateDescriptors.put(descriptor.getId(), descriptor);
         this.federateAmbassadors.put(descriptor.getId(), descriptor.getAmbassador());
@@ -131,6 +135,10 @@ public class LocalFederationManagement implements FederationManagement {
 
             if (descriptor.isToStartAndStop()) {
                 this.stopFederate(descriptor, true);
+            }
+
+            if (descriptor.isToMediatorStartAndStop()) {
+                this.stopMediator(descriptor, true);
             }
 
             if (descriptor.isToDeployAndUndeploy() && descriptor.getHost() != null) {
@@ -276,27 +284,33 @@ public class LocalFederationManagement implements FederationManagement {
         );
         outputLoggingThread.start();
         loggingThreads.put(descriptor.getId(), outputLoggingThread);
-
-        try {
-            final MediatorExecutor mediatorExecutor = descriptor.getMediatorExecutor();
-            final Process mediatorProcess = mediatorExecutor.startLocalMediator(fedDir);
-            if (mediatorProcess == null) {
-                return;
-            }
-
-            //make the process known to the watchdog(and thus ensuring its termination)
-            if (watchDog != null) {
-                watchDog.attachProcess(mediatorProcess);
-            }
-            descriptor.getAmbassador().connectToMediator(LOCALHOST, mediatorProcess.getInputStream(), mediatorProcess.getErrorStream());
-
-        } catch (Exception e) {
-            if (log != null) {
-                log.debug("Could not start mediator for Federate executor: {}", federateExecutor.toString());
-            }
-        }
     }
 
+    /**
+     * Starts a federate represented by its descriptor on the local machine.
+     *
+     * @param descriptor federate descriptor consisting all necessary data to start a
+     *               federate
+     * @throws Exception if the federate could not be started
+     */
+    protected void startMediator(FederateDescriptor descriptor) throws Exception {
+
+        File fedDir = new File(descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(), descriptor.getId());
+        final MediatorExecutor mediatorExecutor = descriptor.getMediatorExecutor();
+        final Process mediatorProcess = mediatorExecutor.startLocalMediator(fedDir);
+
+        this.log.debug(" - Mediator executor: {}", mediatorExecutor.toString());
+        if (mediatorProcess == null) {
+            return;
+        }
+
+        //make the process known to the watchdog(and thus ensuring its termination)
+        if (watchDog != null) {
+            watchDog.attachProcess(mediatorProcess);
+        }
+        descriptor.getAmbassador().connectToMediator(LOCALHOST, mediatorProcess.getInputStream(), mediatorProcess.getErrorStream());
+    }
+    
     /**
      * Stops a federate represented by its descriptor on the local machine.
      *
@@ -309,7 +323,14 @@ public class LocalFederationManagement implements FederationManagement {
 
             loggingThreads.get(descriptor.getId()).forEach(ProcessLoggingThread::close);
         }
-
+    }
+    /**
+     * Stops a federate represented by its descriptor on the local machine.
+     *
+     * @param descriptor federate descriptor consisting all necessary data to stop a federate
+     * @throws Exception if the federate could not be stopped
+     */
+    protected void stopMediator(FederateDescriptor descriptor, boolean forceStop) throws Exception {
         if (descriptor.getMediatorExecutor() != null) {
             descriptor.getMediatorExecutor().stopLocalMediator();
 

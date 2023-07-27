@@ -4,18 +4,29 @@ workspace(name = "mosaic")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-load("//bazel_scripts:mosaic_rules.bzl", "mosaic_rules")
+load("//bazel_scripts:mosaic_rules.bzl", "mosaic_rules", "mosaic_proto_rules")
 mosaic_rules()
+mosaic_proto_rules()
 
-# protocol buffer
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
 
+# protocol buffer and GRPC
+load("@mosaic_proto//bazel_scripts:mosaic_proto_rules.bzl", "common_proto_rules")
+common_proto_rules()
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 rules_proto_dependencies()
+rules_proto_toolchains()
 
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+grpc_deps()
 
-protobuf_deps()
+load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
+grpc_extra_deps()
+
+load("@com_github_grpc_grpc//bazel:grpc_python_deps.bzl", "grpc_python_deps")
+grpc_python_deps()
+
 
 
 # rules_docker is not strictly necessary, but interesting if you want to create
@@ -41,13 +52,14 @@ container_pull(
     tag = "jre-11.0.19_7-ubuntu-docker",
 )
 
-
 load(
     "@io_bazel_rules_docker//java:image.bzl",
     _java_image_repos = "repositories",
 )
 
 _java_image_repos()
+
+
 
 # maven
 

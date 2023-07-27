@@ -1,0 +1,51 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_java//java:defs.bzl", "java_proto_library")
+
+java_proto_library(
+    name = "federate_message_wrapper_java_proto",
+    deps = [
+        "@mosaic_proto//protos/federate:federate_message_wrapper_proto",
+    ]
+)
+
+java_proto_library(
+    name = "mediator_status_java_proto",
+    deps = [
+        "@mosaic_proto//protos/federate:mediator_status_proto",
+    ]
+)
+
+java_proto_library(
+    name = "types_java_proto",
+    deps = [
+        "@mosaic_proto//protos/common:types_proto",
+    ]
+)
+
+
+filegroup(
+    name = "srcs",
+    srcs = glob(["src/main/java/**/scenario/ambassador/*.java"]) +
+        glob(["src/main/java/**/scenario/connect/*.java"]) +
+        glob(["src/main/java/**/scenario/config/*.java"])
+)
+
+java_library(
+    name = "mosaic-scenario",
+    srcs = [
+        ":srcs",
+        ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "@maven//:org_apache_commons_commons_lang3",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:org_slf4j_slf4j_api",
+        "@maven//:com_google_code_gson_gson",
+
+        "//lib/mosaic-interactions",
+        "//lib/mosaic-utils",
+        "//rti/mosaic-rti-api",
+    ],
+)

@@ -1,0 +1,36 @@
+package(default_visibility = ["//visibility:public"])
+
+# ambassador unit test
+
+java_test(
+    name = "scenario_ambassador_test",
+    srcs = glob(["java/**/scenario/ambassador/ScenarioAmbassadorTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-scenario",
+        "//lib/mosaic-utils/src/test:junit",
+        "//rti/mosaic-rti-api",
+
+        "@mosaic_proto//protos/federate:federate_message_wrapper_proto",
+    ],
+    test_class = "org.eclipse.mosaic.fed.scenario.ambassador.ScenarioAmbassadorTest",
+)
+
+# config unit test
+
+java_test(
+    name = "scenario_configuration_test",
+    srcs = glob(["java/**/scenario/config/ScenarioConfigurationTest.java"]),
+    resources = glob(["resources/**/*"]),
+    deps = [
+        "@maven//:junit_junit",
+        "@maven//:org_mockito_mockito_core",
+
+        "//fed/mosaic-scenario",
+        "//lib/mosaic-utils",
+    ],
+    test_class = "org.eclipse.mosaic.fed.scenario.config.ScenarioConfigurationTest",
+)

@@ -80,7 +80,7 @@ public class SumoGuiAmbassador extends SumoAmbassador {
 
         this.startCmdPort = port;
         this.dockerFederateExecutor.addPortBinding(port, port);
-        this.dockerFederateExecutor.addParameter("DISPLAY", ":1");
+        this.dockerFederateExecutor.addParameter("DISPLAY", sumoConfig.displayNumber);
         this.federateExecutor = this.dockerFederateExecutor;
         return this.dockerFederateExecutor;
     }

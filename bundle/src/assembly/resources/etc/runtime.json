@@ -44,17 +44,36 @@
             "configuration": "carla_config.json",
             "configurationDeployPath": "carla-federate/simulations",
             "priority": 50,
-            "dockerImage": "carla:mosaic_0_9_14",
+            "dockerImage": "cpark90/carla:mosaic_0_9_14",
             "mediatorDockerImage": "bazel/mediator:mediator_carla_main_image",
+            "host": "local",
+            "federatePort": 2000,
+            "mediatorPort": 8913,
+            "deploy": true,
+            "start": false,
+            "mediatorStart": true,
+            "subscriptions": [
+                "CarlaTraciResponse",
+                "SimulationStepResponse",
+                "CarlaV2xMessageReception"
+            ],
+            "javaClasspathEntries": []
+        },
+        {
+            "id": "scenario",
+            "classname": "org.eclipse.mosaic.fed.scenario.ambassador.ScenarioAmbassador",
+            "configuration": "scenario_config.json",
+            "configurationDeployPath": "scenario-federate/simulations",
+            "priority": 50,
+            "dockerImage": "scenario_docker",
+            "mediatorDockerImage": "bazel/mediator:mediator_scenario_main_image",
             "host": "local",
             "federatePort": 2000,
             "mediatorPort": 8913,
             "deploy": true,
             "start": true,
             "subscriptions": [
-                "CarlaTraciResponse",
-                "SimulationStepResponse",
-                "CarlaV2xMessageReception"
+                "SimulationStepResponse"
             ],
             "javaClasspathEntries": []
         },
@@ -116,7 +135,7 @@
             "configuration": "omnetpp_config.json",
             "configurationDeployPath": "omnetpp-federate/simulations",
             "priority": 50,
-            "dockerImage": "omnetpp:mosaic",
+            "dockerImage": "cpark90/omnetpp:mosaic",
             "host": "local",
             "federatePort": 4998,
             "deploy": true,
@@ -177,11 +196,12 @@
             "configuration": "sumo_config.json",
             "configurationDeployPath": "sumo-federate/simulations",
             "priority": 50,
-            "dockerImage": "sumo:mosaic_1_16_0",
+            "dockerImage": "cpark90/sumo:mosaic_1_16_0",
             "host": "local",
             "federatePort": 3222,
             "deploy": true,
             "start": true,
+            "mediatorStart": true,
             "subscriptions": [
                 "VehicleTypesInitialization",
                 "VehicleRoutesInitialization",

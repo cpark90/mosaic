@@ -365,6 +365,7 @@ public class MosaicSimulation {
             }
         }
         descriptor.setStartAndStop(federateRuntimeConf.start);
+        descriptor.setMediatorStartAndStop(federateRuntimeConf.mediatorStart);
 
         final CLocalHost host = Validate.notNull(
                 hostsConfiguration.getHostById(federateRuntimeConf.host), "No suitable host found for federate " + federateRuntimeConf.id
@@ -395,7 +396,14 @@ public class MosaicSimulation {
 
                 descriptor.setFederateExecutor(descriptor.getAmbassador().createFederateExecutor(host.address, port, host.operatingSystem));
             }
+        } else {
+            // connect only, if address and port are given
+            if (federateRuntimeConf.federatePort > 0) {
+                ambassador.connectToFederate(host.address, federateRuntimeConf.federatePort);
+            }
+        }
 
+        if (descriptor.isToMediatorStartAndStop()) {
             if (federateRuntimeConf.mediatorPort > -1) {
                 if (StringUtils.isNotEmpty(federateRuntimeConf.mediatorDockerImage)) {
                     final String container = federateRuntimeConf.id + '-' + simulationId + "-mediator";
@@ -412,13 +420,7 @@ public class MosaicSimulation {
                     descriptor.setMediatorExecutor(descriptor.getAmbassador().createMediatorExecutor(host.address, port, host.operatingSystem));
                 }
             }
-
         } else {
-            // connect only, if address and port are given
-            if (federateRuntimeConf.federatePort > 0) {
-                ambassador.connectToFederate(host.address, federateRuntimeConf.federatePort);
-            }
-
             if (federateRuntimeConf.mediatorPort > 0) {
                 ambassador.connectToMediator(host.address, federateRuntimeConf.mediatorPort);
             }

@@ -1,0 +1,10 @@
+{
+    "updateInterval": 200,
+    "scenarioBinPath": "D:/CARLA_0.9.10/",
+    "scenarioConnectionPort": 8913,
+
+    "mediatorMap": "Town04",
+    "mediatorNetFile": "/tmp/mediator_carla/carla/carla-federate/simulations/Town04.net.xml",
+    "mediatorStepLength": 0.1,
+    "mediatorTlsManager": "sumo"
+}

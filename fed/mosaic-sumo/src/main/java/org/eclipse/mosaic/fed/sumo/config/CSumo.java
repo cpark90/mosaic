@@ -47,6 +47,7 @@ public class CSumo implements Serializable {
      */
     public String sumoConfigurationFile;
 
+    public String displayNumber;
     /**
      * If too many vehicles try to enter the simulation, SUMO might skip some
      * vehicles and tries to enter them later again. This behavior can lead to

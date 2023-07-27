@@ -69,6 +69,7 @@ public class CRuntime {
         public int mediatorPort = 0;
         public boolean deploy = false;
         public boolean start = false;
+        public boolean mediatorStart = false;
 
         @JacksonXmlElementWrapper(localName = "subscriptions")
         @JacksonXmlProperty(localName = "subscription")
