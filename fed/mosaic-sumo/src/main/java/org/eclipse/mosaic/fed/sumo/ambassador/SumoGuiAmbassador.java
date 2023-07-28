@@ -75,6 +75,7 @@ public class SumoGuiAmbassador extends SumoAmbassador {
                 dockerImage,
                 descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
                 "",
+                "1000",
                 args
         );
 

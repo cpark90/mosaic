@@ -1,4 +1,5 @@
 {
     "sumoConfigurationFile": "Barnim.sumocfg",
-    "updateInterval": 1000
+    "updateInterval": 1000,
+    "displayNumber": ":1"
 }

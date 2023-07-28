@@ -65,7 +65,8 @@ public class Ns3Ambassador extends AbstractNetworkAmbassador {
         this.dockerFederateExecutor = new DockerFederateExecutor(
                 dockerImage,
                 descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
-                ""
+                "",
+                "currentUser"
         );
         return dockerFederateExecutor;
     }

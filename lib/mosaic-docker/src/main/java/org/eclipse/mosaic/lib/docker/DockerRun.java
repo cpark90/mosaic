@@ -124,8 +124,12 @@ public class DockerRun {
      * @param user the user and group as string accepted by Docker's CLI parameter "--user".
      */
     public DockerRun user(String user) {
-        this.user = user;
-        return this;
+        if (user == "currentUser") {
+            return currentUser();
+        } else {
+            this.user = user;
+            return this;
+        }
     }
 
     /**

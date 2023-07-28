@@ -229,6 +229,7 @@ public class ScenarioAmbassador extends AbstractFederateAmbassador {
                 dockerImage,
                 descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
                 "",
+                "1000",
                 args
         );
         this.dockerFederateExecutor.addPortBinding(port, port);

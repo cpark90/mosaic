@@ -7,5 +7,6 @@
         "TrafficLightCar": {
             "carFollowModel": "Krauss"
         }
-    }
+    },
+    "displayNumber": ":1"
 }

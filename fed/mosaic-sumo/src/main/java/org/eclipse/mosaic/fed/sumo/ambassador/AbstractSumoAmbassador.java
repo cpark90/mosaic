@@ -218,7 +218,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
     /**
      * CARLA federate is enabled
      */
-    protected boolean sumoCarlaCoSimulation = true;
+    protected boolean sumoCarlaCoSimulation = false;
 
     /**
      * Creates a new {@link AbstractSumoAmbassador} object.
@@ -282,6 +282,7 @@ public abstract class AbstractSumoAmbassador extends AbstractFederateAmbassador 
                 dockerImage,
                 descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
                 "",
+                "1000",
                 args
         );
         this.dockerFederateExecutor.addPortBinding(port, port);

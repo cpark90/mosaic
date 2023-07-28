@@ -76,6 +76,7 @@ public class OmnetppAmbassador extends AbstractNetworkAmbassador {
                 dockerImage,
                 descriptor.getHost().workingDirectory + "/" + descriptor.getSimulationId(),
                 "",
+                "currentUser",
                 "omnetpp-federate/omnetpp-federate",
                 "-u", "Cmdenv",
                 "-f", omnetppConfigFilePath,

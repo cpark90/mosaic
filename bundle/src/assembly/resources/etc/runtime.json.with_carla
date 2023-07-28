@@ -7,7 +7,7 @@
             "configuration": "application_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -39,12 +39,51 @@
             "javaClasspathEntries": []
         },
         {
+            "id": "carla",
+            "classname": "org.eclipse.mosaic.fed.carla.ambassador.CarlaAmbassador",
+            "configuration": "carla_config.json",
+            "configurationDeployPath": "carla-federate/simulations",
+            "priority": 50,
+            "dockerImage": "cpark90/carla:mosaic_0_9_14",
+            "mediatorDockerImage": "bazel/mediator:mediator_carla_main_image",
+            "host": "local",
+            "federatePort": 2000,
+            "mediatorPort": 8913,
+            "deploy": true,
+            "start": false,
+            "mediatorStart": true,
+            "subscriptions": [
+                "CarlaTraciResponse",
+                "SimulationStepResponse",
+                "CarlaV2xMessageReception"
+            ],
+            "javaClasspathEntries": []
+        },
+        {
+            "id": "scenario",
+            "classname": "org.eclipse.mosaic.fed.scenario.ambassador.ScenarioAmbassador",
+            "configuration": "scenario_config.json",
+            "configurationDeployPath": "scenario-federate/simulations",
+            "priority": 50,
+            "dockerImage": "scenario_docker",
+            "mediatorDockerImage": "bazel/mediator:mediator_scenario_main_image",
+            "host": "local",
+            "federatePort": 2000,
+            "mediatorPort": 8913,
+            "deploy": true,
+            "start": true,
+            "subscriptions": [
+                "SimulationStepResponse"
+            ],
+            "javaClasspathEntries": []
+        },
+        {
             "id": "environment",
             "classname": "org.eclipse.mosaic.fed.environment.ambassador.EnvironmentAmbassador",
             "configuration": "environment_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -59,7 +98,7 @@
             "configuration": "mapping_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -75,7 +114,7 @@
             "configuration": "cell_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -117,10 +156,9 @@
             "configuration": "ns3_config.json",
             "configurationDeployPath": "ns3/scratch",
             "priority": 50,
-            "federateDockerImage": "",
+            "dockerImage": "",
             "host": "local",
             "federatePort": 5011,
-            "mediatorPort": 1003,
             "deploy": true,
             "start": true,
             "subscriptions": [
@@ -139,7 +177,7 @@
             "configuration": "sns_config.json",
             "priority": 50,
             "host": "local",
-            "port": 0,
+            "federatePort": 0,
             "deploy": false,
             "start": false,
             "subscriptions": [
@@ -185,7 +223,9 @@
                 "InductionLoopDetectorSubscription",
                 "LaneAreaDetectorSubscription",
                 "TrafficLightSubscription",
-                "VehicleSightDistanceConfiguration"
+                "VehicleSightDistanceConfiguration",
+                "CarlaTraciRequest",
+                "SimulationStep"
             ],
             "javaClasspathEntries": []
         },

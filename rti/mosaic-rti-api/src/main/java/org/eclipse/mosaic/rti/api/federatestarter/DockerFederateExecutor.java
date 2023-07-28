@@ -48,6 +48,7 @@ public class DockerFederateExecutor implements FederateExecutor {
     private final List<String> args;
     private List<Pair<Integer, Integer>> portBindings = new Vector<>();
     private String containerName;
+    private String userName;
 
     private final Map<String, Object> parameters = new HashMap<>();
     private DockerClient dockerClient;
@@ -61,15 +62,16 @@ public class DockerFederateExecutor implements FederateExecutor {
      * @param imageVolume         the path to the image volume which is bound with the sharedDirectoryPath
      */
 
-    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume, String... args) {
-        this(image, sharedDirectoryPath, imageVolume, Arrays.asList(args));
+    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume, String userName, String... args) {
+        this(image, sharedDirectoryPath, imageVolume, userName, Arrays.asList(args));
     }
 
-    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume, List<String> args) {
+    public DockerFederateExecutor(String image, String sharedDirectoryPath, String imageVolume, String userName, List<String> args) {
         this.image = image;
         this.containerName = StringUtils.substringBefore(image, ":");
         this.sharedDirectoryPath = sharedDirectoryPath;
         this.imageVolume = imageVolume;
+        this.userName = userName;
         this.args = args;
     }
 
@@ -108,7 +110,7 @@ public class DockerFederateExecutor implements FederateExecutor {
                     .gpusAll()
                     .removeAfterRun()
                     .networkHost()
-                    .user("1000")
+                    .user(userName)
                     .args(args)
                     .volumeBinding(imageVolume, sharedDirectoryPath)
                     .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");
@@ -120,7 +122,7 @@ public class DockerFederateExecutor implements FederateExecutor {
                     .gpusAll()
                     .removeAfterRun()
                     .networkHost()
-                    .user("1000")
+                    .user(userName)
                     .args(args)
                     .volumeBinding(sharedDirectoryPath, sharedDirectoryPath)
                     .volumeBinding("/tmp/.X11-unix", "/tmp/.X11-unix");
